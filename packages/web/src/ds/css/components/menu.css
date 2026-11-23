@@ -20,7 +20,8 @@
     overlay var(--dur-1) allow-discrete,
     display var(--dur-1) allow-discrete;
 
-  &:not(:popover-open) {
+  /* only a real popover is hidden while closed: the same list reused inside a phone sheet has no popover attribute */
+  &[popover]:not(:popover-open) {
     opacity: 0;
     translate: 0 -4px;
   }
