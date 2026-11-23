@@ -1,0 +1,129 @@
+/*
+  Transitions: the colour and radius ease for a look change, and the view-transition choreography (core/transition.js).
+  core/transition.js sets html[data-vt] to "route", "look", "live" or "nav" for as long as a transition runs; every
+  view-transition-name below exists only under that attribute, so nothing is promoted to its own layer at rest.
+  Nothing here runs under reduced motion: the wrapper never starts a transition, and --dur-* are 0ms.
+*/
+
+/* ---- fallback ease: without view transitions a look change still eases colour and corners ---- */
+html,
+body,
+.app__nav,
+.app__topbar,
+.app__main {
+  transition:
+    background-color var(--dur-2) var(--ease),
+    color var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease);
+}
+html {
+  transition:
+    background-color var(--dur-2) var(--ease),
+    color var(--dur-2) var(--ease),
+    --radius-1 var(--dur-2) var(--ease),
+    --radius-control var(--dur-2) var(--ease),
+    --radius-card var(--dur-2) var(--ease);
+}
+/* During a view transition the new state is captured at once: no element may be mid-ease then. */
+:root[data-vt],
+:root[data-vt] :is(body, .app__nav, .app__topbar, .app__main) {
+  transition: none;
+}
+
+/* ---- keyframes ---- */
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+@keyframes vt-grow {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes vt-shrink {
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* ---- route: only the main region fades; the nav and top bar hold still ---- */
+:root[data-vt="route"] .app__nav {
+  view-transition-name: shell-nav;
+}
+:root[data-vt="route"] .app__topbar {
+  view-transition-name: shell-topbar;
+}
+:root[data-vt="route"] .app__main {
+  view-transition-name: shell-main;
+}
+:root[data-vt="route"]::view-transition-group(root),
+:root[data-vt="route"]::view-transition-old(root),
+:root[data-vt="route"]::view-transition-new(root) {
+  animation: none;
+}
+:root[data-vt="route"]::view-transition-old(shell-nav),
+:root[data-vt="route"]::view-transition-old(shell-topbar) {
+  display: none;
+}
+:root[data-vt="route"]::view-transition-group(shell-nav),
+:root[data-vt="route"]::view-transition-group(shell-topbar),
+:root[data-vt="route"]::view-transition-new(shell-nav),
+:root[data-vt="route"]::view-transition-new(shell-topbar) {
+  animation: none;
+}
+:root[data-vt="route"]::view-transition-group(shell-main) {
+  animation: none;
+}
+:root[data-vt="route"]::view-transition-old(shell-main) {
+  animation: vt-out var(--dur-1) var(--ease) both;
+}
+:root[data-vt="route"]::view-transition-new(shell-main) {
+  animation: vt-in var(--dur-2) var(--ease) both;
+}
+
+/* ---- look: the whole page re-skins; core/transition's reveal grows the new look as a circle (app/main.js) ---- */
+:root[data-vt="look"]::view-transition-old(root),
+:root[data-vt="look"]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* ---- live: widget cells (--_vt, set by core/page-host.js) and nav items (inline names) glide, grow and leave ---- */
+:root[data-vt="live"] .c-page-grid__item {
+  view-transition-name: var(--_vt, none);
+}
+:root:is([data-vt="live"], [data-vt="nav"])::view-transition-group(root),
+:root:is([data-vt="live"], [data-vt="nav"])::view-transition-old(root),
+:root:is([data-vt="live"], [data-vt="nav"])::view-transition-new(root) {
+  animation: none;
+}
+:root:is([data-vt="live"], [data-vt="nav"])::view-transition-group(*) {
+  animation-duration: var(--dur-2);
+  animation-timing-function: var(--ease);
+}
+:root:is([data-vt="live"], [data-vt="nav"])::view-transition-new(*):only-child {
+  animation: vt-grow var(--dur-2) var(--ease) both;
+}
+:root:is([data-vt="live"], [data-vt="nav"])::view-transition-old(*):only-child {
+  animation: vt-shrink var(--dur-1) var(--ease) both;
+}
+/* ---- live indicator: the dot sends out a ring while the connection is up (registered <number> --_live-ring) ---- */
+@keyframes live-ring {
+  to {
+    --_live-ring: 1;
+  }
+}
+.c-live:not([data-state="offline"], [data-state="connecting"])::before {
+  animation: live-ring 2.4s var(--ease) infinite;
+  box-shadow: 0 0 0 calc(var(--_live-ring) * 0.45rem)
+    color-mix(in oklch, var(--accent) calc((1 - var(--_live-ring)) * 45%), transparent);
+}

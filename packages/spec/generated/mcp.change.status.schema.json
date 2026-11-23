@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "ChangeStatusInput": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "change_id": {
+          "$ref": "#/$defs/ChangeSeq"
+        },
+        "group_id": {
+          "type": "string",
+          "description": "a string at most 64 character(s) long",
+          "title": "maxLength(64)",
+          "maxLength": 64
+        },
+        "approval_id": {
+          "type": "string",
+          "description": "a string at most 64 character(s) long",
+          "title": "maxLength(64)",
+          "maxLength": 64
+        }
+      },
+      "additionalProperties": false,
+      "description": "Exactly one of change_id, group_id or approval_id."
+    },
+    "ChangeSeq": {
+      "type": "integer",
+      "description": "a number greater than or equal to 1",
+      "title": "greaterThanOrEqualTo(1)",
+      "minimum": 1
+    }
+  },
+  "$ref": "#/$defs/ChangeStatusInput"
+}

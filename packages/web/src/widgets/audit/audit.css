@@ -1,0 +1,88 @@
+/* Layer: modules (audit). Shared widget parts live in reporting.css (rp-* classes). */
+
+@scope ([data-widget^="audit."]) {
+  .rp-hash {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+
+    code {
+      font-size: var(--step--1);
+      padding: 0 var(--space-1);
+      color: var(--ink-2);
+    }
+  }
+  .rp-meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--step--2);
+    color: var(--ink-3);
+  }
+
+  .rp-verify {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+  .rp-verify__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+  }
+  .rp-verify__time,
+  .rp-verify__line {
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  /* A chain is a separated section; only a failed chain takes colour. */
+  .rp-verify__chain {
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-3);
+    border-block-start: var(--hairline) solid var(--rule);
+
+    &[data-ok="false"] {
+      padding-inline-start: var(--space-3);
+      border-inline-start: var(--space-1) solid var(--danger-border);
+    }
+  }
+  .rp-verify__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .rp-verify__name {
+    margin: 0;
+    font-size: var(--step--2);
+    font-weight: var(--weight-semi);
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+}
+
+/* rp-ops is also used by admin.program, both in its frame and in its review dialog (outside any frame). */
+@scope ([data-widget^="audit."], [data-widget^="admin."], [data-widget-domain="admin"]) {
+  .rp-ops {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: var(--space-2) 0;
+    list-style: none;
+    border-block: var(--hairline) solid var(--rule);
+    color: var(--ink-2);
+    font-size: var(--step--1);
+    overflow-x: auto;
+
+    li {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+  }
+}

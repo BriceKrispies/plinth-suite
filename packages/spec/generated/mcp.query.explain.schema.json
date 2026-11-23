@@ -1,0 +1,307 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "QueryExplainInput": {
+      "type": "object",
+      "required": [
+        "query"
+      ],
+      "properties": {
+        "query": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/QueryAst"
+            },
+            {
+              "$ref": "#/$defs/NodeRef"
+            }
+          ],
+          "description": "An inline query AST, or the slug/URI of a Query node."
+        },
+        "params": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Values for $name references in the query. Dashboard parameter defaults apply."
+        },
+        "dashboard": {
+          "$ref": "#/$defs/NodeRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "QueryAst": {
+      "type": "object",
+      "required": [
+        "from"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "source:<slug>, for example source:orders",
+          "pattern": "^(source|query):[a-z][a-z0-9_.]*$"
+        },
+        "where": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Predicate"
+          },
+          "description": "Conjunction of predicates {field, op, value}. op: eq ne lt lte gt gte in not_in is_null not_null. value is a JSON literal typed by the field: strings raw (EMEA, never 'EMEA'), numbers, booleans, ISO-8601 timestamps as plain strings. Relative time: {\"expr\":\"now() - 1h\"} (the bare string \"now() - 1h\" is also accepted). Landed sources need a gt/gte lower bound on their time column.",
+          "title": "maxItems(32)",
+          "maxItems": 32
+        },
+        "derive": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "patternProperties": {
+            "": {
+              "type": "string",
+              "description": "a string at most 200 character(s) long",
+              "title": "maxLength(200)",
+              "maxLength": 200
+            }
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "Map of new field name to expression over fields. Operators + - * / = != < <= > >= and or not. Functions: now(), abs(x), ms(duration) -> int ms, round(x, n), coalesce(a, b), date_trunc(1h, ts), bucket(ts, '1 minute') (units second/minute/hour/day). timestamp - timestamp yields a duration in MILLISECONDS. Duration literals: 90s 15m 1h 3d. Example: {\"latency_ms\":\"ms(fulfilled_at - placed_at)\",\"minute\":\"bucket(placed_at, '1 minute')\"}. Group by a derived name to bucket time."
+        },
+        "group": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "an array of at most 8 item(s)",
+          "title": "maxItems(8)",
+          "maxItems": 8
+        },
+        "aggregate": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "patternProperties": {
+            "": {
+              "$ref": "#/$defs/Agg"
+            }
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "Map of output name to aggregate. Object form (canonical): {\"fn\":\"percentile\",\"of\":\"latency_ms\",\"p\":0.95}, {\"fn\":\"count\"}, {\"fn\":\"avg\",\"of\":\"latency_ms\"}; fn is count count_distinct sum avg min max percentile. String alias: \"percentile(latency_ms, 0.95)\", \"count()\", \"sum(order_value_cents)\"."
+        },
+        "select": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "an array of at most 64 item(s)",
+          "title": "maxItems(64)",
+          "maxItems": 64
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "field",
+              "dir"
+            ],
+            "properties": {
+              "field": {
+                "$ref": "#/$defs/Field"
+              },
+              "dir": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "an array of at most 8 item(s)",
+          "title": "maxItems(8)",
+          "maxItems": 8
+        },
+        "limit": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 1 and 1000",
+          "title": "between(1, 1000)",
+          "minimum": 1,
+          "maximum": 1000
+        }
+      },
+      "additionalProperties": false
+    },
+    "Predicate": {
+      "type": "object",
+      "required": [
+        "field",
+        "op"
+      ],
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/Field"
+        },
+        "op": {
+          "type": "string",
+          "enum": [
+            "eq",
+            "ne",
+            "lt",
+            "lte",
+            "gt",
+            "gte",
+            "in",
+            "not_in",
+            "is_null",
+            "not_null"
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": "an array of at most 100 item(s)",
+              "title": "maxItems(100)",
+              "maxItems": 100
+            },
+            {
+              "$ref": "#/$defs/ExprValue"
+            }
+          ],
+          "description": "A JSON literal typed by the field: strings raw (EMEA, not 'EMEA'), numbers, booleans, timestamps as ISO-8601 strings (2026-11-20T14:00:00Z). Relative time: {\"expr\":\"now() - 1h\"}. \"in\"/\"not_in\" take an array."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Field": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$"
+    },
+    "ExprValue": {
+      "type": "object",
+      "required": [
+        "expr"
+      ],
+      "properties": {
+        "expr": {
+          "type": "string",
+          "description": "a string at most 200 character(s) long",
+          "title": "maxLength(200)",
+          "maxLength": 200
+        }
+      },
+      "additionalProperties": false
+    },
+    "Agg": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AggObject"
+        },
+        {
+          "type": "string",
+          "description": "a string at most 200 character(s) long",
+          "title": "maxLength(200)",
+          "maxLength": 200
+        }
+      ]
+    },
+    "AggObject": {
+      "type": "object",
+      "required": [
+        "fn"
+      ],
+      "properties": {
+        "fn": {
+          "type": "string",
+          "enum": [
+            "count",
+            "count_distinct",
+            "sum",
+            "avg",
+            "min",
+            "max",
+            "percentile"
+          ]
+        },
+        "of": {
+          "type": "string",
+          "description": "a string at most 200 character(s) long",
+          "title": "maxLength(200)",
+          "maxLength": 200
+        },
+        "p": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "NodeRef": {
+      "type": "string",
+      "description": "A node: plinth://<ws>/<Kind>/<uuid>, kind:slug (e.g. dashboard:ops-board), or a bare slug when unambiguous.",
+      "title": "maxLength(200)",
+      "minLength": 2,
+      "maxLength": 200
+    }
+  },
+  "$ref": "#/$defs/QueryExplainInput"
+}

@@ -1,0 +1,3715 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "DomainEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DomainEvent.message.received"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.message.sent"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.message.state_changed"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.notification.created"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.notification.read"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.points.posted"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.points.expiring"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.tier.changed"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.order.placed"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.order.status_changed"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.stock.changed"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.cart.updated"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.wishlist.changed"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.review.created"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.badge.awarded"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.badge.revoked"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.badge.progress"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.promotion.state_changed"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.promotion.redeemed"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.promotion.budget_alert"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.automation.run_updated"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.content.state_changed"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.content.published"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.content.engaged"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.task.assigned"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.task.updated"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.task.commented"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.approval.requested"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.approval.decided"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.member.updated"
+        },
+        {
+          "$ref": "#/$defs/DomainEvent.session.revoked"
+        }
+      ]
+    },
+    "DomainEvent.message.received": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "message.received"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "thread_id",
+            "message_id",
+            "subject",
+            "preview",
+            "from",
+            "mentioned"
+          ],
+          "properties": {
+            "thread_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "message_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "subject": {
+              "type": "string"
+            },
+            "preview": {
+              "type": "string",
+              "description": "a string at most 140 character(s) long",
+              "title": "maxLength(140)",
+              "maxLength": 140
+            },
+            "from": {
+              "$ref": "#/$defs/PersonRef"
+            },
+            "mentioned": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "Timestamp": {
+      "type": "string",
+      "description": "RFC 3339 UTC, e.g. 2026-11-20T14:30:00Z",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+    },
+    "Subject": {
+      "type": "string",
+      "description": "A principal: user:<handle>, agent:<name>, service:<name>",
+      "pattern": "^(user|agent|service):[a-z0-9][a-z0-9._-]*$"
+    },
+    "EventSubject": {
+      "type": "object",
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "member",
+            "thread",
+            "notification",
+            "txn",
+            "order",
+            "product",
+            "review",
+            "badge_award",
+            "promotion",
+            "automation_run",
+            "content",
+            "task",
+            "approval",
+            "session"
+          ]
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "EventCause": {
+      "type": "object",
+      "required": [
+        "automation",
+        "run_id",
+        "step_index",
+        "depth"
+      ],
+      "properties": {
+        "automation": {
+          "type": "string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/UUID"
+        },
+        "step_index": {
+          "$ref": "#/$defs/Int"
+        },
+        "depth": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 1 and 8",
+          "title": "between(1, 8)",
+          "minimum": 1,
+          "maximum": 8
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "PersonRef": {
+      "type": "object",
+      "required": [
+        "subject",
+        "handle",
+        "display_name",
+        "kind",
+        "avatar"
+      ],
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/Subject"
+        },
+        "handle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Handle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "human",
+            "agent",
+            "service"
+          ]
+        },
+        "avatar": {
+          "$ref": "#/$defs/Avatar"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Handle": {
+      "type": "string",
+      "description": "Member handle, e.g. maya-ortiz",
+      "pattern": "^[a-z][a-z0-9-]{1,39}$"
+    },
+    "Avatar": {
+      "type": "object",
+      "required": [
+        "initials",
+        "hue"
+      ],
+      "properties": {
+        "initials": {
+          "type": "string",
+          "description": "a string at most 2 character(s) long",
+          "title": "maxLength(2)",
+          "minLength": 1,
+          "maxLength": 2
+        },
+        "hue": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 359",
+          "title": "between(0, 359)",
+          "minimum": 0,
+          "maximum": 359
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.message.sent": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "message.sent"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "thread_id",
+            "message_id",
+            "subject",
+            "recipient_count"
+          ],
+          "properties": {
+            "thread_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "message_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "subject": {
+              "type": "string"
+            },
+            "recipient_count": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.message.state_changed": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "message.state_changed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "thread_ids"
+          ],
+          "properties": {
+            "thread_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/UUID"
+              }
+            },
+            "read": {
+              "type": "boolean"
+            },
+            "starred": {
+              "type": "boolean"
+            },
+            "archived": {
+              "type": "boolean"
+            },
+            "muted": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.notification.created": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "notification.created"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "notification"
+          ],
+          "properties": {
+            "notification": {
+              "$ref": "#/$defs/NotificationView"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "NotificationView": {
+      "type": "object",
+      "required": [
+        "notification_id",
+        "type",
+        "title",
+        "body",
+        "link",
+        "actor",
+        "created_at",
+        "read_at",
+        "subject"
+      ],
+      "properties": {
+        "notification_id": {
+          "$ref": "#/$defs/UUID"
+        },
+        "type": {
+          "$ref": "#/$defs/NotificationType"
+        },
+        "title": {
+          "type": "string",
+          "description": "a string at most 140 character(s) long",
+          "title": "maxLength(140)",
+          "maxLength": 140
+        },
+        "body": {
+          "type": "string",
+          "description": "a string at most 500 character(s) long",
+          "title": "maxLength(500)",
+          "maxLength": 500
+        },
+        "link": {
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "a string matching the pattern ^\\/[A-Za-z0-9/_.:?=&%-]*$",
+              "pattern": "^\\/[A-Za-z0-9/_.:?=&%-]*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PersonRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "read_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "NotificationType": {
+      "type": "string",
+      "enum": [
+        "mention",
+        "message",
+        "approval_request",
+        "approval_decision",
+        "points_awarded",
+        "points_expiring",
+        "badge_earned",
+        "tier_changed",
+        "order_status",
+        "automation_alert",
+        "content_review",
+        "content_published",
+        "task_assigned",
+        "promotion_started",
+        "system"
+      ]
+    },
+    "DomainEvent.notification.read": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "notification.read"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "ids",
+            "unread_count"
+          ],
+          "properties": {
+            "ids": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/UUID"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "unread_count": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.points.posted": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "points.posted"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "txn_id",
+            "txn_no",
+            "txn_type",
+            "account",
+            "member",
+            "delta",
+            "balance",
+            "lifetime",
+            "memo"
+          ],
+          "properties": {
+            "txn_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "txn_no": {
+              "$ref": "#/$defs/Int"
+            },
+            "txn_type": {
+              "$ref": "#/$defs/TxnType"
+            },
+            "account": {
+              "type": "string"
+            },
+            "member": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Handle"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "delta": {
+              "$ref": "#/$defs/SignedPoints"
+            },
+            "balance": {
+              "$ref": "#/$defs/Int"
+            },
+            "lifetime": {
+              "$ref": "#/$defs/Int"
+            },
+            "memo": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "TxnType": {
+      "type": "string",
+      "enum": [
+        "award",
+        "purchase",
+        "refund",
+        "transfer",
+        "expiry",
+        "adjustment",
+        "promotion_bonus",
+        "badge_reward",
+        "reversal"
+      ]
+    },
+    "SignedPoints": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "DomainEvent.points.expiring": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "points.expiring"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "member",
+            "points",
+            "expires_on"
+          ],
+          "properties": {
+            "member": {
+              "$ref": "#/$defs/Handle"
+            },
+            "points": {
+              "$ref": "#/$defs/Int"
+            },
+            "expires_on": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.tier.changed": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "tier.changed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "member",
+            "from",
+            "to",
+            "lifetime"
+          ],
+          "properties": {
+            "member": {
+              "$ref": "#/$defs/Handle"
+            },
+            "from": {
+              "$ref": "#/$defs/Tier"
+            },
+            "to": {
+              "$ref": "#/$defs/Tier"
+            },
+            "lifetime": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ]
+    },
+    "DomainEvent.order.placed": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "order.placed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "order_id",
+            "order_no",
+            "member",
+            "total_points",
+            "item_count",
+            "requires_approval"
+          ],
+          "properties": {
+            "order_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "order_no": {
+              "type": "string"
+            },
+            "member": {
+              "$ref": "#/$defs/PersonRef"
+            },
+            "total_points": {
+              "$ref": "#/$defs/Int"
+            },
+            "item_count": {
+              "$ref": "#/$defs/Int"
+            },
+            "requires_approval": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.order.status_changed": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "order.status_changed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "order_id",
+            "order_no",
+            "member",
+            "from",
+            "to",
+            "note"
+          ],
+          "properties": {
+            "order_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "order_no": {
+              "type": "string"
+            },
+            "member": {
+              "$ref": "#/$defs/Handle"
+            },
+            "from": {
+              "$ref": "#/$defs/OrderStatus"
+            },
+            "to": {
+              "$ref": "#/$defs/OrderStatus"
+            },
+            "note": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "OrderStatus": {
+      "type": "string",
+      "enum": [
+        "placed",
+        "approved",
+        "fulfilled",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "refunded"
+      ]
+    },
+    "DomainEvent.stock.changed": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "stock.changed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "product",
+            "on_hand",
+            "stock_status"
+          ],
+          "properties": {
+            "product": {
+              "type": "string"
+            },
+            "on_hand": {
+              "$ref": "#/$defs/Int"
+            },
+            "stock_status": {
+              "$ref": "#/$defs/StockStatus"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "StockStatus": {
+      "type": "string",
+      "enum": [
+        "in_stock",
+        "low",
+        "out"
+      ]
+    },
+    "DomainEvent.cart.updated": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "cart.updated"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "item_count",
+            "subtotal_points"
+          ],
+          "properties": {
+            "item_count": {
+              "$ref": "#/$defs/Int"
+            },
+            "subtotal_points": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.wishlist.changed": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "wishlist.changed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "product",
+            "in_wishlist"
+          ],
+          "properties": {
+            "product": {
+              "type": "string"
+            },
+            "in_wishlist": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.review.created": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "review.created"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "review_id",
+            "product",
+            "rating",
+            "average",
+            "count"
+          ],
+          "properties": {
+            "review_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "product": {
+              "type": "string"
+            },
+            "rating": {
+              "$ref": "#/$defs/Int"
+            },
+            "average": {
+              "type": "number"
+            },
+            "count": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.badge.awarded": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "badge.awarded"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "award_id",
+            "badge",
+            "title",
+            "member",
+            "rarity",
+            "points_reward"
+          ],
+          "properties": {
+            "award_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "badge": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "member": {
+              "$ref": "#/$defs/PersonRef"
+            },
+            "rarity": {
+              "type": "string"
+            },
+            "points_reward": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.badge.revoked": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "badge.revoked"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "award_id",
+            "badge",
+            "member"
+          ],
+          "properties": {
+            "award_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "badge": {
+              "type": "string"
+            },
+            "member": {
+              "$ref": "#/$defs/Handle"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.badge.progress": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "badge.progress"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "badge",
+            "member",
+            "current",
+            "target"
+          ],
+          "properties": {
+            "badge": {
+              "type": "string"
+            },
+            "member": {
+              "$ref": "#/$defs/Handle"
+            },
+            "current": {
+              "$ref": "#/$defs/Int"
+            },
+            "target": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.promotion.state_changed": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "promotion.state_changed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "promotion",
+            "title",
+            "from",
+            "to",
+            "revision"
+          ],
+          "properties": {
+            "promotion": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "from": {
+              "$ref": "#/$defs/PromotionStatus"
+            },
+            "to": {
+              "$ref": "#/$defs/PromotionStatus"
+            },
+            "revision": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "PromotionStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "scheduled",
+        "active",
+        "paused",
+        "ended"
+      ]
+    },
+    "DomainEvent.promotion.redeemed": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "promotion.redeemed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "promotion",
+            "member",
+            "context",
+            "cost_points",
+            "benefit_points"
+          ],
+          "properties": {
+            "promotion": {
+              "type": "string"
+            },
+            "member": {
+              "$ref": "#/$defs/Handle"
+            },
+            "context": {
+              "type": "string",
+              "enum": [
+                "purchase",
+                "earn"
+              ]
+            },
+            "cost_points": {
+              "$ref": "#/$defs/Int"
+            },
+            "benefit_points": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.promotion.budget_alert": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "promotion.budget_alert"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "promotion",
+            "used_pct",
+            "cost_points",
+            "max_cost_points"
+          ],
+          "properties": {
+            "promotion": {
+              "type": "string"
+            },
+            "used_pct": {
+              "type": "number",
+              "enum": [
+                50,
+                80,
+                100
+              ]
+            },
+            "cost_points": {
+              "$ref": "#/$defs/Int"
+            },
+            "max_cost_points": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.automation.run_updated": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "automation.run_updated"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "run_id",
+            "automation",
+            "status",
+            "step_index",
+            "step_status",
+            "error_code"
+          ],
+          "properties": {
+            "run_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "automation": {
+              "type": "string"
+            },
+            "status": {
+              "$ref": "#/$defs/RunStatus"
+            },
+            "step_index": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Int"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "step_status": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/StepStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "error_code": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "RunStatus": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "succeeded",
+        "failed",
+        "skipped",
+        "cancelled"
+      ]
+    },
+    "StepStatus": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "running",
+        "succeeded",
+        "failed",
+        "skipped"
+      ]
+    },
+    "DomainEvent.content.state_changed": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "content.state_changed"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "content",
+            "title",
+            "from",
+            "to",
+            "by",
+            "note"
+          ],
+          "properties": {
+            "content": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "from": {
+              "$ref": "#/$defs/ContentStatus"
+            },
+            "to": {
+              "$ref": "#/$defs/ContentStatus"
+            },
+            "by": {
+              "$ref": "#/$defs/Subject"
+            },
+            "note": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ContentStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_review",
+        "approved",
+        "published",
+        "archived"
+      ]
+    },
+    "DomainEvent.content.published": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "content.published"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "content",
+            "title",
+            "content_type",
+            "summary",
+            "pinned"
+          ],
+          "properties": {
+            "content": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "content_type": {
+              "type": "string",
+              "enum": [
+                "page",
+                "article",
+                "announcement"
+              ]
+            },
+            "summary": {
+              "type": "string"
+            },
+            "pinned": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.content.engaged": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "content.engaged"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "content",
+            "member",
+            "viewed",
+            "reaction",
+            "views",
+            "reactions"
+          ],
+          "properties": {
+            "content": {
+              "type": "string"
+            },
+            "member": {
+              "$ref": "#/$defs/Handle"
+            },
+            "viewed": {
+              "type": "boolean"
+            },
+            "reaction": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Reaction"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "views": {
+              "$ref": "#/$defs/Int"
+            },
+            "reactions": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "Reaction": {
+      "type": "string",
+      "enum": [
+        "like",
+        "celebrate",
+        "insightful"
+      ]
+    },
+    "DomainEvent.task.assigned": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "task.assigned"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "task_id",
+            "task_no",
+            "title",
+            "priority",
+            "due_at",
+            "assignee"
+          ],
+          "properties": {
+            "task_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "task_no": {
+              "$ref": "#/$defs/Int"
+            },
+            "title": {
+              "type": "string"
+            },
+            "priority": {
+              "$ref": "#/$defs/TaskPriority"
+            },
+            "due_at": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Timestamp"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "assignee": {
+              "$ref": "#/$defs/Subject"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "TaskPriority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ]
+    },
+    "DomainEvent.task.updated": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "task.updated"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "task_id",
+            "task_no",
+            "status",
+            "changed"
+          ],
+          "properties": {
+            "task_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "task_no": {
+              "$ref": "#/$defs/Int"
+            },
+            "status": {
+              "$ref": "#/$defs/TaskStatus"
+            },
+            "changed": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "TaskStatus": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "blocked",
+        "done",
+        "cancelled"
+      ]
+    },
+    "DomainEvent.task.commented": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "task.commented"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "task_id",
+            "task_no",
+            "comment_id",
+            "author"
+          ],
+          "properties": {
+            "task_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "task_no": {
+              "$ref": "#/$defs/Int"
+            },
+            "comment_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "author": {
+              "$ref": "#/$defs/Subject"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.approval.requested": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "approval.requested"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "approval_type",
+            "id",
+            "title",
+            "requested_by"
+          ],
+          "properties": {
+            "approval_type": {
+              "$ref": "#/$defs/ApprovalType"
+            },
+            "id": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "requested_by": {
+              "$ref": "#/$defs/Subject"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ApprovalType": {
+      "type": "string",
+      "enum": [
+        "change",
+        "action",
+        "order",
+        "content_review"
+      ]
+    },
+    "DomainEvent.approval.decided": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "approval.decided"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "approval_type",
+            "id",
+            "decision",
+            "by",
+            "status"
+          ],
+          "properties": {
+            "approval_type": {
+              "$ref": "#/$defs/ApprovalType"
+            },
+            "id": {
+              "type": "string"
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "approve",
+                "reject",
+                "withdraw"
+              ]
+            },
+            "by": {
+              "$ref": "#/$defs/Subject"
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.member.updated": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "member.updated"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "member",
+            "fields"
+          ],
+          "properties": {
+            "member": {
+              "$ref": "#/$defs/Handle"
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DomainEvent.session.revoked": {
+      "type": "object",
+      "required": [
+        "seq",
+        "occurred_at",
+        "actor",
+        "on_behalf_of",
+        "surface",
+        "subject",
+        "cause",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor": {
+          "$ref": "#/$defs/Subject"
+        },
+        "on_behalf_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Subject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventSubject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventCause"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "session.revoked"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "session_id",
+            "by"
+          ],
+          "properties": {
+            "session_id": {
+              "type": "string"
+            },
+            "by": {
+              "$ref": "#/$defs/Subject"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/DomainEvent"
+}

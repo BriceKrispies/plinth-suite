@@ -1,0 +1,92 @@
+.c-pill {
+  /* Look hooks: --pill-h, --pill-px, --pill-radius, --pill-bw, --pill-fs, --pill-weight, --pill-icon, and per
+     tone --pill-<tone>-fg / -bg / -edge / -px. The defaults are the Meridian look (boxed). */
+  --_fg: var(--pill-neutral-fg, var(--neutral-fg));
+  --_bg: var(--pill-neutral-bg, var(--neutral-bg));
+  --_edge: var(--pill-neutral-edge, var(--neutral-border));
+  --_px: var(--pill-neutral-px, var(--pill-px, var(--space-2)));
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  block-size: var(--pill-h, 1.5rem);
+  padding-inline: var(--_px);
+  background: var(--_bg);
+  color: var(--_fg);
+  border: var(--pill-bw, var(--hairline)) solid var(--_edge);
+  border-radius: var(--pill-radius, var(--radius-1));
+  font-size: var(--pill-fs, var(--step--1));
+  font-weight: var(--pill-weight, var(--weight-semi));
+  line-height: 1;
+  white-space: nowrap;
+
+  &.c-pill--info {
+    --_fg: var(--pill-info-fg, var(--info-fg));
+    --_bg: var(--pill-info-bg, var(--info-bg));
+    --_edge: var(--pill-info-edge, var(--info-border));
+    --_px: var(--pill-info-px, var(--pill-px, var(--space-2)));
+  }
+  &.c-pill--success {
+    --_fg: var(--pill-success-fg, var(--success-fg));
+    --_bg: var(--pill-success-bg, var(--success-bg));
+    --_edge: var(--pill-success-edge, var(--success-border));
+    --_px: var(--pill-success-px, var(--pill-px, var(--space-2)));
+  }
+  &.c-pill--warning {
+    --_fg: var(--pill-warning-fg, var(--warning-fg));
+    --_bg: var(--pill-warning-bg, var(--warning-bg));
+    --_edge: var(--pill-warning-edge, var(--warning-border));
+    --_px: var(--pill-warning-px, var(--pill-px, var(--space-2)));
+  }
+  &.c-pill--danger {
+    --_fg: var(--pill-danger-fg, var(--danger-fg));
+    --_bg: var(--pill-danger-bg, var(--danger-bg));
+    --_edge: var(--pill-danger-edge, var(--danger-border));
+    --_px: var(--pill-danger-px, var(--pill-px, var(--space-2)));
+  }
+  &.c-pill--signal {
+    --_fg: var(--pill-signal-fg, var(--signal-fg));
+    --_bg: var(--pill-signal-bg, var(--signal-bg));
+    --_edge: var(--pill-signal-edge, var(--signal-border));
+    --_px: var(--pill-signal-px, var(--pill-px, var(--space-2)));
+  }
+  &.c-pill--tier-bronze {
+    --_ring: var(--tier-bronze);
+    --_fg: var(--tier-bronze-fg);
+  }
+  &.c-pill--tier-silver {
+    --_ring: var(--tier-silver);
+    --_fg: var(--tier-silver-fg);
+  }
+  &.c-pill--tier-gold {
+    --_ring: var(--tier-gold);
+    --_fg: var(--tier-gold-fg);
+  }
+  &.c-pill--tier-platinum {
+    --_ring: var(--tier-platinum);
+    --_fg: var(--tier-platinum-fg);
+  }
+  & > svg,
+  & > p-icon > svg {
+    inline-size: var(--pill-icon, 1rem);
+    block-size: var(--pill-icon, 1rem);
+    flex: none;
+  }
+  &.c-pill--info > svg,
+  &.c-pill--info > p-icon > svg {
+    display: var(--pill-info-icon, inline-block);
+  }
+  &[class*="c-pill--tier-"] {
+    border-inline-start: 3px solid var(--_ring);
+  }
+}
+
+/* Custom elements (DESIGN-SYSTEM 6.29). The tag selectors only give an unclassed element a sensible box; the
+   classes the elements carry (c-pill, c-icon) do the styling. */
+p-pill {
+  display: inline-flex;
+}
+/* The icon element draws no box of its own: its svg is the flex or inline item, as the bare svg always was. */
+p-icon.c-icon,
+p-icon {
+  display: contents;
+}

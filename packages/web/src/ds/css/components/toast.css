@@ -1,0 +1,102 @@
+.toasts {
+  position: fixed;
+  z-index: var(--z-toast);
+  inset-block-end: var(--space-4);
+  inset-inline-end: var(--space-4);
+  inline-size: 24rem;
+  max-inline-size: calc(100vw - 2 * var(--gutter));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+.c-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-2) var(--space-3) var(--space-4);
+  background: var(--surface-3);
+  color: var(--ink);
+  border: var(--hairline) solid var(--rule);
+  border-inline-start: 3px solid var(--_edge, var(--neutral-border));
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-3);
+  animation: toast-in var(--dur-2) var(--ease) both;
+
+  &[data-leaving] {
+    animation: toast-out var(--dur-2) var(--ease) both;
+  }
+  &.c-toast--info {
+    --_edge: var(--info-border);
+    --_fg: var(--info-fg);
+  }
+  &.c-toast--success {
+    --_edge: var(--success-border);
+    --_fg: var(--success-fg);
+  }
+  &.c-toast--warning {
+    --_edge: var(--warning-border);
+    --_fg: var(--warning-fg);
+  }
+  &.c-toast--danger {
+    --_edge: var(--danger-border);
+    --_fg: var(--danger-fg);
+  }
+  &.c-toast--signal {
+    --_edge: var(--signal-border);
+    --_fg: var(--signal-fg);
+  }
+}
+.c-toast__icon {
+  color: var(--_fg, var(--ink-2));
+  padding-block-start: 2px;
+}
+.c-toast__text {
+  flex: 1;
+  min-inline-size: 0;
+  display: grid;
+  gap: 2px;
+}
+.c-toast__title {
+  font-weight: var(--weight-semi);
+  font-size: var(--step--1);
+}
+.c-toast__body {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.c-toast__action {
+  justify-self: start;
+  margin-block-start: var(--space-1);
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    translate: 1.5rem 0;
+  }
+}
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    translate: 1.5rem 0;
+  }
+}
+
+@media (max-width: 39.99rem) {
+  .toasts {
+    inset-inline: var(--gutter);
+    inline-size: auto;
+    max-inline-size: none;
+  }
+}

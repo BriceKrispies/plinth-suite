@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "NodeGetInput": {
+      "type": "object",
+      "required": [
+        "uri"
+      ],
+      "properties": {
+        "uri": {
+          "$ref": "#/$defs/NodeRef"
+        },
+        "at_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "body",
+              "lineage"
+            ]
+          }
+        },
+        "max_bytes": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 1 and 262144",
+          "title": "between(1, 262144)",
+          "minimum": 1,
+          "maximum": 262144
+        }
+      },
+      "additionalProperties": false
+    },
+    "NodeRef": {
+      "type": "string",
+      "description": "A node: plinth://<ws>/<Kind>/<uuid>, kind:slug (e.g. dashboard:ops-board), or a bare slug when unambiguous.",
+      "title": "maxLength(200)",
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "Revision": {
+      "type": "integer",
+      "description": "a number greater than or equal to 1",
+      "title": "greaterThanOrEqualTo(1)",
+      "minimum": 1
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/NodeGetInput"
+}

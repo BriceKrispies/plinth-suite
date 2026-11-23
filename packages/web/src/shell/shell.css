@@ -1,0 +1,258 @@
+/* The shell (package A): page title, the bell popover, the command palette body and the identity switcher.
+   The chrome parts that already exist in the design system (nav, brand, balance chip, live mark) are not restyled. */
+
+/* ---- page title in the top bar ---- */
+.app__title {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  max-inline-size: 16rem;
+  margin: 0;
+  padding-inline-start: var(--space-3);
+  border-inline-start: var(--hairline) solid var(--rule);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  color: var(--ink-2);
+}
+.app__title:empty {
+  display: none;
+}
+@media (max-width: 79.99rem) {
+  .app__title {
+    display: none;
+  }
+}
+
+/* ---- the bell popover ---- */
+.w-bell {
+  display: grid;
+  gap: var(--space-2);
+  inline-size: 100%;
+}
+/* the popover, not its content, carries the width, so the padding fits inside the cap */
+.c-popover:has(> .w-bell) {
+  inline-size: min(26rem, calc(100vw - 1rem));
+  max-inline-size: none;
+}
+.w-bell__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.w-bell__title {
+  margin: 0;
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+}
+.w-bell__count {
+  margin-inline-start: auto;
+  color: var(--ink-2);
+  font-size: var(--step--1);
+}
+.w-bell__list {
+  display: grid;
+  max-block-size: min(26rem, 60dvh);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.w-bell__item {
+  display: grid;
+  grid-template-columns: 0.5rem minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-1);
+  border-block-start: var(--hairline) solid var(--rule);
+  position: relative;
+}
+.w-bell__item--unread {
+  background: color-mix(in oklch, var(--paper-2) 60%, transparent);
+}
+.w-bell__item--unread .w-note__title {
+  font-weight: var(--weight-bold);
+}
+.w-bell__main {
+  display: block;
+  min-inline-size: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+.w-bell__main:hover .w-note__title {
+  text-decoration: underline;
+}
+.w-bell__foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.w-bell__empty {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+}
+
+/* ---- command palette ---- */
+.palette__box {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  max-block-size: min(34rem, 80dvh);
+}
+.palette__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-block-end: var(--hairline) solid var(--rule);
+  color: var(--ink-2);
+}
+.palette__input {
+  flex: 1;
+  min-inline-size: 0;
+  padding: var(--space-1) 0;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  font-size: var(--step-0);
+}
+.palette__input::placeholder {
+  color: var(--ink-3);
+}
+.palette__list {
+  display: grid;
+  align-content: start;
+  margin: 0;
+  padding: var(--space-1);
+  overflow-y: auto;
+  list-style: none;
+}
+.palette__group {
+  padding: var(--space-3) var(--space-3) var(--space-1);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.palette__opt {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+.palette__opt[aria-selected="true"] {
+  background: var(--paper-2);
+  box-shadow: inset 2px 0 0 var(--ink);
+}
+.palette__icon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2rem;
+  color: var(--ink-2);
+}
+.palette__text {
+  display: grid;
+  min-inline-size: 0;
+}
+.palette__title {
+  overflow-wrap: anywhere;
+}
+.palette__sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink-3);
+  font-size: var(--step--1);
+}
+.palette__kind {
+  font-size: var(--step--2);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.palette__empty {
+  padding: var(--space-4);
+  color: var(--ink-2);
+}
+.palette__hint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  border-block-start: var(--hairline) solid var(--rule);
+  color: var(--ink-3);
+  font-size: var(--step--2);
+}
+@media (max-width: 39.99rem) {
+  .palette__hint,
+  .palette__kind {
+    display: none;
+  }
+}
+
+/* ---- identity switcher dialog ---- */
+.w-ident {
+  display: grid;
+  gap: var(--space-3);
+}
+.w-ident__list {
+  display: grid;
+  max-block-size: 22rem;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.w-ident__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  inline-size: 100%;
+  padding: var(--space-2);
+  background: none;
+  border: 0;
+  border-block-end: var(--hairline) solid var(--rule);
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.w-ident__row:hover:not(:disabled) {
+  background: var(--paper-2);
+}
+.w-ident__row:disabled {
+  cursor: default;
+  color: var(--ink-2);
+}
+.w-ident__name {
+  display: block;
+  font-weight: var(--weight-semi);
+}
+.w-ident__sub {
+  display: block;
+  color: var(--ink-2);
+  font-size: var(--step--1);
+}
+
+@media (min-width: 64rem) {
+  .app__topbar .app__title {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+    font-size: var(--step-0);
+    color: var(--ink);
+  }
+}

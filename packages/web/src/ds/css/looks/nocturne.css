@@ -1,0 +1,122 @@
+/*
+  Look: nocturne (port of public/proto/nocturne). Dark-first: with no explicit light preference it renders dark,
+  a near-black blue-grey canvas with raised slate cards, a teal/cyan accent that is also the data colour, crisp
+  1px edges instead of shadows and muted uppercase micro-labels. Its light variant keeps the character: the side
+  bar and top bar stay dark, the canvas is a cool grey, the accent is deep teal.
+  Overrides: neutrals, accent, surfaces, colour-scheme, chart series, shape, widget chrome, micro-labels, primary
+  button, nav, top bar, pills, counts.
+*/
+:root[data-look="nocturne"],
+.sg-look[data-look="nocturne"] {
+  --look: nocturne;
+  --hue: 262;
+
+  --paper: light-dark(oklch(0.945 0.01 255), oklch(0.165 0.012 var(--hue)));
+  --paper-2: light-dark(oklch(0.925 0.012 255), oklch(0.235 0.014 var(--hue)));
+  --paper-3: light-dark(oklch(0.9 0.014 255), oklch(0.285 0.015 var(--hue)));
+  --ink: light-dark(oklch(0.24 0.02 var(--hue)), oklch(0.93 0.008 255));
+  --ink-2: light-dark(oklch(0.42 0.02 var(--hue)), oklch(0.78 0.012 255));
+  --ink-3: light-dark(oklch(0.5 0.02 var(--hue)), oklch(0.7 0.014 255));
+  --rule: light-dark(oklch(0.875 0.012 255), oklch(0.3 0.014 var(--hue)));
+  --control-border: light-dark(oklch(0.56 0.015 var(--hue)), oklch(0.62 0.015 var(--hue)));
+
+  --accent: light-dark(oklch(0.5 0.11 200), oklch(0.82 0.12 190));
+  --accent-on: light-dark(oklch(0.99 0 0), oklch(0.15 0.02 200));
+  --focus: light-dark(oklch(0.5 0.14 230), oklch(0.82 0.12 200));
+
+  --surface-1: light-dark(oklch(0.99 0.003 255), oklch(0.21 0.013 var(--hue)));
+  --surface-2: light-dark(oklch(0.96 0.008 255), oklch(0.185 0.013 var(--hue)));
+  --surface-3: light-dark(oklch(0.995 0.002 255), oklch(0.26 0.015 var(--hue)));
+  --page-wash: var(--paper);
+
+  --success-fg: light-dark(oklch(0.46 0.12 155), oklch(0.8 0.125 155));
+  --warning-fg: light-dark(oklch(0.46 0.11 75), oklch(0.83 0.125 85));
+  --danger-fg: light-dark(oklch(0.48 0.17 25), oklch(0.78 0.14 25));
+  --info-fg: light-dark(oklch(0.44 0.1 220), oklch(0.82 0.09 215));
+  --chart-breach: var(--danger-fg);
+  --series-0: var(--accent);
+  --series-1: light-dark(oklch(0.52 0.11 205), oklch(0.8 0.11 195));
+  --series-2: light-dark(oklch(0.55 0.1 160), oklch(0.78 0.1 160));
+  --series-3: light-dark(oklch(0.5 0.1 250), oklch(0.76 0.09 250));
+
+  --radius-1: 0.3rem;
+  --radius-control: 0.5rem;
+  --radius-card: 0.625rem;
+  --rule-heavy: 0px;
+  --shadow-1: none;
+  --shadow-1-hover: 0 0 0 1px light-dark(oklch(0.5 0.11 200 / 0.4), oklch(0.82 0.12 190 / 0.35));
+  /* IBM Plex Sans is a variable sans (weight and width axes, from Google Fonts). */
+  --font-sans:
+    "IBM Plex Sans", ui-sans-serif, system-ui, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+
+  /* App chrome: a flat dark side bar and top bar in both modes. */
+  --nav-bg: var(--surface-2);
+  --nav-shadow: 1px 0 0 var(--rule);
+  --topbar-bg: var(--surface-2);
+  --topbar-shadow: 0 1px 0 var(--rule);
+  --nav-current-bar: block;
+  --nav-current-bar-color: var(--accent);
+  --nav-current-bg: color-mix(in oklch, var(--accent) 14%, transparent);
+  --nav-current-fg: var(--ink);
+  --nav-heading-size: var(--step--2);
+  --nav-heading-track: var(--track-caps);
+  --nav-heading-transform: uppercase;
+  --brand-transform: uppercase;
+  --brand-track: var(--track-caps);
+
+  /* Cards: a crisp slate panel with an edge and no shadow; muted uppercase micro-labels. */
+  --widget-edge: var(--rule);
+  --widget-radius: 0.625rem;
+  --widget-shadow: none;
+  --widget-shadow-hover: var(--shadow-1-hover);
+  --widget-title-size: var(--step--2);
+  --widget-title-weight: 600;
+  --widget-title-track: var(--track-caps);
+  --widget-title-transform: uppercase;
+  --widget-title-color: var(--ink-3);
+  --th-size: var(--step--2);
+  --th-track: var(--track-caps);
+  --th-transform: uppercase;
+  --header-eyebrow-track: var(--track-caps);
+  --header-eyebrow-transform: uppercase;
+  --header-title-weight: 600;
+
+  --btn-primary-bg: var(--accent);
+  --btn-primary-fg: var(--accent-on);
+  --btn-primary-edge: var(--accent);
+
+  --pill-radius: 0.375rem;
+  --pill-weight: 560;
+  --pill-info-bg: color-mix(in oklch, var(--info-fg) 16%, transparent);
+  --pill-info-px: 0.5rem;
+  --pill-success-bg: color-mix(in oklch, var(--success-fg) 16%, transparent);
+  --pill-success-px: 0.5rem;
+  --count-radius: 0.375rem;
+  --count-bg: var(--paper-3);
+  --badge-bg: var(--accent);
+  --badge-fg: var(--accent-on);
+}
+
+/* Dark unless the user explicitly chose light. */
+:root[data-look="nocturne"]:not([data-theme="light"]) {
+  color-scheme: dark;
+}
+
+/* The side bar and top bar are dark in light mode too: re-resolve every token with the dark scheme inside them. */
+:root[data-look="nocturne"] .app__nav,
+:root[data-look="nocturne"] .app__topbar {
+  color-scheme: dark;
+  color: var(--ink);
+}
+
+/* Wide gamut: a more luminous teal on P3 screens; lightness is unchanged so contrast holds. */
+@media (color-gamut: p3) {
+  :root[data-look="nocturne"],
+  .sg-look[data-look="nocturne"] {
+    --accent: light-dark(oklch(0.5 0.13 200), oklch(0.82 0.16 190));
+    --series-1: light-dark(oklch(0.52 0.14 205), oklch(0.8 0.14 195));
+    --series-2: light-dark(oklch(0.55 0.13 160), oklch(0.78 0.14 160));
+    --series-3: light-dark(oklch(0.5 0.14 250), oklch(0.76 0.12 250));
+  }
+}

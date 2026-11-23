@@ -1,0 +1,179 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "NodePreviewInput": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Dashboard",
+            "Panel",
+            "Query",
+            "Source",
+            "Parameter",
+            "Rule",
+            "Action",
+            "Form",
+            "Workflow",
+            "Grant",
+            "Metric",
+            "Template",
+            "Export",
+            "Annotation",
+            "Comment",
+            "Product",
+            "Category",
+            "Badge",
+            "Promotion",
+            "Automation",
+            "Content",
+            "Segment",
+            "Group",
+            "Role",
+            "Preference",
+            "Program",
+            "Widget",
+            "Page"
+          ]
+        },
+        "uri": {
+          "$ref": "#/$defs/NodeRef"
+        },
+        "body": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": {
+            "$id": "/schemas/unknown",
+            "title": "unknown"
+          },
+          "description": "Create: the full document {metadata:{slug,title}, spec}. apiVersion and kind default from this call. The spec shape per kind comes from schema.describe(kind), which includes a valid example. A Grant may also be given flat: {principal, actions or action, resource, row_predicate?}."
+        },
+        "patch": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PatchOp"
+          },
+          "description": "Update: JSON-patch ops against the body, e.g. [{\"op\":\"replace\",\"path\":\"/metadata/title\",\"value\":\"New title\"}]. Needs uri and base_revision.",
+          "title": "maxItems(64)",
+          "maxItems": 64
+        },
+        "base_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "delete": {
+          "type": "boolean"
+        },
+        "undo_of": {
+          "$ref": "#/$defs/Int",
+          "description": "Preview the inverse of this change sequence.",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        },
+        "place": {
+          "$ref": "#/$defs/PlaceInput"
+        }
+      },
+      "additionalProperties": false
+    },
+    "NodeRef": {
+      "type": "string",
+      "description": "A node: plinth://<ws>/<Kind>/<uuid>, kind:slug (e.g. dashboard:ops-board), or a bare slug when unambiguous.",
+      "title": "maxLength(200)",
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "PatchOp": {
+      "type": "object",
+      "required": [
+        "op",
+        "path"
+      ],
+      "properties": {
+        "op": {
+          "type": "string",
+          "enum": [
+            "add",
+            "remove",
+            "replace"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "description": "a string matching the pattern ^(\\/([^/~]|~[01])*)*$",
+          "pattern": "^(\\/([^/~]|~[01])*)*$"
+        },
+        "value": {
+          "$id": "/schemas/unknown",
+          "title": "unknown"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Revision": {
+      "type": "integer",
+      "description": "a number greater than or equal to 1",
+      "title": "greaterThanOrEqualTo(1)",
+      "minimum": 1
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "PlaceInput": {
+      "type": "object",
+      "required": [
+        "dashboard"
+      ],
+      "properties": {
+        "dashboard": {
+          "$ref": "#/$defs/NodeRef"
+        },
+        "at": {
+          "type": "object",
+          "required": [
+            "x",
+            "y",
+            "w",
+            "h"
+          ],
+          "properties": {
+            "x": {
+              "$ref": "#/$defs/Int",
+              "description": "a non-negative number",
+              "title": "greaterThanOrEqualTo(0)",
+              "minimum": 0
+            },
+            "y": {
+              "$ref": "#/$defs/Int",
+              "description": "a non-negative number",
+              "title": "greaterThanOrEqualTo(0)",
+              "minimum": 0
+            },
+            "w": {
+              "$ref": "#/$defs/Int",
+              "description": "a number greater than or equal to 1",
+              "title": "greaterThanOrEqualTo(1)",
+              "minimum": 1
+            },
+            "h": {
+              "$ref": "#/$defs/Int",
+              "description": "a number greater than or equal to 1",
+              "title": "greaterThanOrEqualTo(1)",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false,
+          "description": "Grid position {x,y,w,h} on a 12-column grid. Omit to auto-place below the lowest panel at full width, height 6."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/NodePreviewInput"
+}

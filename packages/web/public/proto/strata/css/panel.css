@@ -1,0 +1,343 @@
+/*
+ * A panel is a surface one layer above the canvas; its chart sits in a recessed well one layer below it.
+ * Arrival and change animate only while `data-cause` is set, and that attribute is set only by a realtime event.
+ */
+.panel {
+  container: panel / inline-size;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  min-block-size: 0;
+  border-radius: var(--r-lg);
+  background: var(--layer-1);
+  box-shadow: var(--elev-1);
+  transition: box-shadow var(--dur-2) var(--ease);
+
+  &:hover {
+    box-shadow: var(--elev-2);
+  }
+
+  &:has(.menu[data-open]) {
+    z-index: 6;
+  }
+
+  /* A soft ring marks the panel a change event just touched. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow: 0 0 0 2px var(--accent), 0 0 0 0.45rem color-mix(in oklch, var(--accent) 20%, transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &[data-cause]::after {
+    opacity: 1;
+  }
+}
+
+.panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-2) var(--sp-2) var(--sp-4);
+}
+
+.panel__titles {
+  min-inline-size: 0;
+}
+
+.panel__kind {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.panel__title {
+  font-size: var(--fs-md);
+  font-weight: 620;
+  overflow-wrap: anywhere;
+}
+
+.panel__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: none;
+}
+
+.panel__stage {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  flex: 1;
+  min-block-size: 0;
+  margin-inline: var(--sp-2);
+  padding: var(--sp-2);
+  border-radius: var(--r-md);
+  background: var(--sunken);
+  box-shadow: var(--inset);
+}
+
+.panel__view {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.panel__foot {
+  padding: var(--sp-2) var(--sp-4) var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+
+  &:empty {
+    padding-block: var(--sp-1);
+  }
+}
+
+/* KPI tiles are a single surface: no well, no footer, a faint tint from the accent. */
+.panel[data-visual="kpi"] {
+  background: linear-gradient(160deg, color-mix(in oklch, var(--accent) 7%, var(--layer-1)), var(--layer-1) 62%);
+
+  & .panel__stage {
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  & .panel__foot {
+    display: none;
+  }
+
+  & .panel__head {
+    padding-block-end: 0;
+  }
+}
+
+.panel[data-visual="table"] .panel__stage {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Cause badge: a tab straddling the panel's upper edge, naming the change that produced it. */
+.cause {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: var(--sp-4);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  max-inline-size: calc(100% - 2rem);
+  padding: 0.2rem 0.7rem 0.2rem 0.6rem;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: var(--elev-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  translate: 0 -55%;
+}
+
+.cause__seq {
+  padding-inline-end: var(--sp-2);
+  border-inline-end: 1px solid color-mix(in oklch, currentcolor 40%, transparent);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.cause__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--r-pill);
+  background: var(--bad-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--bad) 45%, transparent);
+  color: var(--bad);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.flag--inline {
+  align-self: center;
+}
+
+/* KPI */
+.kpi {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: var(--sp-2);
+  block-size: 100%;
+  padding: 0 var(--sp-4) var(--sp-3);
+}
+
+.kpi__value {
+  font-size: var(--fs-kpi);
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+.kpi__unit {
+  margin-inline-start: 0.25em;
+  font-size: 0.4em;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+.kpi__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+}
+
+.kpi[data-breach="true"] .kpi__value {
+  color: var(--bad);
+}
+
+.delta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--r-pill);
+  background: color-mix(in oklch, var(--tone, var(--ink-3)) 13%, transparent);
+  color: var(--tone, var(--ink-2));
+  font-size: var(--fs-sm);
+  font-weight: 700;
+
+  &[data-tone="good"] {
+    --tone: var(--good);
+  }
+
+  &[data-tone="bad"] {
+    --tone: var(--bad);
+  }
+}
+
+.spark {
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 1.25rem;
+  max-block-size: 3.25rem;
+  align-self: end;
+  overflow: visible;
+}
+
+.spark__line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.spark__area {
+  fill: color-mix(in oklch, var(--accent) 14%, transparent);
+}
+
+.spark__end {
+  fill: var(--accent);
+  stroke: var(--layer-1);
+  stroke-width: 2;
+}
+
+/* Narrow panels tighten up. */
+@container panel (max-width: 15rem) {
+  .panel__head {
+    padding-inline-start: var(--sp-3);
+  }
+
+  .kpi {
+    padding-inline: var(--sp-3);
+  }
+
+  .panel__foot {
+    padding-inline: var(--sp-3);
+  }
+}
+
+@container panel (min-width: 40rem) {
+  .panel__title {
+    font-size: var(--fs-lg);
+  }
+}
+
+/* Motion: only while a realtime cause is attached, and never with reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .panel[data-cause="added"] {
+    animation: rise var(--dur-3) var(--ease) both;
+  }
+
+  .panel[data-cause]::after {
+    animation: halo 4.5s var(--ease) both;
+  }
+
+  .panel[data-cause] > .cause {
+    animation: tab-in var(--dur-2) var(--ease) 160ms both;
+  }
+
+  .skeleton {
+    animation: shimmer 1.8s linear infinite;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 1.6rem;
+    scale: 0.975;
+    box-shadow: 0 0 0 1px var(--edge);
+  }
+
+  55% {
+    opacity: 1;
+    box-shadow: var(--elev-3);
+  }
+
+  to {
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+@keyframes halo {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes tab-in {
+  from {
+    opacity: 0;
+    translate: 0 0;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -150% 0, 0 0;
+  }
+}

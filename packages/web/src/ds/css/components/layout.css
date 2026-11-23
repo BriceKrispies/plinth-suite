@@ -1,0 +1,151 @@
+/* Page header: the Meridian masthead rule, with a soft wash behind it for depth. */
+.c-page-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-1) var(--space-5);
+  align-items: end;
+  margin-block-end: var(--header-mb, var(--space-5));
+  padding-block-start: var(--header-pad, var(--space-4));
+  border-block-start: var(--header-rule, var(--rule-heavy)) solid var(--header-rule-color, var(--ink));
+
+  &::before {
+    display: var(--header-wash, block);
+    content: "";
+    position: absolute;
+    inset: 0 calc(-1 * var(--gutter)) auto;
+    block-size: 7rem;
+    z-index: -1;
+    background: linear-gradient(180deg, var(--page-wash), transparent);
+    pointer-events: none;
+  }
+  & > * {
+    grid-column: 1;
+  }
+}
+.c-page-header__eyebrow {
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--header-eyebrow-track, var(--track-caps));
+  text-transform: var(--header-eyebrow-transform, uppercase);
+  color: var(--ink-2);
+}
+.c-page-header__title {
+  font-size: var(--header-title-size, var(--step-2));
+  font-weight: var(--header-title-weight, var(--weight-bold));
+}
+.c-page-header__meta {
+  display: flex;
+  flex-wrap: var(--header-meta-wrap, wrap);
+  font-size: var(--step--1);
+  color: var(--header-meta-color, var(--ink-2));
+  min-inline-size: 0;
+}
+.c-page-header__meta-item {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: var(--header-meta-ws, normal);
+}
+.c-page-header__meta-item + .c-page-header__meta-item {
+  margin-inline-start: var(--space-3);
+  padding-inline-start: var(--space-3);
+  border-inline-start: var(--hairline) solid var(--rule);
+}
+.c-page-header__actions {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+  align-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+@media (max-width: 39.99rem) {
+  .c-page-header {
+    grid-template-columns: 1fr;
+  }
+  .c-page-header__actions {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: flex-start;
+    margin-block-start: var(--space-2);
+  }
+}
+
+.c-section {
+  display: grid;
+  gap: var(--space-4);
+  padding-block-start: var(--space-4);
+  border-block-start: var(--hairline) solid var(--rule);
+  margin-block-end: var(--space-6);
+}
+.c-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.c-section__title {
+  font-size: var(--step-1);
+}
+.c-section__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.c-split {
+  display: grid;
+  gap: var(--space-4);
+  min-inline-size: 0;
+}
+.c-split__back {
+  justify-self: start;
+  margin-block-end: var(--space-2);
+}
+.c-split[data-view="list"] .c-split__detail,
+.c-split[data-view="detail"] .c-split__list {
+  display: none;
+}
+@media (min-width: 64rem) {
+  .c-split {
+    grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
+  }
+  .c-split[data-view] .c-split__list,
+  .c-split[data-view] .c-split__detail {
+    display: block;
+    overflow-y: auto;
+    max-block-size: calc(100dvh - var(--topbar-h) - var(--space-7));
+  }
+  .c-split__back {
+    display: none;
+  }
+}
+
+.c-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-2);
+
+  /* Controls share one baseline: a field's hint would lift its control off the row, so it reads to AT only. */
+  & > .c-field {
+    flex: 1 1 10rem;
+    max-inline-size: 20rem;
+  }
+  & > .c-field > .c-field__hint {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* An empty detail pane keeps the height of the list beside it, so the split does not look half drawn. */
+@media (min-width: 64rem) {
+  .c-split__detail > .c-placeholder {
+    min-block-size: min(28rem, 60dvh);
+  }
+}

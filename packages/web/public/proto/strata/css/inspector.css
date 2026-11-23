@@ -1,0 +1,135 @@
+/* Inspector: a modal sheet docked to the inline end (a bottom sheet on phones), the highest layer on the page. */
+.inspector {
+  inline-size: min(44rem, 100vw);
+  max-inline-size: none;
+  block-size: 100dvh;
+  max-block-size: none;
+  margin: 0;
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  border-start-start-radius: var(--r-lg);
+  border-end-start-radius: var(--r-lg);
+  background: var(--layer-1);
+  color: var(--ink-1);
+  box-shadow: var(--elev-3);
+  overflow: hidden;
+  transition: translate var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
+
+  @starting-style {
+    translate: 2rem 0;
+    opacity: 0;
+  }
+}
+
+.inspector__sheet {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  block-size: 100%;
+}
+
+.inspector__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-4) var(--sp-3) var(--sp-5);
+  background: var(--layer-2);
+  box-shadow: 0 1px 0 var(--edge), 0 10px 20px -16px var(--sh-3);
+}
+
+.inspector__title {
+  font-size: var(--fs-lg);
+  overflow-wrap: anywhere;
+}
+
+.inspector__body {
+  overflow-y: auto;
+  padding: var(--sp-4) var(--sp-5) var(--sp-6);
+}
+
+.inspector__section {
+  margin-block-end: var(--sp-5);
+
+  & h3 {
+    margin-block-end: var(--sp-2);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+}
+
+.kvs {
+  border-block-end: 1px solid var(--edge);
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: var(--sp-3);
+  padding-block: 0.5rem;
+  border-block-start: 1px solid var(--edge);
+  font-size: var(--fs-sm);
+
+  & dt {
+    color: var(--ink-3);
+  }
+
+  & dd {
+    overflow-wrap: anywhere;
+  }
+}
+
+.code {
+  overflow: auto;
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--sunken);
+  box-shadow: var(--inset);
+  font-size: var(--fs-xs);
+  line-height: 1.65;
+  tab-size: 2;
+}
+
+.code__line {
+  display: block;
+}
+
+.code__kw {
+  display: inline-block;
+  min-inline-size: 7.5ch;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.raw {
+  margin-block-start: var(--sp-2);
+
+  & summary {
+    padding-block: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 40rem) {
+  .inspector {
+    inline-size: 100vw;
+    block-size: min(90dvh, 100dvh);
+    margin-inline: 0;
+    margin-block-start: auto;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+
+    @starting-style {
+      translate: 0 2rem;
+    }
+  }
+
+  .kv {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

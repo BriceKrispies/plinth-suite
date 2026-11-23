@@ -1,0 +1,173 @@
+/*
+ * Token architecture, three tiers:
+ *   1. primitives   raw ramps (blue-*, grey-*) derived in OKLCH from one hue
+ *   2. semantic     what a colour means (--surface, --accent, --bad); light-dark() lives here
+ *   3. component    local aliases set inside components; never raw primitives
+ * Spacing is a 4px scale; density only changes the control/padding tokens at the bottom.
+ */
+:root {
+  color-scheme: light dark;
+
+  /* ---- 1. Primitives ---------------------------------------------------------------------- */
+  --hue: 255; /* the single corporate hue; change it and every blue re-derives */
+  --blue-50: oklch(0.97 0.014 var(--hue));
+  --blue-100: oklch(0.94 0.03 var(--hue));
+  --blue-200: oklch(0.88 0.062 var(--hue));
+  --blue-300: oklch(0.8 0.1 var(--hue));
+  --blue-400: oklch(0.72 0.15 var(--hue));
+  --blue-500: oklch(0.63 0.19 var(--hue));
+  --blue-600: oklch(0.54 0.2 var(--hue));
+  --blue-700: oklch(0.47 0.18 var(--hue));
+  --blue-800: oklch(0.39 0.14 var(--hue));
+  --blue-900: oklch(0.3 0.09 var(--hue));
+
+  --grey-0: oklch(1 0 0);
+  --grey-25: oklch(0.985 0.003 var(--hue));
+  --grey-50: oklch(0.968 0.005 var(--hue));
+  --grey-100: oklch(0.94 0.006 var(--hue));
+  --grey-200: oklch(0.905 0.008 var(--hue));
+  --grey-300: oklch(0.85 0.009 var(--hue));
+  --grey-400: oklch(0.72 0.01 var(--hue));
+  --grey-500: oklch(0.6 0.012 var(--hue));
+  --grey-600: oklch(0.5 0.012 var(--hue));
+  --grey-700: oklch(0.41 0.012 var(--hue));
+  --grey-800: oklch(0.31 0.012 var(--hue));
+  --grey-850: oklch(0.255 0.012 var(--hue));
+  --grey-900: oklch(0.21 0.012 var(--hue));
+  --grey-950: oklch(0.17 0.012 var(--hue));
+  --grey-1000: oklch(0.135 0.012 var(--hue));
+
+  /* ---- 2. Semantic colour ----------------------------------------------------------------- */
+  --bg: light-dark(var(--grey-50), var(--grey-1000));
+  --surface: light-dark(var(--grey-0), var(--grey-950));
+  --surface-raised: light-dark(var(--grey-0), var(--grey-900));
+  --surface-sunken: light-dark(var(--grey-25), oklch(0.15 0.012 var(--hue)));
+  --border: light-dark(var(--grey-200), var(--grey-850));
+  --border-strong: light-dark(var(--grey-300), var(--grey-700));
+  --text: light-dark(var(--grey-900), var(--grey-100));
+  --text-muted: light-dark(var(--grey-600), var(--grey-400));
+  --text-faint: light-dark(var(--grey-500), var(--grey-500));
+
+  --accent: light-dark(var(--blue-600), var(--blue-400));
+  --accent-strong: light-dark(var(--blue-700), var(--blue-300));
+  --accent-subtle: light-dark(var(--blue-50), oklch(0.25 0.05 var(--hue)));
+  --accent-muted: light-dark(var(--blue-100), oklch(0.31 0.07 var(--hue)));
+  --on-accent: light-dark(var(--grey-0), var(--grey-1000));
+  --focus: light-dark(var(--blue-600), var(--blue-300));
+
+  --ok: light-dark(oklch(0.5 0.13 150), oklch(0.78 0.15 150));
+  --ok-subtle: light-dark(oklch(0.96 0.04 150), oklch(0.27 0.05 150));
+  --warn: light-dark(oklch(0.52 0.12 70), oklch(0.82 0.14 80));
+  --warn-subtle: light-dark(oklch(0.96 0.05 85), oklch(0.29 0.05 80));
+  --bad: light-dark(oklch(0.55 0.21 27), oklch(0.72 0.17 25));
+  --bad-text: light-dark(oklch(0.48 0.2 27), oklch(0.78 0.14 25));
+  --bad-subtle: light-dark(oklch(0.96 0.03 25), oklch(0.27 0.06 25));
+
+  /* Data visualisation: eight categorical series, a sequential ramp, chart furniture */
+  --series-1: light-dark(oklch(0.54 0.2 255), oklch(0.72 0.15 255));
+  --series-2: light-dark(oklch(0.6 0.11 195), oklch(0.76 0.11 195));
+  --series-3: light-dark(oklch(0.66 0.15 70), oklch(0.8 0.14 80));
+  --series-4: light-dark(oklch(0.52 0.18 300), oklch(0.74 0.13 300));
+  --series-5: light-dark(oklch(0.58 0.19 350), oklch(0.76 0.14 350));
+  --series-6: light-dark(oklch(0.56 0.13 145), oklch(0.76 0.14 145));
+  --series-7: light-dark(oklch(0.5 0.02 255), oklch(0.7 0.02 255));
+  --series-8: light-dark(oklch(0.62 0.16 45), oklch(0.78 0.13 50));
+  --heat-lo: light-dark(var(--blue-100), oklch(0.26 0.05 var(--hue)));
+  --heat-hi: light-dark(var(--blue-800), oklch(0.8 0.12 var(--hue)));
+  --heat-ink-lo: light-dark(var(--grey-900), var(--grey-100));
+  --heat-ink-hi: light-dark(var(--grey-0), var(--grey-1000));
+  --chart-grid: light-dark(var(--grey-100), var(--grey-850));
+  --chart-axis: light-dark(var(--grey-300), var(--grey-700));
+  --tip-bg: light-dark(var(--grey-900), var(--grey-100));
+  --tip-text: light-dark(var(--grey-25), var(--grey-950));
+
+  --shadow-ink: light-dark(oklch(0.25 0.03 var(--hue) / 0.1), oklch(0 0 0 / 0.45));
+  --focus-ring: 2px solid var(--focus);
+
+  /* ---- Type ------------------------------------------------------------------------------- */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --text-xs: clamp(0.6875rem, 0.66rem + 0.12vw, 0.75rem);
+  --text-sm: clamp(0.8125rem, 0.79rem + 0.12vw, 0.875rem);
+  --text-md: clamp(0.875rem, 0.85rem + 0.15vw, 0.9375rem);
+  --text-lg: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --text-xl: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+  --text-2xl: clamp(1.375rem, 1.1rem + 1.1vw, 2rem);
+  --text-3xl: clamp(1.75rem, 1.2rem + 2vw, 3rem);
+  --leading-tight: 1.2;
+  --leading-body: 1.5;
+
+  /* ---- Space: 4px scale ------------------------------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --gutter: clamp(1rem, 2.4vw, 2rem);
+
+  /* ---- Shape, elevation, motion ----------------------------------------------------------- */
+  --radius-1: 4px;
+  --radius-2: 6px;
+  --radius-3: 10px;
+  --elev-1: 0 1px 2px var(--shadow-ink);
+  --elev-2: 0 2px 6px var(--shadow-ink), 0 1px 2px var(--shadow-ink);
+  --elev-3: 0 8px 24px var(--shadow-ink), 0 2px 6px var(--shadow-ink);
+  --elev-4: 0 16px 48px var(--shadow-ink);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 520ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* ---- Density: the only tokens that change between comfortable and compact -------------- */
+  --control-h: 2.25rem;
+  --pad-x: var(--space-4);
+  --pad-y: var(--space-3);
+  --cell-y: 0.625rem;
+  --cell-x: var(--space-3);
+  --gap: var(--space-4);
+  --row: 5rem; /* one dashboard grid row */
+  --topbar-h: 3.5rem;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-density="compact"] {
+  --control-h: 1.75rem;
+  --pad-x: var(--space-3);
+  --pad-y: var(--space-2);
+  --cell-y: 0.25rem;
+  --cell-x: var(--space-2);
+  --gap: var(--space-3);
+  --topbar-h: 3rem;
+}
+
+/* Touch targets: coarse pointers always get the generous control height */
+@media (pointer: coarse) {
+  :root,
+  :root[data-density="compact"] {
+    --control-h: 2.75rem;
+  }
+}
+
+/* Wall display: scale the whole rem-based system rather than patching components */
+@media (min-width: 1700px) {
+  :root {
+    font-size: 112.5%;
+  }
+}
+
+@media (min-width: 2400px) {
+  :root {
+    font-size: 150%;
+  }
+}

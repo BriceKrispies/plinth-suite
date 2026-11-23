@@ -1,0 +1,705 @@
+/* Content widgets. Shared kit classes (wk-*) live in promotions.css. */
+
+/* Drawers (the quick view, a revision preview) are mounted outside the widget frame, so their roots carry
+   data-widget-domain. */
+@scope ([data-widget^="content."], [data-widget-domain="content"]) {
+  .wn {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+  .wn-results,
+  .wn-list__extra:empty {
+    min-inline-size: 0;
+  }
+  .wn-list__extra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .wn-list .c-table tr.is-selected td {
+    background: color-mix(in oklch, var(--ink) 5%, transparent);
+  }
+  .wn-title {
+    display: inline-flex;
+  }
+  .wn-title__art {
+    display: inline-flex;
+    flex: none;
+  }
+  .wn-title__art svg {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+  }
+  .wn-quick__art svg {
+    inline-size: 6rem;
+    block-size: 6rem;
+  }
+
+  /* feed */
+  .wn-feed__view,
+  .wn-feed__controls {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+  .wn-feed__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .wn-feed__controls:empty {
+    display: none;
+  }
+  .wn-feed__reader[hidden],
+  .wn-feed__view[hidden] {
+    display: none;
+  }
+  .wn-feed__list {
+    display: grid;
+    gap: var(--space-4);
+    min-inline-size: 0;
+  }
+  @container widget (min-width: 40rem) {
+    .wn-feed__list--cards {
+      grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+      column-gap: var(--space-5);
+      row-gap: 0;
+    }
+  }
+  .wn-item {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+  .wn-item--cards {
+    align-content: start;
+    padding-block: var(--space-3);
+    border-block-start: var(--hairline) solid var(--rule);
+  }
+  .wn-item--cards .wn-item__art svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 7rem;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+  }
+  /* In the card grid a card is six rows (art, eyebrow, heading, summary, meta, reactions) that subgrid onto the
+     list rows, so headings, meta and reactions align across a row of cards. */
+  @container widget (min-width: 40rem) {
+    .wn-feed__list--cards > .wn-item--cards {
+      grid-row: span 6;
+      grid-template-rows: subgrid;
+      row-gap: var(--space-2);
+    }
+    .wn-feed__list--cards > .wn-item--cards > .wn-item__body {
+      grid-row: span 5;
+      grid-template-rows: subgrid;
+      row-gap: var(--space-2);
+    }
+  }
+  .wn-item--list {
+    grid-template-columns: 4rem minmax(0, 1fr);
+    padding-block: var(--space-3);
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+  .wn-item--list .wn-item__art svg {
+    inline-size: 4rem;
+    block-size: 4rem;
+  }
+  .wn-item__body {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    min-inline-size: 0;
+  }
+  .wn-item__eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+  .wn-item__heading {
+    font-size: var(--step-0);
+    font-weight: var(--weight-bold);
+  }
+  .wn-item__open {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+    text-decoration-thickness: var(--hairline);
+    text-underline-offset: 0.2em;
+  }
+  .wn-item__open:hover {
+    text-decoration-line: underline;
+  }
+  .wn-item__summary {
+    color: var(--ink-3);
+    font-size: var(--step--1);
+  }
+  .wn-item__meta {
+    color: var(--ink-3);
+    font-size: var(--step--1);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .wn-feed__more {
+    display: flex;
+    justify-content: center;
+  }
+  .wn-feed__more:empty {
+    display: none;
+  }
+
+  /* reading */
+  .wn-reader__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-block-end: var(--space-3);
+  }
+  .wn-reader {
+    display: grid;
+    gap: var(--space-5);
+    min-inline-size: 0;
+  }
+  @container widget (min-width: 56rem) {
+    .wn-reader.has-toc {
+      grid-template-columns: minmax(0, 1fr) 14rem;
+      align-items: start;
+    }
+    .wn-toc {
+      position: sticky;
+      inset-block-start: var(--space-3);
+    }
+  }
+  .wn-reader__main {
+    display: grid;
+    gap: var(--space-4);
+    min-inline-size: 0;
+    max-inline-size: 44rem;
+  }
+  .wn-toc ol {
+    list-style: none;
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-1);
+    font-size: var(--step--1);
+  }
+  .wn-toc li.is-sub {
+    padding-inline-start: var(--space-3);
+  }
+  .wn-toc button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink-2);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+  .wn-toc button:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+  :scope.wn-article,
+  .wn-article {
+    display: grid;
+    gap: var(--space-4);
+    min-inline-size: 0;
+  }
+  .wn-article__head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+  }
+  .wn-article__hero svg {
+    inline-size: 5rem;
+    block-size: 5rem;
+  }
+  .wn-article__titles {
+    display: grid;
+    gap: var(--space-2);
+    min-inline-size: 0;
+  }
+  .wn-article__eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .wn-article__title {
+    font-size: var(--step-2);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--track-tight);
+    overflow-wrap: anywhere;
+  }
+  .wn-article__summary {
+    color: var(--ink-2);
+    font-size: var(--step-0);
+  }
+  .wn-article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  .wn-tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+  @media (max-width: 39.99rem) {
+    .wn-article__head {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* rendered blocks */
+  .wn-blocks {
+    display: grid;
+    gap: var(--space-4);
+    min-inline-size: 0;
+  }
+  .wn-heading {
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--track-tight);
+  }
+  h2.wn-heading {
+    font-size: var(--step-1);
+  }
+  h3.wn-heading {
+    font-size: var(--step-0);
+  }
+  .wn-p,
+  .wn-list,
+  .wn-quote {
+    max-inline-size: 65ch;
+    line-height: var(--leading-body);
+    overflow-wrap: anywhere;
+  }
+  .wn-list {
+    margin: 0;
+    padding-inline-start: var(--space-5);
+  }
+  .wn-quote {
+    margin: 0;
+    padding-inline-start: var(--space-4);
+    border-inline-start: var(--space-1) solid var(--rule);
+    font-size: var(--step-1);
+  }
+  .wn-quote footer {
+    margin-block-start: var(--space-2);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .wn-callout {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-card);
+    background: var(--info-bg);
+    color: var(--info-fg);
+  }
+  .wn-callout--success {
+    background: var(--success-bg);
+    color: var(--success-fg);
+  }
+  .wn-callout--warning {
+    background: var(--warning-bg);
+    color: var(--warning-fg);
+  }
+  .wn-callout--danger {
+    background: var(--danger-bg);
+    color: var(--danger-fg);
+  }
+  .wn-callout--signal {
+    background: var(--accent-wash);
+    color: var(--accent);
+  }
+  .wn-callout--neutral {
+    background: var(--paper-2);
+    color: var(--ink-2);
+  }
+  .wn-callout > div {
+    color: var(--ink);
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+  .wn-callout__icon {
+    flex: none;
+    padding-block-start: calc(var(--space-1) / 2);
+  }
+  .wn-figure {
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .wn-figure__art svg {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 30rem;
+    block-size: auto;
+    aspect-ratio: 16 / 7;
+    object-fit: cover;
+  }
+  .wn-figure figcaption {
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .wn-divider {
+    inline-size: 100%;
+    border: 0;
+    border-block-start: var(--hairline) solid var(--rule);
+  }
+  .wn-embed {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-block: var(--hairline) solid var(--rule);
+    color: var(--ink-2);
+  }
+  .wn-products {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .wn-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-round);
+    background: var(--paper-2);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .wn-chip:hover {
+    background: color-mix(in oklch, var(--ink) 8%, var(--paper-2));
+  }
+
+  /* reactions */
+  .wn-reactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .wn-reactions--compact {
+    gap: var(--space-1);
+  }
+
+  /* queue and review */
+  .wn-queue[hidden],
+  .wn-review[hidden] {
+    display: none;
+  }
+  .wn-queue__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .wn-qrow {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    inline-size: 100%;
+    padding: var(--space-3) var(--space-2);
+    border: 0;
+    border-block-end: var(--hairline) solid var(--rule);
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+    position: relative;
+  }
+  .wn-qrow:hover {
+    background: color-mix(in oklch, var(--ink) 4%, transparent);
+  }
+  .wn-qrow__text {
+    display: grid;
+    gap: var(--space-1);
+    min-inline-size: 0;
+  }
+  .wn-qrow__summary,
+  .wn-qrow__meta {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  .wn-qrow__art svg {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+  }
+  .wn-review {
+    display: grid;
+    gap: var(--space-4);
+    min-inline-size: 0;
+    align-content: start;
+  }
+  .wn-review__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .wn-review__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .wn-review__art svg {
+    inline-size: 3.5rem;
+    block-size: 3.5rem;
+  }
+  .wn-review__title {
+    font-size: var(--step-1);
+    font-weight: var(--weight-bold);
+  }
+  .wn-review__diff {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  /* diffs */
+  .wn-diff {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .wn-diff__block {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-3) 0;
+    border-block-start: var(--hairline) solid var(--rule);
+    border-inline-start: var(--space-1) solid transparent;
+    padding-inline-start: var(--space-3);
+    min-inline-size: 0;
+  }
+  .wn-diff__block--added {
+    border-inline-start-color: var(--success-border);
+  }
+  .wn-diff__block--removed {
+    border-inline-start-color: var(--danger-border);
+  }
+  .wn-diff__block--modified {
+    border-inline-start-color: var(--warning-border);
+  }
+  .wn-diff__cols {
+    display: grid;
+    gap: var(--space-3);
+  }
+  @container widget (min-width: 44rem) {
+    .wn-diff__cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .wn-diff__col {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    min-inline-size: 0;
+  }
+  .wn-diff__pick {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--space-3);
+  }
+  .wn-fielddiff {
+    display: grid;
+    grid-template-columns: minmax(6rem, max-content) minmax(0, 1fr);
+    gap: var(--space-1) var(--space-3);
+    margin: 0;
+    font-size: var(--step--1);
+  }
+  .wn-fielddiff dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .wn-fielddiff del {
+    color: var(--danger-fg);
+  }
+  .wn-fielddiff ins {
+    color: var(--success-fg);
+    text-decoration: none;
+    font-weight: var(--weight-semi);
+  }
+
+  /* editor */
+  .wn-editor__bar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-raised);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    background: var(--surface-1);
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+  .wn-editor__split {
+    display: grid;
+    gap: var(--space-5);
+    min-inline-size: 0;
+  }
+  @container widget (min-width: 64rem) {
+    .wn-editor__split {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: start;
+    }
+    .wn-editor__side {
+      position: sticky;
+      inset-block-start: 4rem;
+      max-block-size: calc(100dvh - 6rem);
+      overflow: auto;
+      padding-inline-start: var(--space-4);
+      border-inline-start: var(--hairline) solid var(--rule);
+    }
+  }
+  @container widget (max-width: 63.99rem) {
+    .wn-editor__side {
+      display: none;
+    }
+  }
+  .wn-editor__panel,
+  .wn-editor__main {
+    min-inline-size: 0;
+    padding-block-start: var(--space-3);
+  }
+  .wn-editor__panel {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  .wn-blocklist {
+    display: grid;
+    gap: 0;
+  }
+  .wn-bcard {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-2);
+    border-block-start: var(--hairline) solid var(--rule);
+    min-inline-size: 0;
+  }
+  .wn-bcard:has(:focus-visible) {
+    background: color-mix(in oklch, var(--ink) 4%, transparent);
+  }
+  .wn-bcard:focus-visible {
+    outline-offset: calc(2 * var(--hairline));
+  }
+  .wn-bcard__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .wn-bcard__tools {
+    display: inline-flex;
+    gap: var(--space-1);
+  }
+  .wn-hero-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .wn-hero-preview svg {
+    inline-size: 4rem;
+    block-size: 4rem;
+  }
+  .wn-preview {
+    max-inline-size: 48rem;
+  }
+  .wn-versions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+  .wn-version {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3) 0;
+    border-block-start: var(--hairline) solid var(--rule);
+  }
+  .wn-version__main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .wn-version__paths {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+    overflow-wrap: anywhere;
+  }
+  .wn-diffout {
+    display: grid;
+    gap: var(--space-3);
+  }
+  /* Reading progress: a thin accent bar under the top bar, filled as the article scrolls through the viewport. It
+     exists only where scroll-driven animation is supported and motion is allowed. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes wn-read-progress {
+        0% {
+          scale: 0 1;
+          opacity: 0;
+        }
+        2% {
+          opacity: 1;
+        }
+        98% {
+          opacity: 1;
+        }
+        100% {
+          scale: 1 1;
+          opacity: 0;
+        }
+      }
+      .wn-article {
+        view-timeline: --wn-article block;
+      }
+      .wn-article::before {
+        content: "";
+        position: fixed;
+        inset-block-start: var(--topbar-h);
+        inset-inline: 0;
+        block-size: 3px;
+        z-index: var(--z-raised);
+        background: var(--accent);
+        transform-origin: 0 50%;
+        opacity: 0;
+        pointer-events: none;
+        animation: wn-read-progress linear both;
+        animation-timeline: --wn-article;
+        animation-range: cover 0% cover 100%;
+      }
+    }
+  }
+}

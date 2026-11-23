@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "NavCounts": {
+      "type": "object",
+      "required": [
+        "notifications_unread",
+        "messages_unread",
+        "approvals_pending",
+        "tasks_open",
+        "cart_items",
+        "content_reviews",
+        "orders_attention"
+      ],
+      "properties": {
+        "notifications_unread": {
+          "$ref": "#/$defs/Int"
+        },
+        "messages_unread": {
+          "$ref": "#/$defs/Int"
+        },
+        "approvals_pending": {
+          "$ref": "#/$defs/Int"
+        },
+        "tasks_open": {
+          "$ref": "#/$defs/Int"
+        },
+        "cart_items": {
+          "$ref": "#/$defs/Int"
+        },
+        "content_reviews": {
+          "$ref": "#/$defs/Int"
+        },
+        "orders_attention": {
+          "$ref": "#/$defs/Int"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/NavCounts"
+}

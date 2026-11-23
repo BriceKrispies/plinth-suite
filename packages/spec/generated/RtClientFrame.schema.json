@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "DomainEventType": {
+      "type": "string",
+      "enum": [
+        "message.received",
+        "message.sent",
+        "message.state_changed",
+        "notification.created",
+        "notification.read",
+        "points.posted",
+        "points.expiring",
+        "tier.changed",
+        "order.placed",
+        "order.status_changed",
+        "stock.changed",
+        "cart.updated",
+        "wishlist.changed",
+        "review.created",
+        "badge.awarded",
+        "badge.revoked",
+        "badge.progress",
+        "promotion.state_changed",
+        "promotion.redeemed",
+        "promotion.budget_alert",
+        "automation.run_updated",
+        "content.state_changed",
+        "content.published",
+        "content.engaged",
+        "task.assigned",
+        "task.updated",
+        "task.commented",
+        "approval.requested",
+        "approval.decided",
+        "member.updated",
+        "session.revoked"
+      ]
+    }
+  },
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "t",
+        "protocol",
+        "token"
+      ],
+      "properties": {
+        "t": {
+          "type": "string",
+          "enum": [
+            "hello"
+          ]
+        },
+        "protocol": {
+          "type": "number",
+          "enum": [
+            1
+          ]
+        },
+        "token": {
+          "type": "string"
+        },
+        "client_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "t",
+        "sub"
+      ],
+      "properties": {
+        "t": {
+          "type": "string",
+          "enum": [
+            "subscribe"
+          ]
+        },
+        "sub": {
+          "type": "string"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "uris": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "since_seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a non-negative number",
+          "title": "greaterThanOrEqualTo(0)",
+          "minimum": 0
+        },
+        "last_seq": {
+          "$ref": "#/$defs/Int",
+          "description": "a non-negative number",
+          "title": "greaterThanOrEqualTo(0)",
+          "minimum": 0
+        },
+        "stream": {
+          "type": "string",
+          "enum": [
+            "changes",
+            "domain"
+          ]
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DomainEventType"
+          },
+          "description": "an array of at most 40 item(s)",
+          "title": "maxItems(40)",
+          "maxItems": 40
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "t",
+        "sub"
+      ],
+      "properties": {
+        "t": {
+          "type": "string",
+          "enum": [
+            "unsubscribe"
+          ]
+        },
+        "sub": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

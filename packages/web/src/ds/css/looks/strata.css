@@ -1,0 +1,118 @@
+/*
+  Look: strata (port of public/proto/strata). Layered depth: a soft blue-violet gradient wash behind the page,
+  elevated white cards with pronounced layered shadows and 16px radii, a periwinkle/indigo accent, and a side bar
+  that floats as its own frosted layer. The top bar is a frosted strip with a soft shadow instead of a rule.
+  Overrides: neutrals, accent, surfaces, page background, chart series, radii, layered elevation, widget chrome,
+  floating nav, top bar, pills, counts.
+*/
+:root[data-look="strata"],
+.sg-look[data-look="strata"] {
+  --look: strata;
+  --hue: 272;
+
+  --paper: light-dark(oklch(0.95 0.022 var(--hue)), oklch(0.16 0.03 var(--hue)));
+  --paper-2: light-dark(oklch(0.935 0.026 var(--hue)), oklch(0.235 0.036 var(--hue)));
+  --paper-3: light-dark(oklch(0.905 0.032 var(--hue)), oklch(0.285 0.04 var(--hue)));
+  --ink: light-dark(oklch(0.24 0.045 var(--hue)), oklch(0.96 0.01 var(--hue)));
+  --ink-2: light-dark(oklch(0.4 0.04 var(--hue)), oklch(0.83 0.018 var(--hue)));
+  --ink-3: light-dark(oklch(0.49 0.035 var(--hue)), oklch(0.74 0.025 var(--hue)));
+  --rule: light-dark(oklch(0.9 0.02 var(--hue)), oklch(0.31 0.035 var(--hue)));
+  --control-border: light-dark(oklch(0.58 0.03 var(--hue)), oklch(0.65 0.035 var(--hue)));
+
+  --accent: light-dark(oklch(0.52 0.2 275), oklch(0.78 0.13 275));
+  --accent-on: light-dark(oklch(0.99 0.005 var(--hue)), oklch(0.18 0.05 var(--hue)));
+  --focus: light-dark(oklch(0.5 0.21 275), oklch(0.82 0.12 275));
+
+  --surface-1: light-dark(oklch(1 0 0), oklch(0.235 0.032 var(--hue)));
+  --surface-2: light-dark(oklch(0.985 0.006 var(--hue)), oklch(0.2 0.03 var(--hue)));
+  --surface-3: light-dark(oklch(1 0 0), oklch(0.275 0.036 var(--hue)));
+  --page-wash: light-dark(oklch(0.92 0.04 var(--hue)), oklch(0.22 0.06 var(--hue)));
+  --chart-breach: var(--danger-fg);
+  --series-0: var(--accent);
+  --series-1: light-dark(oklch(0.6 0.14 235), oklch(0.76 0.11 230));
+  --series-2: light-dark(oklch(0.58 0.15 310), oklch(0.76 0.12 310));
+  --series-3: light-dark(oklch(0.58 0.12 190), oklch(0.78 0.1 190));
+
+  --radius-1: 0.5rem;
+  --radius-control: 0.625rem;
+  --radius-card: 1rem;
+  --rule-heavy: 0px;
+
+  /* Pronounced, layered, hue-tinted elevation with an upper-edge highlight. */
+  --layer-shadow:
+    inset 0 1px 0 light-dark(oklch(1 0 0 / 0.9), oklch(1 0 0 / 0.06)),
+    0 1px 2px light-dark(oklch(0.3 0.08 var(--hue) / 0.08), oklch(0 0 0 / 0.4)),
+    0 6px 16px -4px light-dark(oklch(0.3 0.1 var(--hue) / 0.12), oklch(0 0 0 / 0.45)),
+    0 24px 48px -16px light-dark(oklch(0.3 0.12 var(--hue) / 0.22), oklch(0 0 0 / 0.55));
+  --layer-shadow-hover:
+    inset 0 1px 0 light-dark(oklch(1 0 0 / 0.9), oklch(1 0 0 / 0.08)),
+    0 2px 4px light-dark(oklch(0.3 0.08 var(--hue) / 0.1), oklch(0 0 0 / 0.45)),
+    0 12px 24px -6px light-dark(oklch(0.3 0.1 var(--hue) / 0.18), oklch(0 0 0 / 0.5)),
+    0 36px 64px -20px light-dark(oklch(0.3 0.12 var(--hue) / 0.3), oklch(0 0 0 / 0.65));
+  --shadow-1: var(--layer-shadow);
+  --shadow-1-hover: var(--layer-shadow-hover);
+
+  /* Page: a soft blue-violet gradient wash. */
+  --app-bg:
+    linear-gradient(
+      165deg,
+      light-dark(oklch(0.9 0.05 285), oklch(0.25 0.08 285)) 0%,
+      light-dark(oklch(0.945 0.025 255), oklch(0.17 0.04 265)) 38rem
+    ),
+    var(--paper);
+
+  /* The side bar floats as its own frosted layer. */
+  --nav-inset: 0.75rem;
+  --nav-radius: 1rem;
+  --nav-bg: color-mix(in oklch, var(--surface-1) 68%, transparent);
+  --nav-blur: blur(18px) saturate(1.5);
+  --nav-shadow: var(--layer-shadow);
+  --topbar-bg: color-mix(in oklch, var(--surface-1) 55%, transparent);
+  --topbar-shadow: 0 10px 28px -14px light-dark(oklch(0.3 0.12 var(--hue) / 0.35), oklch(0 0 0 / 0.6));
+  --nav-current-bar: none;
+  --nav-current-bg: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--accent) 20%, transparent),
+    color-mix(in oklch, var(--accent) 6%, transparent)
+  );
+  --nav-current-weight: 650;
+
+  /* Cards: white, borderless, lifted. */
+  --widget-edge: transparent;
+  --widget-radius: 1rem;
+  --widget-shadow: var(--layer-shadow);
+  --widget-shadow-hover: var(--layer-shadow-hover);
+  --widget-title-weight: 650;
+  --header-title-size: var(--step-2);
+  --header-title-weight: 700;
+  --nested-bg: var(--paper-2);
+  --nested-shadow: none;
+  --stat-weight: 750;
+
+  --btn-primary-bg: var(--accent);
+  --btn-primary-fg: var(--accent-on);
+  --btn-primary-edge: var(--accent);
+
+  /* signal text on the accent wash: a deeper accent in light mode keeps 4.5:1 (axe color-contrast) */
+  --pill-signal-fg: light-dark(oklch(from var(--accent) calc(l - 0.14) c h), var(--signal-fg));
+  --pill-weight: 600;
+  --pill-info-bg: color-mix(in oklch, var(--info-fg) 13%, transparent);
+  --pill-info-px: 0.55rem;
+  --pill-success-bg: color-mix(in oklch, var(--success-fg) 13%, transparent);
+  --pill-success-px: 0.55rem;
+  --count-bg: color-mix(in oklch, var(--accent) 14%, transparent);
+  --count-fg: var(--accent);
+  --badge-bg: var(--accent);
+  --badge-fg: var(--accent-on);
+}
+
+/* Wide gamut: a saturated indigo and fuller series on P3 screens; lightness is unchanged so contrast holds. */
+@media (color-gamut: p3) {
+  :root[data-look="strata"],
+  .sg-look[data-look="strata"] {
+    --accent: light-dark(oklch(0.52 0.23 275), oklch(0.78 0.16 275));
+    --series-1: light-dark(oklch(0.6 0.17 235), oklch(0.76 0.14 230));
+    --series-2: light-dark(oklch(0.58 0.19 310), oklch(0.76 0.15 310));
+    --series-3: light-dark(oklch(0.58 0.15 190), oklch(0.78 0.13 190));
+  }
+}

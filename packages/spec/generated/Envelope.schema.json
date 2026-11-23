@@ -1,0 +1,307 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Envelope": {
+      "type": "object",
+      "required": [
+        "ok",
+        "trace_id",
+        "call_id",
+        "next",
+        "warnings",
+        "budget"
+      ],
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "trace_id": {
+          "type": "string",
+          "description": "a string matching the pattern ^[0-9a-f]{32}$",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "call_id": {
+          "type": "string",
+          "description": "a string matching the pattern ^c_[0-9A-HJKMNP-TV-Z]{26}$",
+          "pattern": "^c_[0-9A-HJKMNP-TV-Z]{26}$"
+        },
+        "data": {
+          "$id": "/schemas/unknown",
+          "title": "unknown"
+        },
+        "error": {
+          "type": "object",
+          "required": [
+            "code",
+            "path",
+            "message",
+            "fix_hint",
+            "retryable"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "VALIDATION_FAILED",
+                "UNKNOWN_FIELD",
+                "UNKNOWN_REFERENCE",
+                "TYPE_MISMATCH",
+                "PREVIEW_REQUIRED",
+                "PREVIEW_STALE",
+                "CONFLICT",
+                "IDEMPOTENCY_KEY_REUSED",
+                "FORBIDDEN",
+                "RULE_REFUSED",
+                "RATE_LIMITED",
+                "QUERY_TIMEOUT",
+                "SOURCE_STALE",
+                "LOOP_SUSPECTED",
+                "UNAUTHENTICATED"
+              ]
+            },
+            "path": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string",
+              "description": "a string at most 280 character(s) long",
+              "title": "maxLength(280)",
+              "maxLength": 280
+            },
+            "expected": {
+              "type": "string"
+            },
+            "allowed": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "maxItems": 20
+            },
+            "did_you_mean": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "an array of at most 3 item(s)",
+              "title": "maxItems(3)",
+              "maxItems": 3
+            },
+            "suggestion": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "kind",
+                    "path",
+                    "value"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "replace"
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "$id": "/schemas/unknown",
+                      "title": "unknown"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "kind",
+                    "tool",
+                    "arguments"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "call"
+                      ]
+                    },
+                    "tool": {
+                      "type": "string"
+                    },
+                    "arguments": {
+                      "type": "object",
+                      "required": [],
+                      "properties": {},
+                      "additionalProperties": {
+                        "$id": "/schemas/unknown",
+                        "title": "unknown"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "fix_hint": {
+              "type": "string",
+              "description": "a string at most 280 character(s) long",
+              "title": "maxLength(280)",
+              "maxLength": 280
+            },
+            "retryable": {
+              "type": "boolean"
+            },
+            "retry_after_s": {
+              "$ref": "#/$defs/Int",
+              "description": "a number greater than or equal to 1",
+              "title": "greaterThanOrEqualTo(1)",
+              "minimum": 1
+            },
+            "docs_uri": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": {
+                "$id": "/schemas/unknown",
+                "title": "unknown"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "next": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "tool",
+              "arguments",
+              "why"
+            ],
+            "properties": {
+              "tool": {
+                "type": "string"
+              },
+              "arguments": {
+                "type": "object",
+                "required": [],
+                "properties": {},
+                "additionalProperties": {
+                  "$id": "/schemas/unknown",
+                  "title": "unknown"
+                }
+              },
+              "why": {
+                "type": "string",
+                "description": "a string at most 140 character(s) long",
+                "title": "maxLength(140)",
+                "maxLength": 140
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "an array of at most 3 item(s)",
+          "title": "maxItems(3)",
+          "maxItems": 3
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "IDEMPOTENT_REPLAY",
+                  "SOURCE_LAGGING",
+                  "FIELDS_PAGED",
+                  "TRUNCATED",
+                  "REPLAY_META_IGNORED"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "description": "a string at most 280 character(s) long",
+                "title": "maxLength(280)",
+                "maxLength": 280
+              },
+              "path": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "budget": {
+          "type": "object",
+          "required": [
+            "bytes",
+            "truncated",
+            "next_cursor",
+            "cost"
+          ],
+          "properties": {
+            "bytes": {
+              "$ref": "#/$defs/Int",
+              "description": "a non-negative number",
+              "title": "greaterThanOrEqualTo(0)",
+              "minimum": 0
+            },
+            "truncated": {
+              "type": "boolean"
+            },
+            "next_cursor": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cost": {
+              "type": "object",
+              "required": [
+                "units",
+                "burst_remaining",
+                "reset_ms"
+              ],
+              "properties": {
+                "units": {
+                  "$ref": "#/$defs/Int"
+                },
+                "burst_remaining": {
+                  "$ref": "#/$defs/Int"
+                },
+                "reset_ms": {
+                  "$ref": "#/$defs/Int"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/Envelope"
+}

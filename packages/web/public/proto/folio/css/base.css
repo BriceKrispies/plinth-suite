@@ -1,0 +1,42 @@
+@layer base {
+  html {
+    /* Wall display: the whole interface scales with the viewport above laptop width. */
+    font-size: clamp(16px, 0.75vw + 6.4px, 28px);
+    scroll-padding-block-end: 8rem;
+  }
+  body {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-md);
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, pre, kbd { font-family: var(--font-mono); font-size: 0.92em; }
+  ::selection { background: color-mix(in oklch, var(--accent) 28%, transparent); }
+
+  :focus-visible {
+    outline: 0.1875rem solid var(--focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-1);
+  }
+  :focus:not(:focus-visible) { outline: none; }
+  main:focus { outline: none; }
+
+  .skip-link {
+    position: fixed; inset-block-start: var(--space-2); inset-inline-start: var(--space-2); z-index: 100;
+    padding: var(--space-2) var(--space-4);
+    background: var(--ink); color: var(--paper); border-radius: var(--radius-2);
+    transform: translateY(-200%);
+  }
+  .skip-link:focus { transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms; animation-iteration-count: 1; scroll-behavior: auto; transition-duration: 0.01ms; }
+  }
+}

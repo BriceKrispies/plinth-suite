@@ -1,0 +1,335 @@
+.c-field {
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+  min-inline-size: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.c-field__label {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  color: var(--ink);
+  padding: 0;
+}
+
+.c-field__req {
+  color: var(--ink-2);
+}
+
+.c-field__control {
+  inline-size: 100%;
+  min-block-size: var(--control-h-md);
+  padding: var(--space-1) var(--space-3);
+  background: var(--surface-1);
+  color: var(--ink);
+  border: var(--hairline) solid var(--control-border);
+  border-radius: var(--radius-control);
+  font-size: var(--step-0);
+  box-shadow: inset 0 1px 1px color-mix(in oklch, var(--ink) 5%, transparent);
+  transition:
+    border-color var(--dur-1) var(--ease),
+    box-shadow var(--dur-1) var(--ease);
+
+  &::placeholder {
+    color: var(--ink-3);
+  }
+  &:hover:not(:disabled) {
+    border-color: var(--ink-2);
+  }
+  &:focus-visible {
+    box-shadow: 0 0 0 1px var(--focus);
+  }
+  &:disabled {
+    background: var(--paper-2);
+    color: var(--ink-3);
+    border-color: var(--rule);
+  }
+  &[aria-invalid="true"] {
+    border-color: var(--danger-border);
+  }
+}
+
+textarea.c-field__control {
+  resize: vertical;
+  padding-block: var(--space-2);
+  /* Grows with its content, from the rows attribute's height up to half the viewport: no auto-grow script. */
+  field-sizing: content;
+  min-block-size: calc(var(--control-h-md) * 2);
+  max-block-size: 50dvh;
+}
+
+/* Field state read from the controls themselves (:has), so a wrapper needs no state class for it. */
+.c-field:has(:user-invalid) .c-field__control:user-invalid {
+  border-color: var(--danger-border);
+}
+.c-field:has(:user-invalid) .c-field__label,
+.c-field:has([aria-invalid="true"]) .c-field__label {
+  color: var(--danger-fg);
+}
+.c-field:has(.c-field__control:focus-visible) .c-field__label {
+  color: var(--ink);
+}
+
+select.c-field__control {
+  appearance: none;
+  padding-inline-end: var(--space-6);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--ink-2) 50%),
+    linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.15rem) 55%,
+    calc(100% - 0.8rem) 55%;
+  background-size: 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+}
+
+.c-field__hint,
+.c-field__status {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+
+.c-field__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--step--1);
+  color: var(--danger-fg);
+  font-weight: var(--weight-semi);
+}
+
+.c-field__wrap {
+  position: relative;
+  display: grid;
+}
+
+.c-field__clear {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--space-1);
+  translate: 0 -50%;
+}
+
+.c-field--group > .c-field__label {
+  margin-block-end: var(--space-1);
+}
+.c-field__choices {
+  display: grid;
+  gap: var(--space-1);
+}
+.c-field__choice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--control-h-sm);
+
+  & input {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+    accent-color: var(--ink);
+    flex: none;
+  }
+  & label {
+    font-size: var(--step-0);
+  }
+}
+
+/* Switch */
+.c-switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-block-size: var(--control-h-sm);
+}
+.c-switch__input {
+  position: absolute;
+  inset: 0 auto 0 0;
+  inline-size: 2.5rem;
+  block-size: 100%;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.c-switch__track {
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 1.5rem;
+  padding: 2px;
+  border: var(--hairline) solid var(--control-border);
+  border-radius: var(--radius-round);
+  background: var(--paper-2);
+  transition: background-color var(--dur-2) var(--ease);
+}
+.c-switch__thumb {
+  display: block;
+  inline-size: calc(1.5rem - 6px);
+  block-size: calc(1.5rem - 6px);
+  border-radius: var(--radius-round);
+  background: var(--control-border);
+  transition:
+    translate var(--dur-2) var(--ease),
+    background-color var(--dur-2) var(--ease);
+}
+.c-switch__input:checked ~ .c-switch__track {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.c-switch__input:checked ~ .c-switch__track .c-switch__thumb {
+  translate: 1rem 0;
+  background: var(--paper);
+}
+.c-switch__input:focus-visible ~ .c-switch__track {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: var(--focus-offset);
+}
+.c-switch__input:disabled ~ * {
+  opacity: 0.55;
+}
+.c-switch__state {
+  margin-inline-start: auto;
+  font-size: var(--step--1);
+  color: var(--ink-2);
+  min-inline-size: 1.75rem;
+}
+
+.c-fieldset {
+  display: grid;
+  gap: var(--space-3);
+  border: 0;
+  padding: var(--space-4);
+  margin: 0;
+  background: var(--surface-1);
+  border-radius: var(--radius-card);
+  box-shadow: inset 0 0 0 var(--hairline) var(--rule);
+}
+.c-fieldset__legend {
+  float: left;
+  inline-size: 100%;
+  padding: 0;
+  margin-block-end: var(--space-3);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-2);
+  & + * {
+    clear: both;
+  }
+}
+
+.c-form {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: var(--form-max);
+}
+.c-form__row {
+  display: grid;
+  gap: var(--space-4);
+}
+@media (min-width: 40rem) {
+  .c-form__row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.c-form-errors {
+  padding: var(--space-3) var(--space-4);
+  background: var(--danger-bg);
+  border: var(--hairline) solid var(--danger-border);
+  border-inline-start-width: 3px;
+  border-radius: var(--radius-control);
+  color: var(--ink);
+
+  & ul {
+    margin: var(--space-1) 0 0;
+    padding-inline-start: var(--space-4);
+    list-style: disc;
+    font-size: var(--step--1);
+  }
+}
+.c-form-errors__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--weight-bold);
+  color: var(--danger-fg);
+}
+
+/* Customizable select: where the browser supports it, the closed control and its popup are styled from the
+   tokens, so every look gets its own menu. Elsewhere the native select stays as it is. */
+@supports (appearance: base-select) {
+  select,
+  select::picker(select) {
+    appearance: base-select;
+  }
+  select.c-field__control {
+    appearance: base-select;
+    padding-inline-end: var(--space-3);
+    background-image: none;
+  }
+  select::picker-icon {
+    color: var(--ink-2);
+    transition: rotate var(--dur-1) var(--ease);
+  }
+  select:open::picker-icon {
+    rotate: 180deg;
+  }
+  select::checkmark {
+    color: var(--accent);
+  }
+  ::picker(select) {
+    box-sizing: border-box;
+    min-inline-size: anchor-size(self-inline);
+    max-block-size: min(22rem, 60dvh);
+    margin-block: var(--space-1);
+    padding: var(--space-1);
+    color: var(--ink);
+    background: var(--surface-3);
+    border: var(--hairline) solid var(--control-border);
+    border-radius: var(--radius-control);
+    box-shadow: var(--shadow-3);
+    opacity: 0;
+    translate: 0 -4px;
+    transition:
+      opacity var(--dur-1) var(--ease),
+      translate var(--dur-1) var(--ease),
+      overlay var(--dur-1) allow-discrete,
+      display var(--dur-1) allow-discrete;
+  }
+  ::picker(select):popover-open {
+    opacity: 1;
+    translate: none;
+  }
+  @starting-style {
+    ::picker(select):popover-open {
+      opacity: 0;
+      translate: 0 -4px;
+    }
+  }
+  select option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-block-size: var(--control-h-md);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-1);
+    cursor: pointer;
+  }
+  select option:hover,
+  select option:focus-visible {
+    background: var(--paper-2);
+    outline: none;
+  }
+  select option:checked {
+    background: var(--accent-wash);
+    font-weight: var(--weight-semi);
+  }
+  select option:disabled {
+    color: var(--ink-3);
+    cursor: not-allowed;
+  }
+}

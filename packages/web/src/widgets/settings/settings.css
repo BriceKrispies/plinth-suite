@@ -1,0 +1,30 @@
+/* Layer: modules (settings). Shared parts live in ds/css/components/widget-parts.css. */
+
+@scope ([data-widget^="settings."]) {
+  .rp-appearance__grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @container widget (min-width: 36rem) {
+    .rp-appearance__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem);
+      align-items: start;
+    }
+  }
+  .rp-appearance__sample {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--paper-2);
+    border: var(--hairline) solid var(--rule);
+  }
+  .rp-appearance__dirty {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-inline-end: auto;
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+}

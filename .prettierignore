@@ -1,0 +1,6 @@
+docs/
+pnpm-lock.yaml
+packages/spec/generated/
+node_modules/
+packages/demo-data/recordings/
+dist-pages/

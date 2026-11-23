@@ -1,0 +1,797 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Promotion": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Promotion"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/PromotionSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "PromotionSpec": {
+      "type": "object",
+      "required": [
+        "status",
+        "description",
+        "eligibility",
+        "effects",
+        "budget",
+        "schedule",
+        "priority",
+        "stacking",
+        "owner"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/PromotionStatus"
+        },
+        "description": {
+          "type": "string",
+          "description": "User-authored text (untrusted), at most 500 chars",
+          "title": "maxLength(500)",
+          "maxLength": 500
+        },
+        "banner": {
+          "type": "object",
+          "required": [
+            "headline",
+            "tone",
+            "icon"
+          ],
+          "properties": {
+            "headline": {
+              "type": "string",
+              "description": "User-authored text (untrusted), at most 80 chars",
+              "title": "maxLength(80)",
+              "maxLength": 80
+            },
+            "tone": {
+              "$ref": "#/$defs/Tone"
+            },
+            "icon": {
+              "$ref": "#/$defs/IconName"
+            }
+          },
+          "additionalProperties": false
+        },
+        "eligibility": {
+          "$ref": "#/$defs/PromotionEligibility"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PromotionEffect"
+          },
+          "description": "an array of at most 4 item(s)",
+          "title": "maxItems(4)",
+          "minItems": 1,
+          "maxItems": 4
+        },
+        "budget": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "max_cost_points": {
+              "$ref": "#/$defs/PositivePoints"
+            },
+            "max_redemptions": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 1000000",
+              "title": "between(1, 1000000)",
+              "minimum": 1,
+              "maximum": 1000000
+            },
+            "max_per_member": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 1000",
+              "title": "between(1, 1000)",
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": false
+        },
+        "schedule": {
+          "type": "object",
+          "required": [
+            "starts_at",
+            "ends_at"
+          ],
+          "properties": {
+            "starts_at": {
+              "$ref": "#/$defs/Timestamp"
+            },
+            "ends_at": {
+              "$ref": "#/$defs/Timestamp"
+            },
+            "days_of_week": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Int",
+                "description": "a number between 1 and 7",
+                "title": "between(1, 7)",
+                "minimum": 1,
+                "maximum": 7
+              },
+              "description": "an array of at most 7 item(s)",
+              "title": "maxItems(7)",
+              "minItems": 1,
+              "maxItems": 7
+            },
+            "hours_utc": {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 0 and 23",
+                  "title": "between(0, 23)",
+                  "minimum": 0,
+                  "maximum": 23
+                },
+                "to": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 1 and 24",
+                  "title": "between(1, 24)",
+                  "minimum": 1,
+                  "maximum": 24
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "priority": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 1000",
+          "title": "between(0, 1000)",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "stacking": {
+          "type": "string",
+          "enum": [
+            "stack",
+            "exclusive"
+          ]
+        },
+        "stack_group": {
+          "$ref": "#/$defs/SuiteSlug"
+        },
+        "owner": {
+          "$ref": "#/$defs/Subject"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PromotionStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "scheduled",
+        "active",
+        "paused",
+        "ended"
+      ]
+    },
+    "Tone": {
+      "type": "string",
+      "enum": [
+        "neutral",
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "signal"
+      ]
+    },
+    "IconName": {
+      "type": "string",
+      "enum": [
+        "home",
+        "inbox",
+        "send",
+        "archive",
+        "star",
+        "bell",
+        "search",
+        "command",
+        "store",
+        "cart",
+        "bag",
+        "tag",
+        "gift",
+        "coins",
+        "wallet",
+        "transfer",
+        "trophy",
+        "medal",
+        "award",
+        "crown",
+        "flame",
+        "bolt",
+        "target",
+        "megaphone",
+        "percent",
+        "calendar",
+        "clock",
+        "workflow",
+        "play",
+        "pause",
+        "stop",
+        "branch",
+        "webhook",
+        "document",
+        "article",
+        "announcement",
+        "image",
+        "users",
+        "user",
+        "group",
+        "segment",
+        "shield",
+        "key",
+        "lock",
+        "chart",
+        "board",
+        "check",
+        "check-circle",
+        "x",
+        "alert",
+        "info",
+        "task",
+        "list",
+        "settings",
+        "sliders",
+        "history",
+        "audit",
+        "attachment",
+        "reply",
+        "mention",
+        "heart",
+        "sparkle",
+        "leaf",
+        "globe",
+        "truck",
+        "box",
+        "ticket",
+        "coffee",
+        "headphones",
+        "laptop",
+        "shirt",
+        "book",
+        "plant",
+        "mountain",
+        "sun",
+        "moon",
+        "plus",
+        "minus",
+        "edit",
+        "trash",
+        "copy",
+        "link",
+        "external",
+        "filter",
+        "sort",
+        "more",
+        "chevron-left",
+        "chevron-right",
+        "chevron-down",
+        "chevron-up",
+        "menu",
+        "eye",
+        "eye-off",
+        "logout"
+      ]
+    },
+    "PromotionEligibility": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "tiers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Tier"
+          },
+          "description": "an array of at least 1 item(s)",
+          "title": "minItems(1)",
+          "minItems": 1
+        },
+        "regions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Region"
+          },
+          "description": "an array of at least 1 item(s)",
+          "title": "minItems(1)",
+          "minItems": 1
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref.segment"
+          },
+          "description": "an array of at most 8 item(s)",
+          "title": "maxItems(8)",
+          "minItems": 1,
+          "maxItems": 8
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref.group"
+          },
+          "description": "an array of at most 8 item(s)",
+          "title": "maxItems(8)",
+          "minItems": 1,
+          "maxItems": 8
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PromoChannel"
+          },
+          "description": "an array of at least 1 item(s)",
+          "title": "minItems(1)",
+          "minItems": 1
+        },
+        "new_members_days": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 1 and 365",
+          "title": "between(1, 365)",
+          "minimum": 1,
+          "maximum": 365
+        },
+        "min_cart_points": {
+          "$ref": "#/$defs/PositivePoints"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref.category"
+          },
+          "description": "an array of at most 12 item(s)",
+          "title": "maxItems(12)",
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref.product"
+          },
+          "description": "an array of at most 50 item(s)",
+          "title": "maxItems(50)",
+          "minItems": 1,
+          "maxItems": 50
+        },
+        "entitlement_only": {
+          "type": "boolean"
+        },
+        "filter": {
+          "$ref": "#/$defs/CondTree"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ]
+    },
+    "Region": {
+      "type": "string",
+      "enum": [
+        "NA",
+        "EMEA",
+        "APAC",
+        "LATAM",
+        "ANZ"
+      ]
+    },
+    "Ref.segment": {
+      "type": "string",
+      "description": "segment:<slug>",
+      "pattern": "^segment:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "Ref.group": {
+      "type": "string",
+      "description": "group:<slug>",
+      "pattern": "^group:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "PromoChannel": {
+      "type": "string",
+      "enum": [
+        "store",
+        "recognition",
+        "automation",
+        "content"
+      ]
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "PositivePoints": {
+      "type": "integer",
+      "description": "a number between 1 and 10000000",
+      "title": "between(1, 10000000)",
+      "minimum": 1,
+      "maximum": 10000000
+    },
+    "Ref.category": {
+      "type": "string",
+      "description": "category:<slug>",
+      "pattern": "^category:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "Ref.product": {
+      "type": "string",
+      "description": "product:<slug>",
+      "pattern": "^product:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "CondTree": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Condition"
+        },
+        {
+          "type": "object",
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "any"
+          ],
+          "properties": {
+            "any": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "not"
+          ],
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/CondTree"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Condition": {
+      "type": "object",
+      "required": [
+        "field",
+        "op"
+      ],
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/FactPath"
+        },
+        "op": {
+          "$ref": "#/$defs/CondOp"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": "an array of at most 100 item(s)",
+              "title": "maxItems(100)",
+              "maxItems": 100
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "FactPath": {
+      "type": "string",
+      "description": "A fact name, e.g. tier, member.region, event.points",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*){0,3}$"
+    },
+    "CondOp": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "in",
+        "not_in",
+        "contains",
+        "not_contains",
+        "exists",
+        "not_exists",
+        "between"
+      ]
+    },
+    "PromotionEffect": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "factor"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "points_multiplier"
+              ]
+            },
+            "factor": {
+              "type": "number",
+              "description": "a number between 1.05 and 10",
+              "title": "between(1.05, 10)",
+              "minimum": 1.05,
+              "maximum": 10
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "points",
+            "on"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "bonus_points"
+              ]
+            },
+            "points": {
+              "$ref": "#/$defs/PositivePoints"
+            },
+            "on": {
+              "type": "string",
+              "enum": [
+                "purchase",
+                "earn"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "percent"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "store_discount"
+              ]
+            },
+            "percent": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 90",
+              "title": "between(1, 90)",
+              "minimum": 1,
+              "maximum": 90
+            },
+            "categories": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Ref.category"
+              },
+              "description": "an array of at least 1 item(s)",
+              "title": "minItems(1)",
+              "minItems": 1
+            },
+            "products": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Ref.product"
+              },
+              "description": "an array of at least 1 item(s)",
+              "title": "minItems(1)",
+              "minItems": 1
+            },
+            "max_discount_points": {
+              "$ref": "#/$defs/PositivePoints"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "product",
+            "min_cart_points"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "free_item"
+              ]
+            },
+            "product": {
+              "$ref": "#/$defs/Ref.product"
+            },
+            "min_cart_points": {
+              "$ref": "#/$defs/PositivePoints"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Timestamp": {
+      "type": "string",
+      "description": "RFC 3339 UTC, e.g. 2026-11-20T14:30:00Z",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+    },
+    "SuiteSlug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "Subject": {
+      "type": "string",
+      "description": "A principal: user:<handle>, agent:<name>, service:<name>",
+      "pattern": "^(user|agent|service):[a-z0-9][a-z0-9._-]*$"
+    }
+  },
+  "$ref": "#/$defs/Promotion"
+}

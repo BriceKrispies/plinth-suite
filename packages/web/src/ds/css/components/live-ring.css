@@ -1,0 +1,210 @@
+/*
+  Live-change ring. core/page-host.js sets data-live-change="human" or "agent" on the page-grid cell for about 2.5 s
+  when a realtime change touches the widget it wraps. The ring is the cell's ::before: a conic-gradient border whose
+  angle is a registered <angle> property (--_ring-angle), cut to a ring with a mask. "human" is one quick sweep;
+  "agent" is a stronger, vivid accent-to-signal spin with a soft glow and a small "Agent" corner badge (::after).
+  Reduced motion: a static outline instead. Per-look variants set the local --_ring-* hooks at the end.
+*/
+@property --_ring-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.c-page-grid__item {
+  position: relative;
+  /* Hooks, overridden per look below. Local (--_) so they stay out of the token set. */
+  --_ring-w: 2px;
+  --_ring-r: var(--widget-radius, var(--radius-card));
+  --_ring-glow: 0 0 10px color-mix(in oklch, var(--accent) 55%, transparent);
+}
+
+.c-page-grid__item::before,
+.c-page-grid__item::after {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+.c-page-grid__item::before {
+  content: "";
+  inset: calc(-1 * var(--_ring-w));
+  padding: var(--_ring-w);
+  border-radius: calc(var(--_ring-r) + var(--_ring-w));
+  z-index: var(--z-raised);
+  /* The angle must be read here: a var() held in a custom property on the cell would freeze at its initial value. */
+  background: conic-gradient(
+    from var(--_ring-angle),
+    transparent 0turn,
+    transparent 0.55turn,
+    color-mix(in oklch, var(--accent) 35%, transparent) 0.8turn,
+    var(--accent) 0.98turn,
+    transparent 1turn
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: opacity var(--dur-2) var(--ease);
+}
+.c-page-grid__item::after {
+  content: "";
+}
+
+.c-page-grid__item[data-live-change="human"]::before {
+  opacity: 1;
+}
+.c-page-grid__item[data-live-change="agent"]::before {
+  --_ring-w: 3px;
+  background: conic-gradient(
+    from var(--_ring-angle),
+    var(--accent),
+    oklch(from var(--accent) l c calc(h + 70)),
+    oklch(from var(--accent) calc(l + 0.06) c calc(h + 150)),
+    oklch(from var(--accent) l c calc(h + 70)),
+    var(--accent)
+  );
+  filter: drop-shadow(var(--_ring-glow));
+  opacity: 1;
+}
+.c-page-grid__item[data-live-change="agent"]::after {
+  content: "Agent";
+  inset-block-start: -0.6rem;
+  inset-inline-end: var(--space-4);
+  z-index: calc(var(--z-raised) + 1);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-round);
+  background: var(--accent);
+  color: var(--accent-on);
+  font-size: var(--step--2);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  line-height: 1.4;
+  box-shadow: 0 1px 4px color-mix(in oklch, var(--accent) 45%, transparent);
+  opacity: 1;
+  transition: opacity var(--dur-2) var(--ease);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ring-sweep {
+    from {
+      --_ring-angle: 0deg;
+    }
+    to {
+      --_ring-angle: 360deg;
+    }
+  }
+  @keyframes ring-human-life {
+    0% {
+      opacity: 0;
+    }
+    10%,
+    55% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes ring-agent-life {
+    0% {
+      opacity: 0;
+    }
+    8%,
+    80% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes ring-badge-pop {
+    0% {
+      opacity: 0;
+      translate: 0 0.35rem;
+      scale: 0.9;
+    }
+    10%,
+    80% {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  .c-page-grid__item[data-live-change="human"]::before {
+    animation:
+      ring-sweep 1.2s var(--ease) both,
+      ring-human-life 2.5s linear both;
+  }
+  .c-page-grid__item[data-live-change="agent"]::before {
+    animation:
+      ring-sweep 2.5s linear both,
+      ring-agent-life 2.5s linear both;
+  }
+  .c-page-grid__item[data-live-change="agent"]::after {
+    animation: ring-badge-pop 2.5s var(--ease) both;
+  }
+}
+
+/* Reduced motion: no sweep, just a static outline (the "Agent" badge stays as a static label). */
+@media (prefers-reduced-motion: reduce) {
+  .c-page-grid__item[data-live-change]::before {
+    display: none;
+  }
+  .c-page-grid__item[data-live-change] {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--_ring-r);
+  }
+  .c-page-grid__item[data-live-change="agent"] {
+    outline-width: 3px;
+  }
+}
+
+/* ---- per look ---- */
+/* meridian: boxed and square; a hard red ring, no glow. */
+:root[data-look="meridian"] .c-page-grid__item {
+  --_ring-w: 2px;
+  --_ring-glow: 0 0 0 transparent;
+}
+/* calm: a quiet, hairline ring with a faint glow. */
+:root:not([data-look]) .c-page-grid__item,
+:root[data-look="calm"] .c-page-grid__item {
+  --_ring-w: 1.5px;
+  --_ring-glow: 0 0 8px color-mix(in oklch, var(--accent) 35%, transparent);
+}
+/* nocturne: neon edge on a dark surface, a wider bloom. */
+:root[data-look="nocturne"] .c-page-grid__item {
+  --_ring-glow:
+    0 0 6px color-mix(in oklch, var(--accent) 70%, transparent),
+    0 0 18px color-mix(in oklch, var(--accent) 40%, transparent);
+}
+/* folio: a thin ruled line, square, no glow; the badge reads as a printer's flag. */
+:root[data-look="folio"] .c-page-grid__item {
+  --_ring-w: 1.5px;
+  --_ring-r: 0px;
+  --_ring-glow: 0 0 0 transparent;
+}
+:root[data-look="folio"] .c-page-grid__item::before {
+  border-radius: 0;
+}
+:root[data-look="folio"] .c-page-grid__item[data-live-change="agent"]::after {
+  border-radius: 0;
+  font-family: var(--font-display);
+}
+/* lattice: crisp, saturated, 4px; the badge is a square tab like the nav's filled item. */
+:root[data-look="lattice"] .c-page-grid__item {
+  --_ring-glow: 0 0 6px color-mix(in oklch, var(--accent) 40%, transparent);
+}
+:root[data-look="lattice"] .c-page-grid__item[data-live-change="agent"]::after {
+  border-radius: var(--radius-1);
+}
+/* strata: frosted and luminous; a wide soft bloom. */
+:root[data-look="strata"] .c-page-grid__item {
+  --_ring-glow:
+    0 0 8px color-mix(in oklch, var(--accent) 55%, transparent),
+    0 8px 28px color-mix(in oklch, var(--accent) 30%, transparent);
+}

@@ -1,0 +1,60 @@
+/* Generated artwork colours (DESIGN-SYSTEM 7.4). The hue arrives as --art-hue on the svg. */
+.c-art {
+  --art-field: light-dark(oklch(0.9 0.05 var(--art-hue)), oklch(0.3 0.06 var(--art-hue)));
+  --art-pattern: light-dark(oklch(0.62 0.12 var(--art-hue)), oklch(0.5 0.1 var(--art-hue)));
+  --art-disc: var(--surface-1);
+  --art-icon: var(--ink);
+  display: block;
+}
+.c-art__field {
+  fill: var(--art-field);
+}
+.c-art__pat {
+  stroke: var(--art-pattern);
+  fill: none;
+}
+.c-art__pat-fill {
+  fill: var(--art-pattern);
+}
+.c-art__disc {
+  fill: var(--art-disc);
+}
+.c-art__icon {
+  stroke: var(--art-icon);
+}
+.c-art--badge .c-art__field {
+  fill: light-dark(oklch(0.86 0.09 var(--art-hue)), oklch(0.36 0.09 var(--art-hue)));
+}
+.c-art__icon--badge {
+  stroke: light-dark(oklch(0.3 0.08 var(--art-hue)), oklch(0.95 0.03 var(--art-hue)));
+}
+.c-art__ring {
+  stroke: var(--tier-bronze);
+  &.c-art__ring--bronze {
+    stroke: var(--tier-bronze);
+  }
+  &.c-art__ring--silver {
+    stroke: var(--tier-silver);
+  }
+  &.c-art__ring--gold {
+    stroke: var(--tier-gold);
+  }
+  &.c-art__ring--platinum {
+    stroke: var(--tier-platinum);
+  }
+}
+.c-art__glyph {
+  fill: var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+.c-art__avatar-bg {
+  fill: light-dark(oklch(0.42 0.1 var(--art-hue)), oklch(0.82 0.08 var(--art-hue)));
+}
+.c-art__avatar-text {
+  fill: light-dark(oklch(0.99 0 0), oklch(0.17 0.009 260));
+  font-family: var(--font-sans);
+  font-size: 38px;
+  font-weight: 700;
+}

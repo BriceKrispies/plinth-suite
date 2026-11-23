@@ -1,0 +1,298 @@
+/* Charts: SVG drawn by js/charts. Colour comes from tokens via --c on [data-s]; theme owns the palette. */
+.chart {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  font-family: var(--font-sans);
+  overflow: visible;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+[data-s] {
+  --c: var(--series-1);
+}
+
+[data-s="1"] {
+  --c: var(--series-2);
+}
+
+[data-s="2"] {
+  --c: var(--series-3);
+}
+
+[data-s="3"] {
+  --c: var(--series-4);
+}
+
+[data-s="4"] {
+  --c: var(--series-5);
+}
+
+[data-s="5"] {
+  --c: var(--series-6);
+}
+
+[data-s="6"] {
+  --c: var(--series-7);
+}
+
+[data-s="7"] {
+  --c: var(--series-8);
+}
+
+.chart__grid {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+}
+
+.chart__axis {
+  stroke: var(--chart-axis);
+  stroke-width: 1;
+}
+
+.chart__tick {
+  fill: var(--text-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart__line {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.chart__area {
+  fill: color-mix(in oklch, var(--c) 20%, transparent);
+}
+
+.chart__dot {
+  fill: var(--surface);
+  stroke: var(--c);
+  stroke-width: 2;
+}
+
+.chart__hit {
+  fill: transparent;
+}
+
+.chart__bar {
+  fill: var(--c);
+}
+
+.chart__bar--breach {
+  stroke: var(--bad);
+  stroke-width: 1.5;
+}
+
+.chart__point {
+  fill: color-mix(in oklch, var(--c) 80%, transparent);
+  stroke: var(--c);
+  stroke-width: 1.5;
+}
+
+.chart__threshold {
+  stroke: var(--bad);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+}
+
+.chart__threshold-label {
+  fill: var(--bad-text);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.chart__breach {
+  fill: var(--bad);
+  stroke: var(--surface);
+  stroke-width: 1;
+}
+
+.chart__breach--cell {
+  stroke: var(--heat-ink-hi);
+}
+
+.chart__brush {
+  fill: color-mix(in oklch, var(--accent) 16%, transparent);
+  stroke: var(--accent);
+  stroke-dasharray: 3 2;
+  pointer-events: none;
+}
+
+svg[aria-describedby] .chart__data [data-tip]:hover {
+  filter: brightness(1.12);
+}
+
+/* Hatch patterns: the non-colour signal for "above threshold" */
+.hatch__bg {
+  fill: var(--bad-subtle);
+}
+
+.hatch__line {
+  stroke: var(--bad);
+  stroke-width: 2.5;
+}
+
+.hatch--cell .hatch__bg {
+  fill: transparent;
+}
+
+.hatch--cell .hatch__line {
+  stroke: var(--heat-ink-hi);
+}
+
+/* Heatmap */
+.heat__cell {
+  fill: color-mix(in oklch, var(--heat-lo), var(--heat-hi) calc(var(--t, 0) * 100%));
+}
+
+.heat__cell--empty {
+  fill: var(--surface-sunken);
+  stroke: var(--border);
+}
+
+.heat__cell--breach {
+  stroke: var(--bad);
+  stroke-width: 2;
+}
+
+.heat__label {
+  fill: var(--heat-ink-lo);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.heat__label--hi {
+  fill: var(--heat-ink-hi);
+}
+
+.heat__label--strong {
+  paint-order: stroke;
+  stroke: var(--heat-hi);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  font-weight: 750;
+}
+
+/* Legends */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.legend__swatch {
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  border-radius: 2px;
+  background: var(--c);
+
+  &.legend__swatch--circle {
+    border-radius: 50%;
+  }
+
+  &.legend__swatch--diamond {
+    rotate: 45deg;
+    scale: 0.8;
+  }
+
+  &.legend__swatch--triangle {
+    border-radius: 0;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+}
+
+.ramp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ramp__bar {
+  inline-size: 7rem;
+  block-size: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(in oklch to right, var(--heat-lo), var(--heat-hi));
+  border: 1px solid var(--border);
+}
+
+.ramp__hatch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-inline-start: var(--space-2);
+  color: var(--bad-text);
+  font-weight: 600;
+}
+
+.ramp__swatch {
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  border: 2px solid var(--bad);
+  border-radius: 2px;
+  background: repeating-linear-gradient(45deg, var(--heat-hi) 0 2px, var(--heat-lo) 2px 5px);
+}
+
+/* Tooltip */
+.tip {
+  position: absolute;
+  z-index: 5;
+  max-inline-size: 20rem;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-1);
+  background: var(--tip-bg);
+  color: var(--tip-text);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  pointer-events: none;
+  box-shadow: var(--elev-3);
+  transform: translate(0.75rem, 0.75rem);
+
+  &.tip--left {
+    transform: translate(calc(-100% - 0.75rem), 0.75rem);
+  }
+}
+
+@media (forced-colors: active) {
+  .chart__line,
+  .chart__threshold {
+    stroke: CanvasText;
+  }
+
+  .chart__bar,
+  .chart__point,
+  .heat__cell,
+  .chart__breach {
+    fill: CanvasText;
+    stroke: CanvasText;
+  }
+
+  .heat__label,
+  .heat__label--hi {
+    fill: Canvas;
+  }
+}

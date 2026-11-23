@@ -1,0 +1,54 @@
+/*
+  Look: calm (the default, and the look when html has no data-look). Clean, quiet, enterprise: a cool neutral
+  ramp, one blue accent, semantic colour only where it carries meaning, soft radii, almost no shadow.
+  Overrides: neutrals (paper, ink, rule, control-border), accent and focus, surfaces, page wash, shape, elevation,
+  type scale and the chart breach colour. Component hooks come from _quiet.css.
+*/
+:root:not([data-look]),
+:root[data-look="calm"],
+.sg-look[data-look="calm"] {
+  --look: calm;
+
+  --paper: light-dark(oklch(0.978 0.004 250), oklch(0.18 0.01 255));
+  --paper-2: light-dark(oklch(0.958 0.005 250), oklch(0.225 0.011 255));
+  --paper-3: light-dark(oklch(0.93 0.006 250), oklch(0.27 0.012 255));
+  --ink: light-dark(oklch(0.24 0.015 255), oklch(0.95 0.005 250));
+  --ink-2: light-dark(oklch(0.4 0.015 255), oklch(0.82 0.008 255));
+  --ink-3: light-dark(oklch(0.5 0.014 255), oklch(0.74 0.01 255));
+  --rule: light-dark(oklch(0.915 0.005 250), oklch(0.29 0.011 255));
+  --control-border: light-dark(oklch(0.58 0.01 255), oklch(0.66 0.01 255));
+
+  --accent: light-dark(oklch(0.5 0.15 258), oklch(0.78 0.11 255));
+  --accent-on: light-dark(oklch(0.99 0 0), oklch(0.16 0.01 255));
+  --focus: light-dark(oklch(0.5 0.15 258), oklch(0.8 0.11 255));
+
+  --surface-1: light-dark(oklch(1 0 0), oklch(0.215 0.011 255));
+  --surface-2: light-dark(oklch(0.97 0.004 250), oklch(0.16 0.01 255));
+  --surface-3: light-dark(oklch(1 0 0), oklch(0.25 0.012 255));
+  --page-wash: var(--paper);
+
+  --chart-breach: var(--danger-fg);
+
+  --step--1: 0.8125rem;
+  --step-2: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  --radius-1: 4px;
+  --radius-control: 6px;
+  --radius-card: 10px;
+  --rule-heavy: 0px;
+  --shadow-1: 0 1px 2px color-mix(in oklch, var(--ink) 4%, transparent);
+  --shadow-1-hover: 0 2px 8px -2px color-mix(in oklch, var(--ink) 12%, transparent);
+  --shadow-2: 0 1px 0 var(--rule);
+  --font-sans:
+    ui-sans-serif, system-ui, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+}
+
+/* Wide gamut: the same hue and lightness (so contrast against the surfaces holds) with more chroma on P3 screens. */
+@media (color-gamut: p3) {
+  :root:not([data-look]),
+  :root[data-look="calm"],
+  .sg-look[data-look="calm"] {
+    --accent: light-dark(oklch(0.5 0.18 258), oklch(0.78 0.14 255));
+    --focus: light-dark(oklch(0.5 0.18 258), oklch(0.8 0.14 255));
+  }
+}

@@ -1,0 +1,307 @@
+/* Shared pieces for package A widgets (messaging, notifications, people, search). Injected into layer(modules). */
+
+/* ---- segmented toggle buttons ---- */
+.w-seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+.w-seg__btn {
+  gap: var(--space-2);
+}
+.w-seg__count {
+  min-inline-size: 1.25rem;
+  padding-inline: 4px;
+  border-radius: var(--radius-1);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: var(--step--2);
+  line-height: 1.25rem;
+  text-align: center;
+}
+.w-seg__count[data-count="0"] {
+  display: none;
+}
+
+/* ---- sticky filter bar ---- */
+.w-bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-raised);
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-2);
+  background: var(--surface-1);
+  border-block-end: var(--hairline) solid var(--rule);
+}
+.w-bar__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.w-bar__spacer {
+  flex: 1;
+}
+.w-bar__search {
+  position: relative;
+  flex: 1 1 12rem;
+  min-inline-size: 0;
+}
+.w-bar .c-field__label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.w-bar .c-field__control {
+  min-block-size: var(--control-h-sm);
+  font-size: var(--step--1);
+}
+.w-bar select.c-field__control {
+  inline-size: auto;
+}
+
+/* ---- text helpers ---- */
+.w-hint {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.w-hint--error {
+  color: var(--danger-fg);
+}
+.w-counter {
+  justify-self: end;
+  font-size: var(--step--2);
+  color: var(--ink-3);
+}
+.w-counter--over {
+  color: var(--danger-fg);
+  font-weight: var(--weight-bold);
+}
+.w-mark {
+  background: var(--paper-3);
+  color: inherit;
+  font-weight: var(--weight-bold);
+  padding-inline: 1px;
+}
+.w-linkbtn {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font-size: var(--step--1);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---- list scaffolding ---- */
+.w-listhead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-2);
+  color: var(--ink-2);
+  font-size: var(--step--1);
+}
+.w-summary {
+  margin: 0;
+}
+.w-more {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-3);
+}
+.w-more:empty {
+  display: none;
+}
+.w-empty {
+  list-style: none;
+}
+
+/* ---- people ---- */
+.w-person {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+.w-person__text {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-2);
+  min-inline-size: 0;
+}
+.w-person__name {
+  font-weight: var(--weight-semi);
+  overflow-wrap: anywhere;
+}
+.w-person__sub {
+  color: var(--ink-2);
+  font-size: var(--step--1);
+}
+
+/* ---- @mention suggestions ---- */
+.w-mention-host,
+.w-mention-wrap {
+  position: relative;
+}
+.w-mention-wrap {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 2.25rem;
+  z-index: var(--z-overlay);
+  pointer-events: none;
+}
+.w-mention {
+  display: grid;
+  inline-size: min(18rem, 100%);
+  margin: var(--space-2) var(--space-3) 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--surface-3);
+  border: var(--hairline) solid var(--control-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-3);
+  pointer-events: auto;
+}
+.w-mention[hidden] {
+  display: none;
+}
+.w-mention__opt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+.w-mention__opt.is-active,
+.w-mention__opt:hover {
+  background: var(--paper-2);
+}
+.w-mention__handle {
+  margin-inline-start: auto;
+  color: var(--ink-3);
+  font-size: var(--step--1);
+}
+
+/* ---- attachments (metadata only) ---- */
+.w-attach {
+  display: grid;
+  gap: var(--space-2);
+}
+.w-attach__list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.w-attach__list:empty {
+  display: none;
+}
+.w-attach__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--step--1);
+}
+.w-attach__name {
+  flex: 1;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.w-attach__meta {
+  color: var(--ink-3);
+}
+.w-attach__choose {
+  cursor: pointer;
+}
+.w-attach__choose:focus-within {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* ---- one notification as a row body ---- */
+.w-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+  min-inline-size: 0;
+}
+.w-note__icon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: var(--radius-round);
+  background: var(--_tone-bg, var(--paper-2));
+  color: var(--_tone-fg, var(--ink-2));
+  box-shadow: inset 0 0 0 var(--hairline) var(--_tone-edge, var(--rule));
+}
+.w-note--info {
+  --_tone-bg: var(--info-bg);
+  --_tone-fg: var(--info-fg);
+  --_tone-edge: var(--info-border);
+}
+.w-note--success {
+  --_tone-bg: var(--success-bg);
+  --_tone-fg: var(--success-fg);
+  --_tone-edge: var(--success-border);
+}
+.w-note--warning {
+  --_tone-bg: var(--warning-bg);
+  --_tone-fg: var(--warning-fg);
+  --_tone-edge: var(--warning-border);
+}
+.w-note--danger {
+  --_tone-bg: var(--danger-bg);
+  --_tone-fg: var(--danger-fg);
+  --_tone-edge: var(--danger-border);
+}
+.w-note--signal {
+  --_tone-bg: var(--signal-bg);
+  --_tone-fg: var(--signal-fg);
+  --_tone-edge: var(--signal-border);
+}
+.w-note__text {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+}
+.w-note__title {
+  font-weight: var(--weight-semi);
+  overflow-wrap: anywhere;
+}
+.w-note__body {
+  color: var(--ink-2);
+  font-size: var(--step--1);
+  overflow-wrap: anywhere;
+}
+.w-note__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
+  color: var(--ink-3);
+  font-size: var(--step--2);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+}
+
+/* ---- two-column helper for forms inside widgets ---- */
+.w-grid2 {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+}
+@container widget (min-inline-size: 36rem) {
+  .w-grid2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}

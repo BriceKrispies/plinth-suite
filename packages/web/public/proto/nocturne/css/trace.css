@@ -1,0 +1,286 @@
+/* Layer: components. The trace ribbon: an instrument strip pinned to the bottom of the viewport. */
+
+.trace {
+  --cell-w: 22rem;
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 40;
+  container: trace / inline-size;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: stretch;
+  background: color-mix(in oklch, var(--surface-1) 94%, transparent);
+  backdrop-filter: blur(12px);
+  border-block-start: 1px solid var(--line-strong);
+  box-shadow: 0 -12px 32px light-dark(oklch(0.3 0.02 var(--hue) / 0.08), oklch(0 0 0 / 0.35));
+}
+
+.trace-head {
+  display: grid;
+  align-content: center;
+  gap: var(--space-2xs);
+  padding: var(--space-s) var(--space-m) var(--space-s) var(--gutter);
+  border-inline-end: 1px solid var(--line);
+
+  & h2 {
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--track-caps);
+    color: var(--text-dim);
+    font-weight: var(--weight-medium);
+  }
+}
+
+.trace-head-seq {
+  display: grid;
+  line-height: 1;
+
+  & span {
+    color: var(--text-faint);
+    font-size: var(--text-2xs);
+  }
+
+  & output {
+    font-family: var(--font-mono);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-medium);
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+}
+
+.trace-track {
+  position: relative;
+  min-inline-size: 0;
+  display: grid;
+}
+
+.trace-list {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-color: var(--line-strong) transparent;
+  scrollbar-width: thin;
+
+  &:focus-visible {
+    outline-offset: -3px;
+  }
+}
+
+.trace-empty {
+  grid-area: 1 / 1;
+  align-self: center;
+  padding-inline: var(--space-l);
+  color: var(--text-faint);
+  font-size: var(--text-s);
+}
+
+.trace-cell {
+  position: relative;
+  flex: none;
+  inline-size: var(--cell-w);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "seq main"
+    "time main";
+  align-content: center;
+  column-gap: var(--space-m);
+  padding: var(--space-s) var(--space-m);
+  border-inline-end: 1px solid var(--line);
+  scroll-snap-align: start;
+
+  &:first-child {
+    background: color-mix(in oklch, var(--surface-2) 70%, transparent);
+  }
+
+  /* Pushed live: a single, short settle. Backfilled history never carries data-new. */
+  &[data-new] {
+    animation: cell-in var(--dur) var(--ease-out) both;
+
+    &[data-type="live"]::after {
+      content: "";
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline: 0;
+      block-size: 2px;
+      background: var(--accent);
+    }
+  }
+}
+
+@keyframes cell-in {
+  from {
+    opacity: 0;
+    translate: -1rem 0;
+  }
+}
+
+.trace-seq {
+  grid-area: seq;
+  display: grid;
+  line-height: 1;
+  font-family: var(--font-mono);
+
+  & .trace-seq-label {
+    color: var(--text-faint);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--track-caps);
+    margin-block-end: var(--space-2xs);
+  }
+
+  & .trace-seq-num {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-medium);
+    letter-spacing: -0.03em;
+  }
+}
+
+.trace-time {
+  grid-area: time;
+  align-self: end;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+}
+
+.trace-main {
+  grid-area: main;
+  display: grid;
+  gap: var(--space-3xs);
+  min-inline-size: 0;
+
+  & p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.trace-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-s);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: 0 var(--space-xs);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-s);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-strong);
+  text-transform: uppercase;
+  letter-spacing: var(--track-caps);
+  line-height: 1.5;
+  flex: none;
+
+  &[data-type="live"] {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  &[data-type="replay"] {
+    color: var(--warn);
+  }
+
+  &[data-type="ui"] {
+    color: var(--text-dim);
+  }
+}
+
+.trace-actor {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trace-behalf {
+  color: var(--text-faint);
+  font-size: var(--text-xs);
+}
+
+.trace-what {
+  font-size: var(--text-s);
+  color: var(--text);
+
+  & .trace-node-kind {
+    margin-inline-end: var(--space-xs);
+    color: var(--text-faint);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--track-caps);
+  }
+
+  & .trace-node-title {
+    font-weight: var(--weight-medium);
+  }
+}
+
+.trace-ops {
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+}
+
+.trace-rules {
+  display: flex;
+  gap: var(--space-xs);
+
+  & .rule {
+    padding: 0 var(--space-xs);
+    border-radius: var(--radius-s);
+    background: var(--surface-3);
+    color: var(--text-dim);
+    font-size: var(--text-2xs);
+  }
+}
+
+/* Wall display: the ribbon grows, since it is the thing read from across the room. */
+@media (min-width: 1700px) {
+  .trace {
+    --cell-w: 27rem;
+  }
+
+  .trace-seq .trace-seq-num {
+    font-size: 2rem;
+  }
+}
+
+/* Phone: one slim line per event, no rules or ops, so it informs without taking the screen. */
+@media (max-width: 40rem) {
+  .trace {
+    --cell-w: 16rem;
+    grid-template-columns: 1fr;
+  }
+
+  .trace-head {
+    display: none;
+  }
+
+  .trace-cell {
+    grid-template-areas: "seq main";
+    padding: var(--space-xs) var(--space-s);
+    column-gap: var(--space-s);
+  }
+
+  .trace-time,
+  .trace-ops,
+  .trace-rules,
+  .trace-seq-label {
+    display: none;
+  }
+
+  .trace-seq .trace-seq-num {
+    font-size: var(--text-l);
+  }
+
+  .trace-empty {
+    padding-block: var(--space-s);
+    font-size: var(--text-xs);
+  }
+}

@@ -1,0 +1,8 @@
+.c-mention {
+  font-weight: var(--weight-semi);
+  color: var(--info-fg);
+  text-decoration: none;
+}
+a.c-mention:hover {
+  text-decoration: underline;
+}

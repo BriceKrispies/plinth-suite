@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "CommitResult": {
+      "type": "object",
+      "required": [
+        "status",
+        "replayed",
+        "commit_id"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "committed",
+            "pending_approval"
+          ]
+        },
+        "replayed": {
+          "type": "boolean"
+        },
+        "commit_id": {
+          "type": "string"
+        },
+        "change_seq": {
+          "$ref": "#/$defs/Int"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "uri",
+              "result_revision",
+              "change_seq"
+            ],
+            "properties": {
+              "uri": {
+                "type": "string"
+              },
+              "result_revision": {
+                "$ref": "#/$defs/Int"
+              },
+              "change_seq": {
+                "$ref": "#/$defs/Int"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "approval_id": {
+          "type": "string"
+        },
+        "merged_from": {
+          "type": "object",
+          "required": [
+            "base",
+            "head",
+            "rebased_paths"
+          ],
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/Int"
+            },
+            "head": {
+              "$ref": "#/$defs/Int"
+            },
+            "rebased_paths": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/CommitResult"
+}

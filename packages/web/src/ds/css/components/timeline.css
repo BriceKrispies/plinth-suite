@@ -1,0 +1,73 @@
+.c-timeline {
+  position: relative;
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+.c-timeline__item {
+  --_edge: var(--neutral-border);
+  --_fg: var(--ink-2);
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  gap: var(--space-3);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block: 1.5rem calc(-1 * var(--space-4));
+    inset-inline-start: calc(0.75rem - 0.5px);
+    inline-size: 1px;
+    background: var(--rule);
+  }
+  &:last-child::before {
+    display: none;
+  }
+  &.c-timeline__item--info {
+    --_edge: var(--info-border);
+    --_fg: var(--info-fg);
+  }
+  &.c-timeline__item--success {
+    --_edge: var(--success-border);
+    --_fg: var(--success-fg);
+  }
+  &.c-timeline__item--warning {
+    --_edge: var(--warning-border);
+    --_fg: var(--warning-fg);
+  }
+  &.c-timeline__item--danger {
+    --_edge: var(--danger-border);
+    --_fg: var(--danger-fg);
+  }
+  &.c-timeline__item--signal {
+    --_edge: var(--signal-border);
+    --_fg: var(--signal-fg);
+  }
+}
+.c-timeline__marker {
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  background: var(--surface-1);
+  border: var(--hairline) solid var(--_edge);
+  border-radius: var(--radius-control);
+  color: var(--_fg);
+  position: relative;
+  z-index: 1;
+}
+.c-timeline__title {
+  font-weight: var(--weight-semi);
+}
+.c-timeline__text {
+  color: var(--ink-2);
+  font-size: var(--step--1);
+}
+.c-timeline__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}

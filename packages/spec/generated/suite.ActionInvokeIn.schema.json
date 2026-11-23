@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "ActionInvokeIn": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "input": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": {
+            "$id": "/schemas/unknown",
+            "title": "unknown"
+          }
+        },
+        "dry_run": {
+          "type": "boolean"
+        },
+        "preview_token": {
+          "type": "string",
+          "description": "a string matching the pattern ^pvt_[A-Za-z0-9_-]{43}$",
+          "pattern": "^pvt_[A-Za-z0-9_-]{43}$"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/IdempotencyKey"
+        },
+        "reason": {
+          "type": "string",
+          "description": "a string at most 280 character(s) long",
+          "title": "maxLength(280)",
+          "maxLength": 280
+        }
+      },
+      "additionalProperties": false
+    },
+    "IdempotencyKey": {
+      "type": "string",
+      "description": "a string matching the pattern ^[A-Za-z0-9:._-]{8,128}$",
+      "pattern": "^[A-Za-z0-9:._-]{8,128}$"
+    }
+  },
+  "$ref": "#/$defs/ActionInvokeIn"
+}

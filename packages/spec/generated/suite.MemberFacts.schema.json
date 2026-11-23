@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "MemberFacts": {
+      "type": "object",
+      "required": [
+        "handle",
+        "region",
+        "tier",
+        "balance",
+        "lifetime_points",
+        "points_earned_30d",
+        "points_redeemed_30d",
+        "orders_90d",
+        "badges_count",
+        "badges",
+        "groups",
+        "roles",
+        "department",
+        "joined_days",
+        "last_active_days",
+        "status"
+      ],
+      "properties": {
+        "handle": {
+          "$ref": "#/$defs/Handle"
+        },
+        "region": {
+          "$ref": "#/$defs/Region"
+        },
+        "tier": {
+          "$ref": "#/$defs/Tier"
+        },
+        "balance": {
+          "$ref": "#/$defs/Int"
+        },
+        "lifetime_points": {
+          "$ref": "#/$defs/Int"
+        },
+        "points_earned_30d": {
+          "$ref": "#/$defs/Int"
+        },
+        "points_redeemed_30d": {
+          "$ref": "#/$defs/Int"
+        },
+        "orders_90d": {
+          "$ref": "#/$defs/Int"
+        },
+        "badges_count": {
+          "$ref": "#/$defs/Int"
+        },
+        "badges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "department": {
+          "type": "string"
+        },
+        "joined_days": {
+          "$ref": "#/$defs/Int"
+        },
+        "last_active_days": {
+          "$ref": "#/$defs/Int"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "disabled"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Handle": {
+      "type": "string",
+      "description": "Member handle, e.g. maya-ortiz",
+      "pattern": "^[a-z][a-z0-9-]{1,39}$"
+    },
+    "Region": {
+      "type": "string",
+      "enum": [
+        "NA",
+        "EMEA",
+        "APAC",
+        "LATAM",
+        "ANZ"
+      ]
+    },
+    "Tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ]
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/MemberFacts"
+}

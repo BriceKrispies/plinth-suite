@@ -1,0 +1,77 @@
+/*
+  Look: folio (port of public/proto/folio). An editorial broadsheet: warm paper and evening-edition dark, a
+  serif display face for headings, a navy accent, thin ink rules instead of boxes, small square radii.
+  Overrides: neutrals, accent, surfaces, display font, radii, header rule, widget chrome, table heads.
+*/
+:root[data-look="folio"],
+.sg-look[data-look="folio"] {
+  --look: folio;
+
+  --paper: light-dark(oklch(0.968 0.013 88), oklch(0.205 0.012 255));
+  --paper-2: light-dark(oklch(0.945 0.014 86), oklch(0.235 0.013 255));
+  --paper-3: light-dark(oklch(0.92 0.015 86), oklch(0.29 0.014 255));
+  --ink: light-dark(oklch(0.24 0.02 255), oklch(0.94 0.01 88));
+  --ink-2: light-dark(oklch(0.42 0.02 255), oklch(0.8 0.012 88));
+  --ink-3: light-dark(oklch(0.49 0.018 255), oklch(0.72 0.012 88));
+  --rule: light-dark(oklch(0.87 0.014 86), oklch(0.34 0.014 255));
+  --control-border: light-dark(oklch(0.56 0.016 86), oklch(0.66 0.014 255));
+
+  --accent: light-dark(oklch(0.42 0.11 258), oklch(0.79 0.1 250));
+  --accent-on: light-dark(oklch(0.98 0.008 88), oklch(0.2 0.012 255));
+  --focus: light-dark(oklch(0.5 0.17 258), oklch(0.8 0.13 250));
+
+  --surface-1: light-dark(oklch(0.992 0.006 88), oklch(0.25 0.014 255));
+  --surface-2: light-dark(oklch(0.955 0.013 87), oklch(0.185 0.011 255));
+  --surface-3: light-dark(oklch(0.992 0.006 88), oklch(0.29 0.014 255));
+  --page-wash: var(--paper);
+  --chart-breach: var(--danger-fg);
+
+  /* Fraunces is a variable serif (optical size and weight axes, from Google Fonts); the rest is the fallback. */
+  --font-display:
+    "Fraunces", "Iowan Old Style", Charter, "Sitka Text", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-sans:
+    "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --track-tight: -0.01em;
+
+  --radius-1: 2px;
+  --radius-control: 3px;
+  --radius-card: 4px;
+  --shadow-1: 0 1px 0 color-mix(in oklch, var(--ink) 6%, transparent);
+  --shadow-1-hover: 0 1px 0 color-mix(in oklch, var(--ink) 14%, transparent);
+
+  --header-rule: 1px;
+  --header-pad: var(--space-3);
+  --header-title-size: var(--step-2);
+  --header-title-weight: 600;
+  --widget-bg: transparent;
+  --widget-edge: transparent;
+  --widget-radius: 0;
+  --widget-title-size: var(--step-0);
+  --widget-title-weight: 600;
+  --widget-title-color: var(--ink);
+  --nested-bg: transparent;
+  --pill-radius: var(--radius-1);
+  --count-radius: var(--radius-1);
+  --nav-current-bg: var(--paper-2);
+}
+
+/* Folio hangs each widget from a thin ink rule, like a column head, instead of a box. */
+:root[data-look="folio"] .c-widget:not(.c-widget--rule),
+.sg-look[data-look="folio"] .c-widget:not(.c-widget--rule) {
+  border-radius: 0;
+  border-block-start: var(--hairline) solid var(--ink);
+}
+:root[data-look="folio"] .c-widget__title,
+.sg-look[data-look="folio"] .c-widget__title {
+  font-family: var(--font-display);
+}
+
+/* Wide gamut: a richer navy on P3 screens at the same lightness, so ink-on-paper contrast holds. */
+@media (color-gamut: p3) {
+  :root[data-look="folio"],
+  .sg-look[data-look="folio"] {
+    --accent: light-dark(oklch(0.42 0.14 258), oklch(0.79 0.13 250));
+    --series-1: light-dark(oklch(0.5 0.15 255), oklch(0.74 0.12 250));
+    --series-3: light-dark(oklch(0.42 0.09 200), oklch(0.78 0.1 195));
+  }
+}

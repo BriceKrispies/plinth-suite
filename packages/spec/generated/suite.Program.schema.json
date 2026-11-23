@@ -1,0 +1,619 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Program": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Program"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/ProgramSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "ProgramSpec": {
+      "type": "object",
+      "required": [
+        "name",
+        "currency_label",
+        "tiers",
+        "expiry",
+        "transfer",
+        "awards",
+        "store",
+        "messaging",
+        "notification_defaults",
+        "digest_default"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "User-authored text (untrusted), at most 80 chars",
+          "title": "maxLength(80)",
+          "maxLength": 80
+        },
+        "currency_label": {
+          "type": "string",
+          "description": "a string at most 20 character(s) long",
+          "title": "maxLength(20)",
+          "maxLength": 20
+        },
+        "tiers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TierDef"
+          },
+          "description": "an array of exactly 4 item(s)",
+          "title": "itemsCount(4)",
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "expiry": {
+          "type": "object",
+          "required": [
+            "months",
+            "warn_days"
+          ],
+          "properties": {
+            "months": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 60",
+              "title": "between(1, 60)",
+              "minimum": 1,
+              "maximum": 60
+            },
+            "warn_days": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Int",
+                "description": "a number between 1 and 90",
+                "title": "between(1, 90)",
+                "minimum": 1,
+                "maximum": 90
+              },
+              "description": "an array of at most 3 item(s)",
+              "title": "maxItems(3)",
+              "maxItems": 3
+            }
+          },
+          "additionalProperties": false
+        },
+        "transfer": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "min_points",
+            "max_per_transfer",
+            "max_per_day"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "min_points": {
+              "$ref": "#/$defs/PositivePoints"
+            },
+            "max_per_transfer": {
+              "$ref": "#/$defs/PositivePoints"
+            },
+            "max_per_day": {
+              "$ref": "#/$defs/PositivePoints"
+            }
+          },
+          "additionalProperties": false
+        },
+        "awards": {
+          "type": "object",
+          "required": [
+            "manager_max_per_award",
+            "max_recipients"
+          ],
+          "properties": {
+            "manager_max_per_award": {
+              "$ref": "#/$defs/PositivePoints"
+            },
+            "max_recipients": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 50",
+              "title": "between(1, 50)",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          "additionalProperties": false
+        },
+        "store": {
+          "type": "object",
+          "required": [
+            "high_value_threshold_points",
+            "cancel_window_minutes",
+            "max_cart_lines",
+            "max_qty_per_line"
+          ],
+          "properties": {
+            "high_value_threshold_points": {
+              "$ref": "#/$defs/PositivePoints"
+            },
+            "cancel_window_minutes": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 0 and 10080",
+              "title": "between(0, 10080)",
+              "minimum": 0,
+              "maximum": 10080
+            },
+            "max_cart_lines": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 50",
+              "title": "between(1, 50)",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "max_qty_per_line": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 10",
+              "title": "between(1, 10)",
+              "minimum": 1,
+              "maximum": 10
+            }
+          },
+          "additionalProperties": false
+        },
+        "messaging": {
+          "type": "object",
+          "required": [
+            "broadcast_min_recipients",
+            "max_recipients"
+          ],
+          "properties": {
+            "broadcast_min_recipients": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 2 and 1000",
+              "title": "between(2, 1000)",
+              "minimum": 2,
+              "maximum": 1000
+            },
+            "max_recipients": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 1000",
+              "title": "between(1, 1000)",
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          "additionalProperties": false
+        },
+        "notification_defaults": {
+          "type": "object",
+          "required": [
+            "mention",
+            "message",
+            "approval_request",
+            "approval_decision",
+            "points_awarded",
+            "points_expiring",
+            "badge_earned",
+            "tier_changed",
+            "order_status",
+            "automation_alert",
+            "content_review",
+            "content_published",
+            "task_assigned",
+            "promotion_started",
+            "system"
+          ],
+          "properties": {
+            "mention": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "message": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "approval_request": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "approval_decision": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "points_awarded": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "points_expiring": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "badge_earned": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "tier_changed": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "order_status": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "automation_alert": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "content_review": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "content_published": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "task_assigned": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "promotion_started": {
+              "$ref": "#/$defs/ChannelPrefs"
+            },
+            "system": {
+              "$ref": "#/$defs/ChannelPrefs"
+            }
+          },
+          "additionalProperties": false
+        },
+        "digest_default": {
+          "$ref": "#/$defs/DigestPrefs"
+        },
+        "appearance": {
+          "$ref": "#/$defs/SiteAppearance"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TierDef": {
+      "type": "object",
+      "required": [
+        "tier",
+        "min_lifetime_points",
+        "perks",
+        "artwork"
+      ],
+      "properties": {
+        "tier": {
+          "$ref": "#/$defs/Tier"
+        },
+        "min_lifetime_points": {
+          "$ref": "#/$defs/Points"
+        },
+        "perks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "User-authored text (untrusted), at most 120 chars",
+            "title": "maxLength(120)",
+            "maxLength": 120
+          },
+          "description": "an array of at most 6 item(s)",
+          "title": "maxItems(6)",
+          "maxItems": 6
+        },
+        "artwork": {
+          "$ref": "#/$defs/Artwork"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ]
+    },
+    "Points": {
+      "type": "integer",
+      "description": "a non-negative number",
+      "title": "greaterThanOrEqualTo(0)",
+      "minimum": 0
+    },
+    "Artwork": {
+      "type": "object",
+      "required": [
+        "icon",
+        "hue",
+        "pattern"
+      ],
+      "properties": {
+        "icon": {
+          "$ref": "#/$defs/IconName"
+        },
+        "hue": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 359",
+          "title": "between(0, 359)",
+          "minimum": 0,
+          "maximum": 359
+        },
+        "pattern": {
+          "type": "string",
+          "enum": [
+            "solid",
+            "stripes",
+            "dots",
+            "rings",
+            "grid",
+            "waves"
+          ]
+        },
+        "glyph": {
+          "type": "string",
+          "description": "Up to 3 characters set over the icon",
+          "title": "maxLength(3)",
+          "maxLength": 3
+        }
+      },
+      "additionalProperties": false
+    },
+    "IconName": {
+      "type": "string",
+      "enum": [
+        "home",
+        "inbox",
+        "send",
+        "archive",
+        "star",
+        "bell",
+        "search",
+        "command",
+        "store",
+        "cart",
+        "bag",
+        "tag",
+        "gift",
+        "coins",
+        "wallet",
+        "transfer",
+        "trophy",
+        "medal",
+        "award",
+        "crown",
+        "flame",
+        "bolt",
+        "target",
+        "megaphone",
+        "percent",
+        "calendar",
+        "clock",
+        "workflow",
+        "play",
+        "pause",
+        "stop",
+        "branch",
+        "webhook",
+        "document",
+        "article",
+        "announcement",
+        "image",
+        "users",
+        "user",
+        "group",
+        "segment",
+        "shield",
+        "key",
+        "lock",
+        "chart",
+        "board",
+        "check",
+        "check-circle",
+        "x",
+        "alert",
+        "info",
+        "task",
+        "list",
+        "settings",
+        "sliders",
+        "history",
+        "audit",
+        "attachment",
+        "reply",
+        "mention",
+        "heart",
+        "sparkle",
+        "leaf",
+        "globe",
+        "truck",
+        "box",
+        "ticket",
+        "coffee",
+        "headphones",
+        "laptop",
+        "shirt",
+        "book",
+        "plant",
+        "mountain",
+        "sun",
+        "moon",
+        "plus",
+        "minus",
+        "edit",
+        "trash",
+        "copy",
+        "link",
+        "external",
+        "filter",
+        "sort",
+        "more",
+        "chevron-left",
+        "chevron-right",
+        "chevron-down",
+        "chevron-up",
+        "menu",
+        "eye",
+        "eye-off",
+        "logout"
+      ]
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "PositivePoints": {
+      "type": "integer",
+      "description": "a number between 1 and 10000000",
+      "title": "between(1, 10000000)",
+      "minimum": 1,
+      "maximum": 10000000
+    },
+    "ChannelPrefs": {
+      "type": "object",
+      "required": [
+        "in_app",
+        "email",
+        "digest"
+      ],
+      "properties": {
+        "in_app": {
+          "type": "boolean"
+        },
+        "email": {
+          "type": "boolean"
+        },
+        "digest": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DigestPrefs": {
+      "type": "object",
+      "required": [
+        "frequency",
+        "hour_utc"
+      ],
+      "properties": {
+        "frequency": {
+          "type": "string",
+          "enum": [
+            "off",
+            "daily",
+            "weekly"
+          ]
+        },
+        "hour_utc": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 23",
+          "title": "between(0, 23)",
+          "minimum": 0,
+          "maximum": 23
+        },
+        "weekday": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 1 and 7",
+          "title": "between(1, 7)",
+          "minimum": 1,
+          "maximum": 7
+        }
+      },
+      "additionalProperties": false
+    },
+    "SiteAppearance": {
+      "type": "object",
+      "required": [
+        "look"
+      ],
+      "properties": {
+        "look": {
+          "type": "string",
+          "enum": [
+            "calm",
+            "meridian",
+            "nocturne",
+            "folio",
+            "lattice",
+            "strata"
+          ]
+        },
+        "density": {
+          "type": "string",
+          "enum": [
+            "comfortable",
+            "compact"
+          ]
+        },
+        "experience": {
+          "type": "string",
+          "enum": [
+            "classic",
+            "town"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/Program"
+}

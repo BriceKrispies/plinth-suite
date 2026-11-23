@@ -1,0 +1,13 @@
+@layer overrides {
+  /* Author-level hide must beat every component display rule. */
+  [hidden] { display: none !important; }
+
+  @media (forced-colors: active) {
+    :focus-visible { outline-color: Highlight; }
+    .skeleton { background: GrayText; }
+  }
+  @media print {
+    .masthead, .trace, .skip-link, .menu__button { display: none !important; }
+    body { display: block; }
+  }
+}

@@ -1,0 +1,123 @@
+.c-chart-wrap {
+  display: block;
+}
+.c-chart {
+  display: block;
+  inline-size: 100%;
+  overflow: visible;
+}
+.c-chart--spark {
+  block-size: 2rem;
+}
+.c-chart--bars {
+  block-size: 3rem;
+}
+.c-chart__line {
+  stroke: var(--series-1);
+  stroke-width: 2;
+  stroke-dasharray: var(--series-dash-0);
+  stroke-linejoin: round;
+}
+.c-chart__bar {
+  fill: var(--series-1);
+}
+
+.c-chart-donut {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+.c-chart--donut {
+  inline-size: 7rem;
+  block-size: 7rem;
+  flex: none;
+}
+.c-chart__track {
+  stroke: var(--paper-2);
+  stroke-width: 6;
+}
+.c-chart__arc {
+  stroke-width: 6;
+  &.c-chart__arc--0 {
+    stroke: var(--series-0);
+  }
+  &.c-chart__arc--1 {
+    stroke: var(--series-1);
+  }
+  &.c-chart__arc--2 {
+    stroke: var(--series-2);
+  }
+  &.c-chart__arc--3 {
+    stroke: var(--series-3);
+  }
+  &.c-chart__arc--4 {
+    stroke: var(--series-4);
+  }
+}
+.c-chart__legend {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--step--1);
+  & li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+}
+.c-chart__legend-label {
+  flex: 1;
+}
+.c-chart__key {
+  flex: none;
+}
+.c-chart__marker {
+  &.c-chart__marker--0 {
+    fill: var(--series-0);
+  }
+  &.c-chart__marker--1 {
+    fill: var(--series-1);
+  }
+  &.c-chart__marker--2 {
+    fill: var(--series-2);
+  }
+  &.c-chart__marker--3 {
+    fill: var(--series-3);
+  }
+  &.c-chart__marker--4 {
+    fill: none;
+    stroke: var(--series-4);
+    stroke-width: 2;
+  }
+}
+
+/* Charts grow from their baseline as they scroll into view. Supported browsers only; otherwise drawn as at rest. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes chart-grow-y {
+      from {
+        scale: 1 0.0001;
+      }
+    }
+    @keyframes chart-draw-x {
+      from {
+        clip-path: inset(-6% 100% -6% 0);
+      }
+      to {
+        clip-path: inset(-6% -2% -6% 0);
+      }
+    }
+    .c-chart__bar {
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      animation: chart-grow-y linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+    .c-chart__line {
+      animation: chart-draw-x linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}

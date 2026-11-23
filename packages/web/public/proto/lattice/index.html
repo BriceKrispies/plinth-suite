@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Plinth</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      // Apply stored display preferences before first paint (no flash of the wrong theme or density).
+      try {
+        var p = JSON.parse(localStorage.getItem('lattice.prefs') || '{}');
+        if (p.theme === 'light' || p.theme === 'dark') document.documentElement.dataset.theme = p.theme;
+        if (p.density === 'compact') document.documentElement.dataset.density = 'compact';
+      } catch (e) {}
+    </script>
+    <script type="module" src="js/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="chrome">
+      <header class="topbar">
+        <a class="brand" id="brand-link" href="?" aria-label="Plinth, all dashboards">
+          <svg class="brand__mark" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+            <rect x="3" y="14" width="18" height="6" rx="1.5" />
+            <rect x="6" y="8.5" width="12" height="4" rx="1.5" />
+            <rect x="9" y="4" width="6" height="3" rx="1.5" />
+          </svg>
+          <span class="brand__name">Plinth</span>
+        </a>
+
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <ol>
+            <li><a id="crumb-root" href="?">Dashboards</a></li>
+            <li hidden><span id="crumb-current" aria-current="page"></span></li>
+          </ol>
+        </nav>
+
+        <div class="topbar__end">
+          <p class="live" id="live" role="status" data-state="connecting">Connecting</p>
+
+          <details class="menu menu--display">
+            <summary class="btn btn--subtle">
+              <svg class="icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M2 4.5h7M12 4.5h2M2 11.5h2M7 11.5h7M10.5 3v3M5.5 10v3" /></svg>
+              <span class="btn__label">Display</span>
+            </summary>
+            <div class="menu__list menu__list--form">
+              <fieldset class="seg-field">
+                <legend>Theme</legend>
+                <div class="seg">
+                  <label><input type="radio" name="theme" value="system" /><span>System</span></label>
+                  <label><input type="radio" name="theme" value="light" /><span>Light</span></label>
+                  <label><input type="radio" name="theme" value="dark" /><span>Dark</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="seg-field">
+                <legend>Density</legend>
+                <div class="seg">
+                  <label><input type="radio" name="density" value="comfortable" /><span>Comfortable</span></label>
+                  <label><input type="radio" name="density" value="compact" /><span>Compact</span></label>
+                </div>
+              </fieldset>
+            </div>
+          </details>
+
+          <div class="identity">
+            <span class="avatar" id="identity-avatar" aria-hidden="true"></span>
+            <label class="identity__label" for="identity-select">Viewing as</label>
+            <select class="select" id="identity-select"></select>
+          </div>
+
+          <ul class="presence" aria-label="People viewing this page">
+            <li><span class="avatar avatar--me" id="presence-me" aria-hidden="true"></span><span class="sr-only" id="presence-me-name"></span></li>
+          </ul>
+        </div>
+      </header>
+
+      <aside class="trace" id="trace" aria-labelledby="trace-title">
+        <div class="trace__lead">
+          <h2 class="trace__title" id="trace-title">Trace</h2>
+          <p class="trace__head">head —</p>
+        </div>
+        <p class="trace__empty">Waiting for changes</p>
+        <ol class="trace__list" aria-live="polite" aria-relevant="additions" aria-busy="true" aria-label="Recent changes, newest first"></ol>
+      </aside>
+    </div>
+
+    <div class="banner" id="banner" role="status" hidden></div>
+
+    <main id="main" tabindex="-1" aria-label="Content">
+      <noscript><p class="noscript">Plinth needs JavaScript to show live data.</p></noscript>
+    </main>
+
+    <footer class="sitefoot">
+      <p class="sitefoot__audit" id="audit" data-state="unknown">Checking audit chain</p>
+      <p class="sitefoot__id">Plinth operations platform</p>
+    </footer>
+
+    <p class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></p>
+
+    <dialog class="insp" id="inspector" aria-labelledby="inspector-title">
+      <div class="insp__frame">
+        <header class="insp__head">
+          <div class="insp__titles">
+            <p class="insp__sub"></p>
+            <h2 class="insp__title" id="inspector-title"></h2>
+          </div>
+          <button class="btn btn--subtle btn--icon insp__close" type="button" aria-label="Close inspector">
+            <svg class="icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" /></svg>
+          </button>
+        </header>
+        <div class="insp__content"></div>
+      </div>
+    </dialog>
+  </body>
+</html>

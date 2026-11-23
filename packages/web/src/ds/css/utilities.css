@@ -1,0 +1,76 @@
+/* Layer: utilities. Single-purpose helpers; everything else is a named component. */
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.u-tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.u-mono {
+  font-family: var(--font-mono);
+}
+
+.u-caps {
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.u-muted {
+  color: var(--ink-2);
+}
+
+.u-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.u-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/*
+  Arrival rule (DESIGN-SYSTEM 9.4): applied only from realtime handlers. A 2 px accent rule draws down the
+  inline-start edge and the surface washes with the accent, fading back over --dur-3.
+*/
+.u-arrive {
+  position: relative;
+  animation: arrive-wash var(--dur-3) var(--ease) both;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 2px;
+    background: var(--accent);
+    transform-origin: top;
+    animation: arrive-rule var(--dur-2) var(--ease) both;
+  }
+}
+
+@keyframes arrive-rule {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes arrive-wash {
+  from {
+    background-color: var(--accent-wash);
+  }
+}

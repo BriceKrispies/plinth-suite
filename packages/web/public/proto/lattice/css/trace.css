@@ -1,0 +1,255 @@
+/* Trace ribbon: a row of instrument cards, newest first. Legible from the back of a room. */
+.trace {
+  container: trace / inline-size;
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-3);
+  padding-inline: var(--gutter);
+  background: var(--surface-sunken);
+  border-block-end: 1px solid var(--border);
+}
+
+.trace__lead {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding-inline-end: var(--space-3);
+  border-inline-end: 1px solid var(--border);
+}
+
+.trace__title {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.trace__head {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.trace__empty {
+  align-self: center;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.trace__list {
+  display: flex;
+  flex: 1;
+  gap: var(--space-3);
+  min-inline-size: 0;
+  padding-block: var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.evt {
+  --tag-c: var(--text-faint);
+  display: flex;
+  flex: 0 0 clamp(18rem, 27cqi, 32rem);
+  gap: var(--space-3);
+  min-inline-size: 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-inline-start: 4px solid var(--tag-c);
+  border-radius: var(--radius-2);
+  scroll-snap-align: start;
+
+  &[data-tag="live"] {
+    --tag-c: var(--accent);
+  }
+
+  &[data-tag="replay"] {
+    --tag-c: var(--series-7);
+  }
+
+  &[data-tag="ui"] {
+    --tag-c: var(--series-4);
+  }
+
+  &[data-tag="session"] {
+    --tag-c: var(--series-3);
+    border-block-style: dashed;
+    border-inline-end-style: dashed;
+  }
+
+  &:first-child {
+    background: var(--accent-subtle);
+    border-color: color-mix(in oklch, var(--accent) 40%, var(--border));
+  }
+
+  &[data-fresh] {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--accent) 35%, transparent);
+  }
+}
+
+.evt__seq {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.evt__seq-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.evt__seq-num {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.evt__body {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
+  align-content: center;
+}
+
+.evt__who,
+.evt__what {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.evt .tag {
+  color: var(--text);
+  border: 1px solid color-mix(in oklch, var(--tag-c) 70%, transparent);
+  background: color-mix(in oklch, var(--tag-c) 14%, transparent);
+}
+
+.evt__actor,
+.evt__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-inline-size: 0;
+}
+
+.evt__actor {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.evt__behalf,
+.evt__kind {
+  flex: none;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.evt__kind {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 650;
+}
+
+.evt__rule {
+  flex: none;
+  padding: 0 var(--space-1);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-1);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.evt__title {
+  font-size: var(--text-md);
+  font-weight: 650;
+}
+
+.evt__ops {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .evt[data-fresh] {
+    animation: evt-in var(--dur-3) var(--ease-out) both;
+  }
+
+  @keyframes evt-in {
+    from {
+      opacity: 0;
+      transform: translateX(-1.5rem);
+    }
+  }
+}
+
+/* Narrow ribbon (phone): one slim row, essentials only */
+@container trace (inline-size < 44rem) {
+  .trace__lead {
+    display: none;
+  }
+
+  .trace__list {
+    padding-block: var(--space-1);
+  }
+
+  .evt {
+    flex-basis: 82cqi;
+    padding-block: var(--space-1);
+
+    & .evt__ops,
+    & .evt__rule,
+    & .evt__behalf,
+    & .evt__kind {
+      display: none;
+    }
+
+    & .evt__seq-label {
+      display: none;
+    }
+
+    & .evt__seq-num {
+      font-size: var(--text-lg);
+    }
+  }
+}
+
+/* Wall display: the instruments grow */
+@media (min-width: 1700px) {
+  .evt {
+    flex-basis: clamp(24rem, 24cqi, 34rem);
+  }
+
+  .evt__seq-num {
+    font-size: var(--text-2xl);
+  }
+
+  .evt__actor {
+    font-size: var(--text-md);
+  }
+
+  .evt__ops {
+    font-size: var(--text-sm);
+  }
+}
+
+@media (forced-colors: active) {
+  .evt {
+    border-color: CanvasText;
+  }
+}

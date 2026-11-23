@@ -1,0 +1,418 @@
+/*
+  Points widgets. Injected into layer(modules), scoped to the points frames and their popovers. Tokens only;
+  local properties are --w-points-*. The .w-kit-* classes shared with store and badges live in
+  ds/css/components/widget-parts.css. Widgets adapt to the frame's width with container queries.
+*/
+
+@scope ([data-widget^="points."], [data-widget-domain="points"]) {
+  .w-points-balance__hero {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+    padding-inline-start: var(--space-3);
+    border-inline-start: calc(2 * var(--hairline)) solid var(--rule);
+  }
+  .w-points-balance__amount {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin: 0;
+  }
+  .w-points-balance__value {
+    /* Scales with the widget's own width, so "20 385 pts" always fits: about 6.5 em of digits and unit. */
+    font-size: clamp(1.75rem, calc((100cqi - 4rem) / 6.5), var(--step-3));
+    max-inline-size: 100%;
+    white-space: nowrap;
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--track-tight);
+    line-height: 1;
+  }
+  .w-points-balance--s .w-points-balance__value {
+    font-size: clamp(1.5rem, calc((100cqi - 4rem) / 6.5), var(--step-2));
+  }
+  .w-points-balance__delta {
+    font-size: var(--step--1);
+    font-weight: var(--weight-semi);
+
+    &.is-up {
+      color: var(--success-fg);
+    }
+    &.is-down {
+      color: var(--danger-fg);
+    }
+  }
+  .w-points-balance__tier {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .w-points-balance__tierrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+  }
+  .w-points-balance__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+  .w-points-balance__stat {
+    margin: 0;
+    font-weight: var(--weight-semi);
+  }
+  .w-points-balance__expiring {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    padding-block: var(--space-2);
+    border-block: var(--hairline) solid var(--rule);
+    color: var(--ink-2);
+    font-size: var(--step--1);
+
+    &.is-soon {
+      color: var(--warning-fg);
+    }
+  }
+  .w-points-balance__pop {
+    display: grid;
+    gap: var(--space-2);
+    min-inline-size: 14rem;
+  }
+  .w-points-balance__spark {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .w-points-balance__recent {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+
+    & li {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-1) var(--space-3);
+      padding-block: var(--space-2);
+      border-block-start: var(--hairline) solid var(--rule);
+      font-size: var(--step--1);
+    }
+  }
+  .w-points-balance__memo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+  @container widget (min-width: 34rem) {
+    .w-points-balance--l {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: var(--space-6);
+    }
+    .w-points-balance--l > .w-points-balance__hero,
+    .w-points-balance--l > .w-points-balance__recent {
+      grid-column: 1 / -1;
+    }
+  }
+  /* ---- points.ledger ---- */
+  .w-points-ledger__summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    padding-block: var(--space-3);
+    border-block: var(--hairline) solid var(--rule);
+  }
+  @container widget (min-width: 36rem) {
+    .w-points-ledger__summary {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .w-points-ledger__sumval {
+    margin: 0;
+    font-size: var(--step-1);
+    font-weight: var(--weight-bold);
+  }
+  .w-points-ledger__sum.is-credit .w-points-ledger__sumval {
+    color: var(--success-fg);
+  }
+  .w-points-ledger__sum.is-debit .w-points-ledger__sumval {
+    color: var(--danger-fg);
+  }
+  .w-points-ledger__list,
+  .w-points-ledger__detail,
+  .w-points-ledger__pager {
+    min-inline-size: 0;
+  }
+  .w-points-ledger__pop {
+    display: grid;
+    gap: var(--space-2);
+    min-inline-size: 12rem;
+  }
+  /* ---- points.transfer and points.award ---- */
+  .w-points-transfer__limits {
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    background: var(--paper-2);
+    border-inline-start: calc(2 * var(--hairline)) solid var(--ink);
+    font-size: var(--step--1);
+  }
+  .w-points-transfer__amount {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .w-points-transfer__confirm,
+  .w-points-transfer__done,
+  .w-points-award__confirm,
+  .w-points-award__done {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .w-points-award__recipients {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .w-points-award__chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+
+    & li {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-1) var(--space-1) var(--space-2);
+      background: var(--paper-2);
+      border: var(--hairline) solid var(--rule);
+      border-radius: var(--radius-1);
+      max-inline-size: 100%;
+    }
+  }
+  .w-points-award__reason {
+    position: relative;
+    display: grid;
+  }
+  .w-points-award__counter {
+    justify-self: end;
+    font-size: var(--step--2);
+  }
+  /* ---- points.expiry ---- */
+  .w-points-expiry__headline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: var(--space-3);
+    border-block-end: var(--hairline) solid var(--rule);
+
+    &.is-warning {
+      padding-inline-start: var(--space-3);
+      border-inline-start: calc(3 * var(--hairline)) solid var(--warning-border);
+      color: var(--warning-fg);
+    }
+    &.is-danger {
+      padding-inline-start: var(--space-3);
+      border-inline-start: calc(3 * var(--hairline)) solid var(--danger-border);
+      color: var(--danger-fg);
+    }
+  }
+  .w-points-expiry__big {
+    margin: 0;
+    font-size: var(--step-2);
+    font-weight: var(--weight-bold);
+  }
+  .w-points-expiry__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .w-points-expiry__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    padding-block: var(--space-2);
+    border-block-start: var(--hairline) solid var(--rule);
+
+    & .c-progress {
+      grid-column: 1 / -1;
+    }
+  }
+  .w-points-expiry__pts {
+    font-weight: var(--weight-semi);
+    text-align: end;
+  }
+  .w-points-expiry__chart {
+    display: grid;
+    gap: var(--space-1);
+  }
+  /* ---- points.tiers ---- */
+  .w-points-tiers__you {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+  }
+  .w-points-tiers__ladder {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @container widget (min-width: 36rem) {
+    .w-points-tiers__ladder {
+      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    }
+  }
+  .w-points-tiers__tier {
+    all: unset;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: grid;
+    gap: var(--space-1);
+    inline-size: 100%;
+    padding: var(--space-3) var(--space-2);
+    border-block-start: calc(3 * var(--hairline)) solid var(--_tier, var(--rule));
+
+    &:hover {
+      background: var(--paper-2);
+    }
+    &:focus-visible {
+      outline: var(--focus-width) solid var(--focus);
+      outline-offset: var(--focus-offset);
+    }
+    &[aria-expanded="true"] {
+      background: var(--paper-2);
+    }
+    &.w-points-tiers__tier--bronze {
+      --_tier: var(--tier-bronze);
+    }
+    &.w-points-tiers__tier--silver {
+      --_tier: var(--tier-silver);
+    }
+    &.w-points-tiers__tier--gold {
+      --_tier: var(--tier-gold);
+    }
+    &.w-points-tiers__tier--platinum {
+      --_tier: var(--tier-platinum);
+    }
+  }
+  .w-points-tiers__name {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    align-items: center;
+  }
+  .w-points-tiers__min {
+    font-weight: var(--weight-semi);
+  }
+  .w-points-tiers__members {
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .w-points-tiers__share {
+    display: block;
+    block-size: var(--rule-heavy);
+    background: var(--paper-3);
+    border-radius: var(--radius-1);
+    overflow: hidden;
+
+    & > span {
+      display: block;
+      block-size: 100%;
+      inline-size: var(--_w, 0%);
+      background: var(--ink-2);
+    }
+  }
+  .w-points-tiers__perks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-1);
+
+    & li {
+      display: flex;
+      gap: var(--space-2);
+      align-items: flex-start;
+    }
+    & svg {
+      flex: none;
+      margin-block-start: 0.2em;
+      color: var(--success-fg);
+    }
+  }
+  .w-points-tiers__detail {
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-3);
+    border-block-start: var(--hairline) solid var(--rule);
+  }
+  /* ---- points.trial-balance ---- */
+  .w-points-tb__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .w-points-tb__verdict {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    border-block-end: var(--hairline) solid var(--rule);
+
+    &.is-ok {
+      color: var(--ink-2);
+    }
+    &.is-bad {
+      padding-inline-start: var(--space-3);
+      border-inline-start: calc(3 * var(--hairline)) solid var(--danger-border);
+      color: var(--danger-fg);
+    }
+  }
+  .w-points-tb__headline {
+    margin: 0;
+    font-weight: var(--weight-bold);
+  }
+  .w-points-tb__checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+
+    & li {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--space-1) var(--space-3);
+      align-items: center;
+      padding-block: var(--space-2);
+      border-block-start: var(--hairline) solid var(--rule);
+    }
+    & li > span:last-child {
+      grid-column: 2;
+    }
+  }
+  .w-points-tb__ids {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-1);
+  }
+  /* ---- points.accounts ---- */
+  .w-points-accounts__view {
+    display: grid;
+    gap: var(--space-4);
+    min-inline-size: 0;
+  }
+}

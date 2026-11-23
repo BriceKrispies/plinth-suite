@@ -1,0 +1,48 @@
+/* Live build: what the site looks like while it is cleared and rebuilt in front of people.
+   The empty-site state, and a short enter animation for widgets and nav items that arrive over realtime.
+   The enter class is the fallback: where view transitions run (components/transitions.css) the scripts do not add it,
+   so the two never play together. */
+.c-site-empty {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-2);
+  min-block-size: 60vh;
+  padding: var(--space-6);
+  text-align: center;
+}
+.c-site-empty__title {
+  margin: 0;
+  font-size: var(--step-1);
+  font-weight: 600;
+}
+.c-site-empty__note {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+@keyframes live-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.c-page-grid__item.is-entering,
+.c-nav__item.is-entering {
+  animation: live-enter 420ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-page-grid__item.is-entering,
+  .c-nav__item.is-entering {
+    animation: none;
+  }
+}
+:root[data-reduced-motion="true"] .c-page-grid__item.is-entering,
+:root[data-reduced-motion="true"] .c-nav__item.is-entering {
+  animation: none;
+}

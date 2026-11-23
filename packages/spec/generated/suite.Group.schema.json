@@ -1,0 +1,288 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Group": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Group"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/GroupSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "GroupSpec": {
+      "type": "object",
+      "required": [
+        "description",
+        "type",
+        "members",
+        "managers",
+        "open_posting",
+        "artwork"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "User-authored text (untrusted), at most 500 chars",
+          "title": "maxLength(500)",
+          "maxLength": 500
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "team",
+            "region",
+            "interest",
+            "distribution"
+          ]
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "description": "an array of at most 500 item(s)",
+          "title": "maxItems(500)",
+          "maxItems": 500
+        },
+        "managers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "description": "an array of at most 20 item(s)",
+          "title": "maxItems(20)",
+          "maxItems": 20
+        },
+        "open_posting": {
+          "type": "boolean"
+        },
+        "artwork": {
+          "$ref": "#/$defs/Artwork"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Subject": {
+      "type": "string",
+      "description": "A principal: user:<handle>, agent:<name>, service:<name>",
+      "pattern": "^(user|agent|service):[a-z0-9][a-z0-9._-]*$"
+    },
+    "Artwork": {
+      "type": "object",
+      "required": [
+        "icon",
+        "hue",
+        "pattern"
+      ],
+      "properties": {
+        "icon": {
+          "$ref": "#/$defs/IconName"
+        },
+        "hue": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 359",
+          "title": "between(0, 359)",
+          "minimum": 0,
+          "maximum": 359
+        },
+        "pattern": {
+          "type": "string",
+          "enum": [
+            "solid",
+            "stripes",
+            "dots",
+            "rings",
+            "grid",
+            "waves"
+          ]
+        },
+        "glyph": {
+          "type": "string",
+          "description": "Up to 3 characters set over the icon",
+          "title": "maxLength(3)",
+          "maxLength": 3
+        }
+      },
+      "additionalProperties": false
+    },
+    "IconName": {
+      "type": "string",
+      "enum": [
+        "home",
+        "inbox",
+        "send",
+        "archive",
+        "star",
+        "bell",
+        "search",
+        "command",
+        "store",
+        "cart",
+        "bag",
+        "tag",
+        "gift",
+        "coins",
+        "wallet",
+        "transfer",
+        "trophy",
+        "medal",
+        "award",
+        "crown",
+        "flame",
+        "bolt",
+        "target",
+        "megaphone",
+        "percent",
+        "calendar",
+        "clock",
+        "workflow",
+        "play",
+        "pause",
+        "stop",
+        "branch",
+        "webhook",
+        "document",
+        "article",
+        "announcement",
+        "image",
+        "users",
+        "user",
+        "group",
+        "segment",
+        "shield",
+        "key",
+        "lock",
+        "chart",
+        "board",
+        "check",
+        "check-circle",
+        "x",
+        "alert",
+        "info",
+        "task",
+        "list",
+        "settings",
+        "sliders",
+        "history",
+        "audit",
+        "attachment",
+        "reply",
+        "mention",
+        "heart",
+        "sparkle",
+        "leaf",
+        "globe",
+        "truck",
+        "box",
+        "ticket",
+        "coffee",
+        "headphones",
+        "laptop",
+        "shirt",
+        "book",
+        "plant",
+        "mountain",
+        "sun",
+        "moon",
+        "plus",
+        "minus",
+        "edit",
+        "trash",
+        "copy",
+        "link",
+        "external",
+        "filter",
+        "sort",
+        "more",
+        "chevron-left",
+        "chevron-right",
+        "chevron-down",
+        "chevron-up",
+        "menu",
+        "eye",
+        "eye-off",
+        "logout"
+      ]
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/Group"
+}

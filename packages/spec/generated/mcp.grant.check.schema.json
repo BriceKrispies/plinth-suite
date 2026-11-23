@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "GrantCheckInput": {
+      "type": "object",
+      "required": [
+        "resource",
+        "action"
+      ],
+      "properties": {
+        "resource": {
+          "$ref": "#/$defs/NodeRef"
+        },
+        "action": {
+          "$ref": "#/$defs/Permission"
+        },
+        "principal": {
+          "type": "string",
+          "description": "a string at most 128 character(s) long",
+          "title": "maxLength(128)",
+          "maxLength": 128
+        },
+        "with_counts": {
+          "type": "boolean"
+        },
+        "proposed": {
+          "type": "object",
+          "required": [
+            "row_predicate"
+          ],
+          "properties": {
+            "row_predicate": {
+              "type": "string",
+              "description": "a string at most 512 character(s) long",
+              "title": "maxLength(512)",
+              "maxLength": 512
+            },
+            "column_mask": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "an array of at most 64 item(s)",
+              "title": "maxItems(64)",
+              "maxItems": 64
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "NodeRef": {
+      "type": "string",
+      "description": "A node: plinth://<ws>/<Kind>/<uuid>, kind:slug (e.g. dashboard:ops-board), or a bare slug when unambiguous.",
+      "title": "maxLength(200)",
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "Permission": {
+      "type": "string",
+      "description": "node:read node:write node:delete query:run action:<name> workflow:read workflow:acknowledge approval:decide grant:propose grant:write grant:inspect ui:present",
+      "pattern": "^(node:(read|write|delete)|query:run|source:write|action:[a-z][a-z0-9_-]*|workflow:(read|acknowledge)|approval:decide|grant:(propose|write|inspect)|ui:present|principal:admin|delegation:admin|driver:execute|suite:use|messages:use|messages:broadcast|notifications:use|notifications:send|points:use|points:transfer|points:award|points:adjust|points:view-all|points:ledger|store:shop|store:orders|store:approve|store:refund|store:inventory|store:moderate|badges:award|badges:revoke|promotions:simulate|promotions:manage|promotions:approve|automation:manage|content:author|content:review|content:publish|people:view-private|segments:preview|tasks:use|tasks:manage|audit:view|admin:members|admin:roles|admin:settings)$"
+    }
+  },
+  "$ref": "#/$defs/GrantCheckInput"
+}

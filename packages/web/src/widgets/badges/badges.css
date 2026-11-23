@@ -1,0 +1,305 @@
+/*
+  Badge widgets (package B). Injected into layer(modules). Tokens only; local properties are --w-badges-*.
+  Shared helpers (.w-kit-*, the .w-badges base grid) are defined in widgets/points/points.css.
+*/
+
+@scope ([data-widget^="badges."]) {
+  /* ---- tile ---- */
+  .w-badges-tile {
+    all: unset;
+    box-sizing: border-box;
+    cursor: pointer;
+    /* a card is five rows (art, title, pills, progress, reward) that subgrid onto the catalogue rows */
+    display: grid;
+    grid-row: 1 / span 5;
+    grid-template-rows: subgrid;
+    row-gap: var(--space-1);
+    justify-items: center;
+    align-items: start;
+    inline-size: 100%;
+    padding: var(--space-3) var(--space-2);
+    text-align: center;
+    border-block-start: var(--hairline) solid var(--rule);
+    border-radius: var(--radius-1);
+
+    &:hover {
+      background: color-mix(in oklch, var(--ink) 4%, transparent);
+    }
+    &:focus-visible {
+      outline: var(--focus-width) solid var(--focus);
+      outline-offset: var(--focus-offset);
+    }
+    &.is-locked .w-badges-tile__art {
+      opacity: 0.55;
+    }
+    &.is-selected {
+      background: color-mix(in oklch, var(--ink) 6%, transparent);
+      border-block-start-color: var(--ink-2);
+    }
+  }
+  .w-badges-tile__art {
+    position: relative;
+    display: inline-grid;
+  }
+  .w-badges-tile__ring {
+    position: absolute;
+    inset-inline-end: calc(-1 * var(--space-2));
+    inset-block-end: calc(-1 * var(--space-1));
+    background: var(--surface-1);
+    border-radius: var(--radius-round);
+  }
+  .w-badges-tile__title {
+    font-weight: var(--weight-bold);
+    overflow-wrap: anywhere;
+  }
+  .w-badges-tile__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-1);
+  }
+
+  /* ---- catalogue ---- */
+  .w-badges-catalog__grid,
+  .w-badges-catalog__detail {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+    min-inline-size: 0;
+  }
+  .w-badges-catalog__summary {
+    display: grid;
+    gap: var(--space-2);
+    max-inline-size: 32rem;
+  }
+  .w-badges-catalog__count {
+    margin: 0;
+  }
+  .w-badges-catalog__tiles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    column-gap: var(--space-3);
+    row-gap: 0;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+
+    /* each li spans the five card rows, so titles, pills and rewards line up across a row of cards */
+    & > li {
+      display: grid;
+      grid-row: span 5;
+      grid-template-rows: subgrid;
+      min-inline-size: 0;
+    }
+  }
+  .w-badges-detail__head {
+    display: grid;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  @container widget (min-width: 36rem) {
+    .w-badges-detail__head {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+  }
+  .w-badges-detail__info {
+    display: grid;
+    gap: var(--space-2);
+    min-inline-size: 0;
+  }
+  .w-badges-detail__desc {
+    margin: 0;
+    max-inline-size: 60ch;
+  }
+  .w-badges-detail__progress {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .w-badges-detail__awards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+
+    & li {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2) var(--space-3);
+      padding-block: var(--space-2);
+      border-block-start: var(--hairline) solid var(--rule);
+    }
+    & li.is-revoked {
+      opacity: 0.7;
+    }
+  }
+  .w-badges-detail__awardart {
+    display: inline-grid;
+  }
+
+  /* ---- showcase ---- */
+  .w-badges-showcase__count {
+    margin: 0;
+  }
+  .w-badges-showcase__pins,
+  .w-badges-showcase__more {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .w-badges-pinned {
+    all: unset;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2);
+    max-inline-size: 7rem;
+    text-align: center;
+    border-radius: var(--radius-control);
+
+    &:hover {
+      background: color-mix(in oklch, var(--ink) 4%, transparent);
+    }
+    &:focus-visible {
+      outline: var(--focus-width) solid var(--focus);
+      outline-offset: var(--focus-offset);
+    }
+  }
+  .w-badges-pinned__title {
+    font-weight: var(--weight-semi);
+    font-size: var(--step--1);
+    overflow-wrap: anywhere;
+  }
+  .w-badges-pick {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+
+    & li {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2) var(--space-3);
+      padding-block: var(--space-2);
+      border-block-start: var(--hairline) solid var(--rule);
+    }
+    & li:has(input:checked) {
+      background: color-mix(in oklch, var(--ink) 4%, transparent);
+    }
+    & label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex: 1 1 10rem;
+      min-inline-size: 0;
+      cursor: pointer;
+    }
+    & input[type="checkbox"] {
+      inline-size: var(--space-4);
+      block-size: var(--space-4);
+    }
+  }
+  .w-badges-pick__order {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  /* ---- progress ---- */
+  .w-badges-progress__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .w-badges-progress__item {
+    all: unset;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    inline-size: 100%;
+    padding-block: var(--space-2);
+    border-block-start: var(--hairline) solid var(--rule);
+
+    &:hover {
+      background: color-mix(in oklch, var(--ink) 4%, transparent);
+    }
+    &:focus-visible {
+      outline: var(--focus-width) solid var(--focus);
+      outline-offset: var(--focus-offset);
+    }
+  }
+  .w-badges-progress__ring {
+    flex: none;
+    display: inline-grid;
+  }
+  .w-badges-progress__art {
+    flex: none;
+    display: inline-grid;
+  }
+  .w-badges-progress__text {
+    display: grid;
+    gap: calc(var(--space-1) / 2);
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+  .w-badges-progress__title {
+    font-weight: var(--weight-semi);
+    overflow-wrap: anywhere;
+  }
+  .w-badges-progress__side {
+    display: grid;
+    justify-items: end;
+    gap: var(--space-1);
+  }
+
+  /* ---- recent ---- */
+  .w-badges-recent__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .w-badges-recent__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    border-block-start: var(--hairline) solid var(--rule);
+  }
+  .w-badges-recent__art {
+    flex: none;
+    display: inline-grid;
+  }
+  .w-badges-recent__text {
+    display: grid;
+    gap: var(--space-1);
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+  .w-badges-recent__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--ink-3);
+  }
+  .w-badges-recent__who {
+    font-weight: var(--weight-semi);
+  }
+}

@@ -1,0 +1,198 @@
+/* Tier-4 modal family: dialog, drawer and sheet share the head, body and foot. */
+.c-dialog,
+.c-drawer,
+.c-sheet {
+  padding: 0;
+  border: var(--hairline) solid var(--control-border);
+  background: var(--surface-4);
+  color: var(--ink);
+  box-shadow: var(--shadow-4);
+  max-block-size: 100dvh;
+  overflow: hidden;
+
+  &::backdrop {
+    background: var(--backdrop);
+    backdrop-filter: blur(2px);
+    transition:
+      background-color var(--dur-2) var(--ease),
+      backdrop-filter var(--dur-2) var(--ease),
+      overlay var(--dur-2) allow-discrete,
+      display var(--dur-2) allow-discrete;
+  }
+  &[open]::backdrop {
+    @starting-style {
+      background: transparent;
+      backdrop-filter: blur(0);
+    }
+  }
+  &[open] {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.c-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-block-end: var(--hairline) solid var(--rule);
+  background: linear-gradient(180deg, var(--paper-2), transparent);
+}
+.c-modal__title {
+  font-size: var(--step-1);
+  text-wrap: balance;
+}
+.c-modal__body {
+  text-wrap: pretty;
+}
+
+/* Scroll lock while any modal dialog is open: no script, the page shell reads the dialog's state. */
+body:has(dialog[open]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+.c-modal__body {
+  flex: 1;
+  min-block-size: 0;
+  overflow-y: auto;
+  padding: var(--space-5);
+}
+.c-modal__foot {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border-block-start: var(--hairline) solid var(--rule);
+  background: var(--paper-2);
+}
+
+/* Dialog */
+.c-dialog {
+  margin: auto;
+  border-radius: var(--radius-card);
+  inline-size: min(36rem, calc(100vw - 2 * var(--gutter)));
+  max-block-size: min(40rem, calc(100dvh - 2 * var(--space-5)));
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity var(--dur-2) var(--ease),
+    translate var(--dur-2) var(--ease),
+    overlay var(--dur-2) allow-discrete,
+    display var(--dur-2) allow-discrete;
+
+  &.c-dialog--sm {
+    inline-size: min(28rem, calc(100vw - 2 * var(--gutter)));
+  }
+  &.c-dialog--lg {
+    inline-size: min(48rem, calc(100vw - 2 * var(--gutter)));
+  }
+  @starting-style {
+    &[open] {
+      opacity: 0;
+      translate: 0 0.75rem;
+    }
+  }
+}
+
+@media (max-width: 39.99rem) {
+  .c-dialog .c-modal__foot {
+    flex-direction: column-reverse;
+  }
+  .c-dialog .c-modal__foot .c-button {
+    inline-size: 100%;
+  }
+}
+
+/* Drawer */
+.c-drawer {
+  margin: 0;
+  block-size: 100dvh;
+  max-block-size: 100dvh;
+  inline-size: min(30rem, 100vw);
+  border-block: 0;
+  border-radius: 0;
+  transition:
+    translate var(--dur-2) var(--ease),
+    overlay var(--dur-2) allow-discrete,
+    display var(--dur-2) allow-discrete;
+
+  &.c-drawer--sm {
+    inline-size: min(22rem, 100vw);
+  }
+  &.c-drawer--lg {
+    inline-size: min(44rem, 100vw);
+  }
+  &.c-drawer--end {
+    margin-inline-start: auto;
+    border-inline-end: 0;
+    @starting-style {
+      &[open] {
+        translate: 100% 0;
+      }
+    }
+  }
+  &.c-drawer--start {
+    margin-inline-end: auto;
+    border-inline-start: 0;
+    @starting-style {
+      &[open] {
+        translate: -100% 0;
+      }
+    }
+  }
+}
+
+/* Sheet, and a drawer below 40rem */
+.c-sheet,
+.c-drawer {
+  @media (max-width: 39.99rem) {
+    inline-size: 100vw;
+    max-inline-size: 100vw;
+    block-size: auto;
+    max-block-size: 88dvh;
+    margin: auto 0 0;
+    border-inline: 0;
+    border-block-end: 0;
+    border-start-start-radius: var(--radius-card);
+    border-start-end-radius: var(--radius-card);
+    @starting-style {
+      &[open] {
+        translate: 0 100%;
+      }
+    }
+  }
+}
+.c-sheet {
+  margin: auto 0 0;
+  inline-size: 100vw;
+  max-inline-size: 100vw;
+  max-block-size: 88dvh;
+  block-size: auto;
+  border-inline: 0;
+  border-block-end: 0;
+  border-start-start-radius: var(--radius-card);
+  border-start-end-radius: var(--radius-card);
+  transition:
+    translate var(--dur-2) var(--ease),
+    overlay var(--dur-2) allow-discrete,
+    display var(--dur-2) allow-discrete;
+  @starting-style {
+    &[open] {
+      translate: 0 100%;
+    }
+  }
+}
+.c-sheet__grab {
+  display: block;
+  inline-size: 2.5rem;
+  block-size: 4px;
+  margin: var(--space-2) auto 0;
+  border-radius: var(--radius-round);
+  background: var(--rule);
+}
+.c-drawer > .c-sheet__grab {
+  display: none;
+}

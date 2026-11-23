@@ -1,0 +1,48 @@
+@layer layout {
+  .page {
+    inline-size: 100%;
+    max-inline-size: 120rem;
+    margin-inline: auto;
+    padding: var(--space-6) var(--gutter) var(--space-8);
+  }
+
+  /* Report heading: eyebrow, headline, dek and a dateline in the margin. */
+  .page-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: var(--space-4) var(--space-6);
+    padding-block-end: var(--space-4);
+    margin-block-end: var(--space-5);
+    border-block-end: 1px solid var(--rule-strong);
+  }
+  .page-head__main { min-inline-size: 0; }
+  .page-head .dateline { justify-self: end; }
+  @media (max-width: 52rem) {
+    .page-head { grid-template-columns: minmax(0, 1fr); }
+    .page-head .dateline { justify-self: start; }
+  }
+
+  /* Board: a 12-column grid that honours `at`. The wrapper is the query container. */
+  .board-wrap { container: board / inline-size; }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 12), minmax(0, 1fr));
+    grid-auto-rows: var(--row-h);
+    gap: var(--board-gap);
+  }
+  .board > .panel {
+    grid-column: calc(var(--x) + 1) / span var(--w);
+    grid-row: calc(var(--y) + 1) / span var(--h);
+  }
+
+  /* Phone: panels stack in reading order, heights come from their row span. */
+  @container board (inline-size < 44rem) {
+    .board { grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; }
+    .board > .panel {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      min-block-size: calc(var(--h) * 3.4rem + 3rem);
+    }
+  }
+}

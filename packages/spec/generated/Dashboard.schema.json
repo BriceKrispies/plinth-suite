@@ -1,0 +1,224 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Dashboard": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Dashboard"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/DashboardSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "DashboardSpec": {
+      "type": "object",
+      "required": [
+        "layout"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "patternProperties": {
+            "": {
+              "type": "object",
+              "required": [
+                "type"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "string",
+                    "int",
+                    "float",
+                    "bool",
+                    "timestamp",
+                    "duration"
+                  ]
+                },
+                "default": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/Slug"
+          }
+        },
+        "layout": {
+          "type": "object",
+          "required": [
+            "items"
+          ],
+          "properties": {
+            "columns": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 24",
+              "title": "between(1, 24)",
+              "minimum": 1,
+              "maximum": 24
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "panel",
+                  "at"
+                ],
+                "properties": {
+                  "panel": {
+                    "$ref": "#/$defs/Ref"
+                  },
+                  "at": {
+                    "type": "object",
+                    "required": [
+                      "x",
+                      "y",
+                      "w",
+                      "h"
+                    ],
+                    "properties": {
+                      "x": {
+                        "$ref": "#/$defs/Int",
+                        "description": "a non-negative number",
+                        "title": "greaterThanOrEqualTo(0)",
+                        "minimum": 0
+                      },
+                      "y": {
+                        "$ref": "#/$defs/Int",
+                        "description": "a non-negative number",
+                        "title": "greaterThanOrEqualTo(0)",
+                        "minimum": 0
+                      },
+                      "w": {
+                        "$ref": "#/$defs/Int",
+                        "description": "a number greater than or equal to 1",
+                        "title": "greaterThanOrEqualTo(1)",
+                        "minimum": 1
+                      },
+                      "h": {
+                        "$ref": "#/$defs/Int",
+                        "description": "a number greater than or equal to 1",
+                        "title": "greaterThanOrEqualTo(1)",
+                        "minimum": 1
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ref"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "Ref": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z]+:[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "pattern": "^[a-z]+:[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    }
+  },
+  "$ref": "#/$defs/Dashboard"
+}

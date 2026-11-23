@@ -1,0 +1,30 @@
+export * from "./kinds";
+export * from "./primitives";
+export * from "./permissions";
+export * from "./conditions";
+export * from "./events";
+export * from "./nodes";
+export * from "./promotions";
+export * from "./automation";
+export * from "./examples";
+export * from "./sources";
+export * from "./mcp";
+export * from "./actions";
+export * from "./widgets";
+export * from "./default-pages";
+
+/** Request and response schemas per module, namespaced to keep names short and collision-free. */
+export * as SuiteMe from "./api/me";
+export * as SuiteMessages from "./api/messages";
+export * as SuiteNotifications from "./api/notifications";
+export * as SuitePoints from "./api/points";
+export * as SuiteStore from "./api/store";
+export * as SuiteBadges from "./api/badges";
+export * as SuitePromotions from "./api/promotions";
+export * as SuiteAutomation from "./api/automation";
+export * as SuiteContent from "./api/content";
+export * as SuitePeople from "./api/people";
+export * as SuiteWork from "./api/work";
+export * as SuiteAdmin from "./api/admin";
+export * as SuiteDiscovery from "./api/discovery";
+export * as SuitePages from "./api/pages";

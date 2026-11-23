@@ -1,0 +1,4794 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Widget": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Widget"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/WidgetInstanceSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "WidgetInstanceSpec": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.table"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "query",
+                "visual"
+              ],
+              "properties": {
+                "query": {
+                  "$ref": "#/$defs/QueryAst"
+                },
+                "visual": {
+                  "$ref": "#/$defs/TableVisual"
+                },
+                "dashboard": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "params": {
+                  "type": "object",
+                  "required": [],
+                  "properties": {},
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.bar"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "query",
+                "visual"
+              ],
+              "properties": {
+                "query": {
+                  "$ref": "#/$defs/QueryAst"
+                },
+                "visual": {
+                  "$ref": "#/$defs/BarVisual"
+                },
+                "dashboard": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "params": {
+                  "type": "object",
+                  "required": [],
+                  "properties": {},
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.line"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "query",
+                "visual"
+              ],
+              "properties": {
+                "query": {
+                  "$ref": "#/$defs/QueryAst"
+                },
+                "visual": {
+                  "$ref": "#/$defs/LineVisual"
+                },
+                "dashboard": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "params": {
+                  "type": "object",
+                  "required": [],
+                  "properties": {},
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.area"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "query",
+                "visual"
+              ],
+              "properties": {
+                "query": {
+                  "$ref": "#/$defs/QueryAst"
+                },
+                "visual": {
+                  "$ref": "#/$defs/AreaVisual"
+                },
+                "dashboard": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "params": {
+                  "type": "object",
+                  "required": [],
+                  "properties": {},
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.heatmap"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "query",
+                "visual"
+              ],
+              "properties": {
+                "query": {
+                  "$ref": "#/$defs/QueryAst"
+                },
+                "visual": {
+                  "$ref": "#/$defs/HeatmapVisual"
+                },
+                "dashboard": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "params": {
+                  "type": "object",
+                  "required": [],
+                  "properties": {},
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.scatter"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "query",
+                "visual"
+              ],
+              "properties": {
+                "query": {
+                  "$ref": "#/$defs/QueryAst"
+                },
+                "visual": {
+                  "$ref": "#/$defs/ScatterVisual"
+                },
+                "dashboard": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "params": {
+                  "type": "object",
+                  "required": [],
+                  "properties": {},
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.kpi"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "query",
+                "visual"
+              ],
+              "properties": {
+                "query": {
+                  "$ref": "#/$defs/QueryAst"
+                },
+                "visual": {
+                  "$ref": "#/$defs/KpiVisual"
+                },
+                "dashboard": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "params": {
+                  "type": "object",
+                  "required": [],
+                  "properties": {},
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.panel"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "panel"
+              ],
+              "properties": {
+                "panel": {
+                  "$ref": "#/$defs/Ref.panel"
+                },
+                "dashboard": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.board"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "dashboard"
+              ],
+              "properties": {
+                "dashboard": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "reporting.suite-kpis"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "metrics"
+              ],
+              "properties": {
+                "metrics": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "points_issued_today",
+                      "points_redeemed_today",
+                      "orders_today",
+                      "active_members_7d",
+                      "badges_awarded_7d",
+                      "members_total"
+                    ]
+                  },
+                  "description": "an array of at most 6 item(s)",
+                  "title": "maxItems(6)",
+                  "minItems": 1,
+                  "maxItems": 6
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "messaging.inbox"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "folder": {
+                  "type": "string",
+                  "enum": [
+                    "inbox",
+                    "sent",
+                    "starred",
+                    "archived"
+                  ]
+                },
+                "unread_only": {
+                  "type": "boolean"
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "open_in": {
+                  "type": "string",
+                  "enum": [
+                    "widget",
+                    "bus"
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "messaging.thread"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "thread": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/UUID"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "messaging.compose"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "to": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Recipient"
+                  },
+                  "description": "an array of at most 50 item(s)",
+                  "title": "maxItems(50)",
+                  "maxItems": 50
+                },
+                "subject": {
+                  "type": "string",
+                  "description": "a string at most 140 character(s) long",
+                  "title": "maxLength(140)",
+                  "maxLength": 140
+                },
+                "collapsed": {
+                  "type": "boolean"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "messaging.unread"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "notifications.feed"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "filter": {
+                  "type": "string",
+                  "enum": [
+                    "all",
+                    "unread"
+                  ]
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/NotificationType"
+                  }
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "notifications.preferences"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "notifications.deliveries"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "email",
+                    "digest"
+                  ]
+                },
+                "member": {
+                  "$ref": "#/$defs/Handle"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "notifications.send"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "people.directory"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "region": {
+                  "$ref": "#/$defs/Region"
+                },
+                "tier": {
+                  "$ref": "#/$defs/Tier"
+                },
+                "group": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "view": {
+                  "type": "string",
+                  "enum": [
+                    "grid",
+                    "table"
+                  ]
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "people.profile-card"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "member"
+              ],
+              "properties": {
+                "member": {
+                  "$ref": "#/$defs/MemberTarget"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "people.activity"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "member"
+              ],
+              "properties": {
+                "member": {
+                  "$ref": "#/$defs/MemberTarget"
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/DomainEventType"
+                  }
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "people.group"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "group"
+              ],
+              "properties": {
+                "group": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "people.groups"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "people.sessions"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "search.results"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "q"
+              ],
+              "properties": {
+                "q": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string at most 120 character(s) long",
+                      "title": "maxLength(120)",
+                      "maxLength": 120
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "points.balance"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "member"
+              ],
+              "properties": {
+                "member": {
+                  "$ref": "#/$defs/MemberTarget"
+                },
+                "show_tier": {
+                  "type": "boolean"
+                },
+                "show_expiring": {
+                  "type": "boolean"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "points.ledger"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "member"
+              ],
+              "properties": {
+                "member": {
+                  "$ref": "#/$defs/MemberTarget"
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/TxnType"
+                  }
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "points.transfer"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "to": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/Handle"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "points.award"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "to": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Handle"
+                  },
+                  "description": "an array of at most 50 item(s)",
+                  "title": "maxItems(50)",
+                  "maxItems": 50
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "points.expiry"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "member"
+              ],
+              "properties": {
+                "member": {
+                  "$ref": "#/$defs/MemberTarget"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "points.tiers"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "points.trial-balance"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "points.accounts"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "member",
+                    "system"
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "store.catalog"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "category": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "tag": {
+                  "type": "string"
+                },
+                "sort": {
+                  "type": "string",
+                  "enum": [
+                    "featured",
+                    "price_asc",
+                    "price_desc",
+                    "rating",
+                    "newest"
+                  ]
+                },
+                "affordable_only": {
+                  "type": "boolean"
+                },
+                "show_filters": {
+                  "type": "boolean"
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "open_in": {
+                  "type": "string",
+                  "enum": [
+                    "widget",
+                    "bus",
+                    "page"
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "store.product"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "product": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "store.featured"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                },
+                "limit": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 2 and 12",
+                  "title": "between(2, 12)",
+                  "minimum": 2,
+                  "maximum": 12
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "store.cart"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "compact": {
+                  "type": "boolean"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "store.orders"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "mine",
+                    "all"
+                  ]
+                },
+                "status": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/OrderStatus"
+                  }
+                },
+                "requires_approval": {
+                  "type": "boolean"
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "store.order"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "order": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/UUID"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "store.wishlist"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "store.inventory"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "in_stock",
+                    "low",
+                    "out"
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "badges.showcase"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "member"
+              ],
+              "properties": {
+                "member": {
+                  "$ref": "#/$defs/MemberTarget"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "badges.progress"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "member"
+              ],
+              "properties": {
+                "member": {
+                  "$ref": "#/$defs/MemberTarget"
+                },
+                "limit": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 1 and 12",
+                  "title": "between(1, 12)",
+                  "minimum": 1,
+                  "maximum": 12
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "badges.catalog"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "member"
+              ],
+              "properties": {
+                "member": {
+                  "$ref": "#/$defs/MemberTarget"
+                },
+                "filter": {
+                  "type": "string",
+                  "enum": [
+                    "all",
+                    "earned",
+                    "in_progress",
+                    "locked"
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "badges.recent"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "limit": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 30",
+                  "title": "between(3, 30)",
+                  "minimum": 3,
+                  "maximum": 30
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "promotions.list"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "status": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/PromotionStatus"
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "promotions.builder"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "promotion": {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                          "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                        },
+                        {
+                          "$ref": "#/$defs/ParamBinding"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "promotions.simulator"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "promotion": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "promotions.performance"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "promotion": {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                          "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                        },
+                        {
+                          "$ref": "#/$defs/ParamBinding"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "bucket": {
+                  "type": "string",
+                  "enum": [
+                    "hour",
+                    "day"
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "promotions.active"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "limit": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 1 and 6",
+                  "title": "between(1, 6)",
+                  "minimum": 1,
+                  "maximum": 6
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "automation.list"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "automation.builder"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "automation": {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                          "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                        },
+                        {
+                          "$ref": "#/$defs/ParamBinding"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "automation.runs"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "automation": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "status": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/RunStatus"
+                  }
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "content.feed"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "page",
+                    "article",
+                    "announcement"
+                  ]
+                },
+                "tag": {
+                  "type": "string"
+                },
+                "layout": {
+                  "type": "string",
+                  "enum": [
+                    "list",
+                    "cards"
+                  ]
+                },
+                "limit": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 1 and 50",
+                  "title": "between(1, 50)",
+                  "minimum": 1,
+                  "maximum": 50
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "content.reader"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "content": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "content.editor"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "content": {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                          "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                        },
+                        {
+                          "$ref": "#/$defs/ParamBinding"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "content.review-queue"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "content.list"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "status": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/ContentStatus"
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "page",
+                    "article",
+                    "announcement"
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "segments.list"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "segments.builder"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "segment": {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                          "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                        },
+                        {
+                          "$ref": "#/$defs/ParamBinding"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "segments.members"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "segment": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "calendar.month"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "promotion",
+                      "content",
+                      "automation",
+                      "expiry",
+                      "task"
+                    ]
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "calendar.agenda"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "days": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 1 and 31",
+                  "title": "between(1, 31)",
+                  "minimum": 1,
+                  "maximum": 31
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "promotion",
+                      "content",
+                      "automation",
+                      "expiry",
+                      "task"
+                    ]
+                  }
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "approvals.inbox"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "to_decide",
+                    "requested",
+                    "all"
+                  ]
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/ApprovalType"
+                  }
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "tasks.list"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "mine",
+                    "created",
+                    "all"
+                  ]
+                },
+                "status": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/TaskStatus"
+                  }
+                },
+                "page_size": {
+                  "$ref": "#/$defs/Int",
+                  "description": "a number between 3 and 100",
+                  "title": "between(3, 100)",
+                  "minimum": 3,
+                  "maximum": 100
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "tasks.board"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "scope": {
+                  "type": "string",
+                  "enum": [
+                    "mine",
+                    "created",
+                    "all"
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "tasks.quick-add"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "audit.timeline"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "change",
+                      "event"
+                    ]
+                  }
+                },
+                "actor": {
+                  "type": "string"
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "audit.verify"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "audit.node-history"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "node"
+              ],
+              "properties": {
+                "node": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string at most 200 character(s) long",
+                      "title": "maxLength(200)",
+                      "maxLength": 200
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "admin.members"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "admin.roles"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "admin.matrix"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "admin.grants"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "admin.program"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "settings.appearance"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "widget",
+            "config"
+          ],
+          "properties": {
+            "widget": {
+              "type": "string",
+              "enum": [
+                "pages.editor"
+              ]
+            },
+            "config": {
+              "type": "object",
+              "required": [
+                "page"
+              ],
+              "properties": {
+                "page": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "description": "a string matching the pattern ^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$",
+                      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+                    },
+                    {
+                      "$ref": "#/$defs/ParamBinding"
+                    }
+                  ]
+                },
+                "link_group": {
+                  "type": "string",
+                  "description": "Widgets with the same link group exchange selections on the page bus (default 'page').",
+                  "pattern": "^[a-z][a-z0-9-]{0,31}$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "maxLength": 120
+            },
+            "owner": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "QueryAst": {
+      "type": "object",
+      "required": [
+        "from"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "source:<slug>, for example source:orders",
+          "pattern": "^(source|query):[a-z][a-z0-9_.]*$"
+        },
+        "where": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Predicate"
+          },
+          "description": "Conjunction of predicates {field, op, value}. op: eq ne lt lte gt gte in not_in is_null not_null. value is a JSON literal typed by the field: strings raw (EMEA, never 'EMEA'), numbers, booleans, ISO-8601 timestamps as plain strings. Relative time: {\"expr\":\"now() - 1h\"} (the bare string \"now() - 1h\" is also accepted). Landed sources need a gt/gte lower bound on their time column.",
+          "title": "maxItems(32)",
+          "maxItems": 32
+        },
+        "derive": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "patternProperties": {
+            "": {
+              "type": "string",
+              "description": "a string at most 200 character(s) long",
+              "title": "maxLength(200)",
+              "maxLength": 200
+            }
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "Map of new field name to expression over fields. Operators + - * / = != < <= > >= and or not. Functions: now(), abs(x), ms(duration) -> int ms, round(x, n), coalesce(a, b), date_trunc(1h, ts), bucket(ts, '1 minute') (units second/minute/hour/day). timestamp - timestamp yields a duration in MILLISECONDS. Duration literals: 90s 15m 1h 3d. Example: {\"latency_ms\":\"ms(fulfilled_at - placed_at)\",\"minute\":\"bucket(placed_at, '1 minute')\"}. Group by a derived name to bucket time."
+        },
+        "group": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "an array of at most 8 item(s)",
+          "title": "maxItems(8)",
+          "maxItems": 8
+        },
+        "aggregate": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "patternProperties": {
+            "": {
+              "$ref": "#/$defs/Agg"
+            }
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "Map of output name to aggregate. Object form (canonical): {\"fn\":\"percentile\",\"of\":\"latency_ms\",\"p\":0.95}, {\"fn\":\"count\"}, {\"fn\":\"avg\",\"of\":\"latency_ms\"}; fn is count count_distinct sum avg min max percentile. String alias: \"percentile(latency_ms, 0.95)\", \"count()\", \"sum(order_value_cents)\"."
+        },
+        "select": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "an array of at most 64 item(s)",
+          "title": "maxItems(64)",
+          "maxItems": 64
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "field",
+              "dir"
+            ],
+            "properties": {
+              "field": {
+                "$ref": "#/$defs/Field"
+              },
+              "dir": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "an array of at most 8 item(s)",
+          "title": "maxItems(8)",
+          "maxItems": 8
+        },
+        "limit": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 1 and 1000",
+          "title": "between(1, 1000)",
+          "minimum": 1,
+          "maximum": 1000
+        }
+      },
+      "additionalProperties": false
+    },
+    "Predicate": {
+      "type": "object",
+      "required": [
+        "field",
+        "op"
+      ],
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/Field"
+        },
+        "op": {
+          "type": "string",
+          "enum": [
+            "eq",
+            "ne",
+            "lt",
+            "lte",
+            "gt",
+            "gte",
+            "in",
+            "not_in",
+            "is_null",
+            "not_null"
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": "an array of at most 100 item(s)",
+              "title": "maxItems(100)",
+              "maxItems": 100
+            },
+            {
+              "$ref": "#/$defs/ExprValue"
+            }
+          ],
+          "description": "A JSON literal typed by the field: strings raw (EMEA, not 'EMEA'), numbers, booleans, timestamps as ISO-8601 strings (2026-11-20T14:00:00Z). Relative time: {\"expr\":\"now() - 1h\"}. \"in\"/\"not_in\" take an array."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Field": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$"
+    },
+    "ExprValue": {
+      "type": "object",
+      "required": [
+        "expr"
+      ],
+      "properties": {
+        "expr": {
+          "type": "string",
+          "description": "a string at most 200 character(s) long",
+          "title": "maxLength(200)",
+          "maxLength": 200
+        }
+      },
+      "additionalProperties": false
+    },
+    "Agg": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AggObject"
+        },
+        {
+          "type": "string",
+          "description": "a string at most 200 character(s) long",
+          "title": "maxLength(200)",
+          "maxLength": 200
+        }
+      ]
+    },
+    "AggObject": {
+      "type": "object",
+      "required": [
+        "fn"
+      ],
+      "properties": {
+        "fn": {
+          "type": "string",
+          "enum": [
+            "count",
+            "count_distinct",
+            "sum",
+            "avg",
+            "min",
+            "max",
+            "percentile"
+          ]
+        },
+        "of": {
+          "type": "string",
+          "description": "a string at most 200 character(s) long",
+          "title": "maxLength(200)",
+          "maxLength": 200
+        },
+        "p": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "TableVisual": {
+      "type": "object",
+      "required": [
+        "type",
+        "columns"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "table"
+          ]
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "an array of at most 40 item(s)",
+          "title": "maxItems(40)",
+          "minItems": 1,
+          "maxItems": 40
+        },
+        "options": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "page_size": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 500",
+              "title": "between(1, 500)",
+              "minimum": 1,
+              "maximum": 500
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "BarVisual": {
+      "type": "object",
+      "required": [
+        "type",
+        "channels"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "bar"
+          ]
+        },
+        "channels": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "$ref": "#/$defs/Field"
+            },
+            "y": {
+              "$ref": "#/$defs/Field"
+            },
+            "color": {
+              "$ref": "#/$defs/Field"
+            }
+          },
+          "additionalProperties": false
+        },
+        "threshold": {
+          "type": "object",
+          "required": [
+            "value",
+            "style"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "options": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "stacked": {
+              "type": "boolean"
+            },
+            "unit": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "LineVisual": {
+      "type": "object",
+      "required": [
+        "type",
+        "channels"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "line"
+          ]
+        },
+        "channels": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "$ref": "#/$defs/Field"
+            },
+            "y": {
+              "$ref": "#/$defs/Field"
+            },
+            "series": {
+              "$ref": "#/$defs/Field"
+            }
+          },
+          "additionalProperties": false
+        },
+        "threshold": {
+          "type": "object",
+          "required": [
+            "value",
+            "style"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "options": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "unit": {
+              "type": "string"
+            },
+            "smooth": {
+              "type": "boolean"
+            },
+            "brush": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "AreaVisual": {
+      "type": "object",
+      "required": [
+        "type",
+        "channels"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "area"
+          ]
+        },
+        "channels": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "$ref": "#/$defs/Field"
+            },
+            "y": {
+              "$ref": "#/$defs/Field"
+            },
+            "series": {
+              "$ref": "#/$defs/Field"
+            }
+          },
+          "additionalProperties": false
+        },
+        "threshold": {
+          "type": "object",
+          "required": [
+            "value",
+            "style"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "options": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "stacked": {
+              "type": "boolean"
+            },
+            "unit": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "HeatmapVisual": {
+      "type": "object",
+      "required": [
+        "type",
+        "channels"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "heatmap"
+          ]
+        },
+        "channels": {
+          "type": "object",
+          "required": [
+            "x",
+            "y",
+            "value"
+          ],
+          "properties": {
+            "x": {
+              "$ref": "#/$defs/Field"
+            },
+            "y": {
+              "$ref": "#/$defs/Field"
+            },
+            "value": {
+              "$ref": "#/$defs/Field"
+            }
+          },
+          "additionalProperties": false
+        },
+        "threshold": {
+          "type": "object",
+          "required": [
+            "value",
+            "style"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "options": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "unit": {
+              "type": "string"
+            },
+            "domain": {
+              "type": "array",
+              "minItems": 2,
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "additionalItems": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ScatterVisual": {
+      "type": "object",
+      "required": [
+        "type",
+        "channels"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "scatter"
+          ]
+        },
+        "channels": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "$ref": "#/$defs/Field"
+            },
+            "y": {
+              "$ref": "#/$defs/Field"
+            },
+            "series": {
+              "$ref": "#/$defs/Field"
+            },
+            "size": {
+              "$ref": "#/$defs/Field"
+            }
+          },
+          "additionalProperties": false
+        },
+        "options": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "unit": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "KpiVisual": {
+      "type": "object",
+      "required": [
+        "type",
+        "channels"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "kpi"
+          ]
+        },
+        "channels": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "$ref": "#/$defs/Field"
+            },
+            "delta": {
+              "$ref": "#/$defs/Field"
+            },
+            "x": {
+              "$ref": "#/$defs/Field"
+            },
+            "y": {
+              "$ref": "#/$defs/Field"
+            }
+          },
+          "additionalProperties": false
+        },
+        "threshold": {
+          "type": "object",
+          "required": [
+            "value",
+            "style"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "options": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "unit": {
+              "type": "string"
+            },
+            "good": {
+              "type": "string",
+              "enum": [
+                "up",
+                "down"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "Ref.panel": {
+      "type": "string",
+      "description": "panel:<slug>",
+      "pattern": "^panel:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "ParamBinding": {
+      "type": "object",
+      "required": [
+        "param"
+      ],
+      "properties": {
+        "param": {
+          "type": "string",
+          "description": "a string matching the pattern ^[a-z][a-z_]{0,31}$",
+          "pattern": "^[a-z][a-z_]{0,31}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Recipient": {
+      "type": "string",
+      "description": "user:<handle> or group:<slug>",
+      "pattern": "^((user|agent|service):[a-z0-9][a-z0-9._-]*|group:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*)$"
+    },
+    "NotificationType": {
+      "type": "string",
+      "enum": [
+        "mention",
+        "message",
+        "approval_request",
+        "approval_decision",
+        "points_awarded",
+        "points_expiring",
+        "badge_earned",
+        "tier_changed",
+        "order_status",
+        "automation_alert",
+        "content_review",
+        "content_published",
+        "task_assigned",
+        "promotion_started",
+        "system"
+      ]
+    },
+    "Handle": {
+      "type": "string",
+      "description": "Member handle, e.g. maya-ortiz",
+      "pattern": "^[a-z][a-z0-9-]{1,39}$"
+    },
+    "Region": {
+      "type": "string",
+      "enum": [
+        "NA",
+        "EMEA",
+        "APAC",
+        "LATAM",
+        "ANZ"
+      ]
+    },
+    "Tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ]
+    },
+    "MemberTarget": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "$me"
+          ]
+        },
+        {
+          "$ref": "#/$defs/Handle"
+        },
+        {
+          "$ref": "#/$defs/ParamBinding"
+        }
+      ]
+    },
+    "DomainEventType": {
+      "type": "string",
+      "enum": [
+        "message.received",
+        "message.sent",
+        "message.state_changed",
+        "notification.created",
+        "notification.read",
+        "points.posted",
+        "points.expiring",
+        "tier.changed",
+        "order.placed",
+        "order.status_changed",
+        "stock.changed",
+        "cart.updated",
+        "wishlist.changed",
+        "review.created",
+        "badge.awarded",
+        "badge.revoked",
+        "badge.progress",
+        "promotion.state_changed",
+        "promotion.redeemed",
+        "promotion.budget_alert",
+        "automation.run_updated",
+        "content.state_changed",
+        "content.published",
+        "content.engaged",
+        "task.assigned",
+        "task.updated",
+        "task.commented",
+        "approval.requested",
+        "approval.decided",
+        "member.updated",
+        "session.revoked"
+      ]
+    },
+    "TxnType": {
+      "type": "string",
+      "enum": [
+        "award",
+        "purchase",
+        "refund",
+        "transfer",
+        "expiry",
+        "adjustment",
+        "promotion_bonus",
+        "badge_reward",
+        "reversal"
+      ]
+    },
+    "OrderStatus": {
+      "type": "string",
+      "enum": [
+        "placed",
+        "approved",
+        "fulfilled",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "refunded"
+      ]
+    },
+    "PromotionStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "scheduled",
+        "active",
+        "paused",
+        "ended"
+      ]
+    },
+    "RunStatus": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "succeeded",
+        "failed",
+        "skipped",
+        "cancelled"
+      ]
+    },
+    "ContentStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_review",
+        "approved",
+        "published",
+        "archived"
+      ]
+    },
+    "ApprovalType": {
+      "type": "string",
+      "enum": [
+        "change",
+        "action",
+        "order",
+        "content_review"
+      ]
+    },
+    "TaskStatus": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "blocked",
+        "done",
+        "cancelled"
+      ]
+    }
+  },
+  "$ref": "#/$defs/Widget"
+}

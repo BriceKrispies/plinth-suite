@@ -1,0 +1,53 @@
+/*
+  The Suite stylesheet. The cascade order is declared once, here, as the first statement.
+  Module CSS (src/shell/*.css and src/widgets/<domain>/*.css) is discovered at boot by core/module-styles.js and
+  injected into layer(modules), so packages that have not landed yet leave no dangling imports.
+*/
+@layer reset, tokens, base, layout, components, looks, modules, utilities, overrides;
+
+@import url("ds/css/reset.css") layer(reset);
+@import url("ds/css/tokens.css") layer(tokens);
+@import url("ds/css/base.css") layer(base);
+@import url("ds/css/shell.css") layer(layout);
+@import url("ds/css/components/app-chrome.css") layer(components);
+@import url("ds/css/components/artwork.css") layer(components);
+@import url("ds/css/components/avatar.css") layer(components);
+@import url("ds/css/components/builder.css") layer(components);
+@import url("ds/css/components/button.css") layer(components);
+@import url("ds/css/components/card.css") layer(components);
+@import url("ds/css/components/chart.css") layer(components);
+@import url("ds/css/components/combobox.css") layer(components);
+@import url("ds/css/components/count-badge.css") layer(components);
+@import url("ds/css/components/dialog.css") layer(components);
+@import url("ds/css/components/field.css") layer(components);
+@import url("ds/css/components/kbd.css") layer(components);
+@import url("ds/css/components/layout.css") layer(components);
+@import url("ds/css/components/live-ring.css") layer(components);
+@import url("ds/css/components/live-build.css") layer(components);
+@import url("ds/css/components/menu.css") layer(components);
+@import url("ds/css/components/page-grid.css") layer(components);
+@import url("ds/css/components/pill.css") layer(components);
+@import url("ds/css/components/popover.css") layer(components);
+@import url("ds/css/components/progress.css") layer(components);
+@import url("ds/css/components/richtext.css") layer(components);
+@import url("ds/css/components/scroll.css") layer(components);
+@import url("ds/css/components/stat.css") layer(components);
+@import url("ds/css/components/states.css") layer(components);
+@import url("ds/css/components/table.css") layer(components);
+@import url("ds/css/components/tabs.css") layer(components);
+@import url("ds/css/components/timeline.css") layer(components);
+@import url("ds/css/components/toast.css") layer(components);
+@import url("ds/css/components/transitions.css") layer(components);
+@import url("ds/css/components/widget-frame.css") layer(components);
+@import url("ds/css/components/widget-parts.css") layer(components);
+/* Looks: html[data-look]. _quiet is the shared simplification base; each look file overrides tokens on top. */
+@import url("ds/css/looks/_quiet.css") layer(looks);
+@import url("ds/css/looks/calm.css") layer(looks);
+@import url("ds/css/looks/meridian.css") layer(looks);
+@import url("ds/css/looks/nocturne.css") layer(looks);
+@import url("ds/css/looks/folio.css") layer(looks);
+@import url("ds/css/looks/lattice.css") layer(looks);
+@import url("ds/css/looks/strata.css") layer(looks);
+@import url("app/styleguide.css") layer(components);
+@import url("ds/css/utilities.css") layer(utilities);
+@import url("ds/css/overrides.css") layer(overrides);

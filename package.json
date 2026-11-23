@@ -1,0 +1,45 @@
+{
+  "name": "plinth",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.24.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r typecheck",
+    "schema:gen": "tsx packages/spec/scripts/schema-gen.ts",
+    "test": "vitest run",
+    "test:slow": "vitest run --config vitest.slow.config.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "migrate": "tsx packages/api/src/migrate-main.ts",
+    "reset": "tsx packages/api/src/reset-main.ts",
+    "start:api": "tsx packages/api/src/main.ts",
+    "start:rt": "tsx packages/rt/src/main.ts",
+    "start:mcp": "tsx packages/mcp/src/main.ts",
+    "start:web": "pnpm --filter @plinth/web dev",
+    "gen:history": "tsx packages/gen/src/main.ts",
+    "gen:live": "tsx packages/gen/src/main.ts live",
+    "dev": "concurrently -n api,rt,worker,mcp,web -c blue,green,cyan,magenta,yellow \"pnpm start:api\" \"pnpm start:rt\" \"pnpm start:worker\" \"pnpm start:mcp\" \"pnpm start:web\"",
+    "start:worker": "tsx packages/worker/src/main.ts",
+    "check:a11y": "tsx scripts/a11y-sweep.ts shots/a11y.json",
+    "check:routes": "tsx scripts/route-sweep.ts shots/sweep",
+    "check:keys": "tsx scripts/keyboard-walk.ts",
+    "demo:record": "tsx scripts/demo-record.ts",
+    "demo:build": "node scripts/demo-build.mjs",
+    "demo:preview": "node scripts/demo-preview.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@effect/vitest": "0.30.1",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@types/node": "^24.19.2",
+    "concurrently": "^9.2.1",
+    "playwright": "^1.65.1",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.12"
+  }
+}

@@ -1,0 +1,38 @@
+/* Layer: modules (approvals). Shared widget parts live in reporting.css (rp-* classes). */
+
+@scope ([data-widget^="approvals."]) {
+  /* Inbox rows are separated by hairlines only: no box, no stripe. Quiet at rest, tinted on hover. */
+  .rp-rows {
+    border-block-start: 0;
+  }
+  .rp-row {
+    padding-inline: var(--space-1);
+    transition: background var(--dur-1) var(--ease);
+
+    &:hover {
+      background: color-mix(in oklch, var(--ink) 4%, transparent);
+    }
+    &.is-selected,
+    &:has(.rp-row__title[aria-current="true"]) {
+      background: color-mix(in oklch, var(--ink) 6%, transparent);
+      box-shadow: none;
+    }
+    &.is-done {
+      color: var(--ink-3);
+    }
+    &:last-child {
+      border-block-end: 0;
+    }
+  }
+  .rp-row__title {
+    font-weight: var(--weight-semi);
+  }
+  .rp-row__summary,
+  .rp-row__meta,
+  .rp-row__no {
+    color: var(--ink-3);
+  }
+  .rp-row.is-done .rp-row__title {
+    color: var(--ink-2);
+  }
+}

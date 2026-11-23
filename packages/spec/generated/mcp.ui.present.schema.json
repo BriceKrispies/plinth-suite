@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "UiPresentInput": {
+      "type": "object",
+      "required": [
+        "uri"
+      ],
+      "properties": {
+        "uri": {
+          "$ref": "#/$defs/NodeRef"
+        },
+        "target": {
+          "type": "string",
+          "description": "a string matching the pattern ^(all|principal:[a-z0-9:_-]{1,128})$",
+          "pattern": "^(all|principal:[a-z0-9:_-]{1,128})$"
+        },
+        "focus": {
+          "type": "object",
+          "required": [
+            "parameter",
+            "value"
+          ],
+          "properties": {
+            "parameter": {
+              "type": "string"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "NodeRef": {
+      "type": "string",
+      "description": "A node: plinth://<ws>/<Kind>/<uuid>, kind:slug (e.g. dashboard:ops-board), or a bare slug when unambiguous.",
+      "title": "maxLength(200)",
+      "minLength": 2,
+      "maxLength": 200
+    }
+  },
+  "$ref": "#/$defs/UiPresentInput"
+}

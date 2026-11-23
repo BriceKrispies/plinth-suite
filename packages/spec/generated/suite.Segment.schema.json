@@ -1,0 +1,256 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Segment": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Segment"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/SegmentSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "SegmentSpec": {
+      "type": "object",
+      "required": [
+        "description",
+        "rule",
+        "owner"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "User-authored text (untrusted), at most 500 chars",
+          "title": "maxLength(500)",
+          "maxLength": 500
+        },
+        "rule": {
+          "$ref": "#/$defs/CondTree"
+        },
+        "owner": {
+          "$ref": "#/$defs/Subject"
+        }
+      },
+      "additionalProperties": false
+    },
+    "CondTree": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Condition"
+        },
+        {
+          "type": "object",
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "any"
+          ],
+          "properties": {
+            "any": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "not"
+          ],
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/CondTree"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Condition": {
+      "type": "object",
+      "required": [
+        "field",
+        "op"
+      ],
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/FactPath"
+        },
+        "op": {
+          "$ref": "#/$defs/CondOp"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": "an array of at most 100 item(s)",
+              "title": "maxItems(100)",
+              "maxItems": 100
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "FactPath": {
+      "type": "string",
+      "description": "A fact name, e.g. tier, member.region, event.points",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*){0,3}$"
+    },
+    "CondOp": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "in",
+        "not_in",
+        "contains",
+        "not_contains",
+        "exists",
+        "not_exists",
+        "between"
+      ]
+    },
+    "Subject": {
+      "type": "string",
+      "description": "A principal: user:<handle>, agent:<name>, service:<name>",
+      "pattern": "^(user|agent|service):[a-z0-9][a-z0-9._-]*$"
+    }
+  },
+  "$ref": "#/$defs/Segment"
+}

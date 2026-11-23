@@ -1,0 +1,13 @@
+{
+  "name": "@plinth/demo-data",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Recorded seeded API responses and the browser mock runtime for the static GitHub Pages demo.",
+  "exports": {
+    "./mock": "./src/mock.js"
+  },
+  "scripts": {
+    "typecheck": "node --check src/mock.js"
+  }
+}

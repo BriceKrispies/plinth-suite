@@ -1,0 +1,348 @@
+/* App chrome parts (components layer, so they can adjust the buttons and badges they contain). */
+/* ---- top bar parts ---- */
+.app__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--step--2);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--brand-track, var(--track-caps));
+  text-transform: var(--brand-transform, uppercase);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.app__brand::before {
+  content: "";
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  background: var(--ink);
+  box-shadow: 0.25rem 0.25rem 0 var(--ink-3);
+  margin-inline-end: 0.25rem;
+}
+.app__spacer {
+  flex: 1;
+}
+.app__topbar .app__search {
+  min-inline-size: 0;
+  inline-size: min(22rem, 40vw);
+  justify-content: flex-start;
+  color: var(--ink-2);
+  font-weight: var(--weight-regular);
+  & .c-kbd {
+    margin-inline-start: auto;
+  }
+}
+@media (max-width: 47.99rem) {
+  .app__topbar .app__search {
+    inline-size: auto;
+    & .c-button__label,
+    & .c-kbd {
+      display: none;
+    }
+  }
+  .app__brand {
+    display: none;
+  }
+}
+.app__badged {
+  position: relative;
+  display: inline-flex;
+  & .c-count {
+    position: absolute;
+    inset-block-start: -0.25rem;
+    inset-inline-end: -0.25rem;
+    background: var(--badge-bg, var(--ink));
+    color: var(--badge-fg, var(--paper));
+    box-shadow: 0 0 0 2px var(--surface-2);
+  }
+}
+.c-chip-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-3);
+  background: var(--paper-2);
+  border: var(--hairline) solid var(--rule);
+  border-radius: var(--radius-round);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--dur-1) var(--ease);
+  &:hover {
+    background: var(--paper-3);
+  }
+}
+.c-live {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-2);
+  white-space: nowrap;
+
+  &::before {
+    content: "";
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: var(--radius-round);
+    background: var(--accent);
+  }
+  &[data-state="offline"],
+  &[data-state="connecting"] {
+    color: var(--warning-fg);
+    &::before {
+      background: var(--warning-fg);
+    }
+  }
+}
+@media (max-width: 47.99rem) {
+  .c-live__text {
+    display: none;
+  }
+}
+
+/* ---- side nav ---- */
+.c-nav {
+  display: grid;
+  gap: var(--nav-section-gap, var(--space-4));
+  padding: var(--space-4) var(--space-3) var(--space-6);
+}
+.c-nav__brand {
+  padding: var(--space-2) var(--space-3) var(--space-1);
+}
+.c-nav__heading {
+  font-size: var(--nav-heading-size, var(--step--2));
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--nav-heading-track, var(--track-caps));
+  text-transform: var(--nav-heading-transform, uppercase);
+  color: var(--ink-3);
+}
+/* A section heading is a disclosure button: the whole row toggles, state is aria-expanded. */
+.c-nav__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  inline-size: 100%;
+  min-block-size: var(--control-h-sm);
+  padding: var(--space-1) var(--space-3);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-control);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: start;
+  &:hover {
+    color: var(--ink);
+    background: var(--paper-2);
+  }
+}
+.c-nav__chevron {
+  display: inline-grid;
+  transition: rotate var(--dur-1) var(--ease);
+  rotate: -90deg;
+}
+.c-nav__toggle[aria-expanded="true"] .c-nav__chevron {
+  rotate: 0deg;
+}
+/* A section opens and closes on aria-expanded; the list animates its height (interpolate-size) and stays out of
+   the accessibility tree and tab order while closed (content-visibility), so no open class is needed. */
+.c-nav {
+  interpolate-size: allow-keywords;
+}
+.c-nav__list {
+  display: grid;
+  gap: 2px;
+  overflow: clip;
+  block-size: auto;
+  transition:
+    block-size var(--dur-2) var(--ease),
+    opacity var(--dur-2) var(--ease),
+    content-visibility var(--dur-2) allow-discrete;
+}
+.c-nav__list[hidden] {
+  display: grid;
+  block-size: 0;
+  opacity: 0;
+  content-visibility: hidden;
+}
+.c-nav__section:has(> .c-nav__heading [aria-expanded="true"]) .c-nav__heading {
+  color: var(--ink-2);
+}
+.c-nav__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-block-size: var(--control-h-md);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-control);
+  color: var(--ink-2);
+  font-size: var(--step--1);
+  text-decoration: none;
+  transition:
+    background-color var(--dur-1) var(--ease),
+    color var(--dur-1) var(--ease);
+
+  &:hover {
+    background: var(--paper-2);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  &[aria-current="page"] {
+    background: var(--nav-current-bg, var(--paper-2));
+    color: var(--nav-current-fg, var(--ink));
+    font-weight: var(--nav-current-weight, var(--weight-bold));
+    &::before {
+      display: var(--nav-current-bar, block);
+      content: "";
+      position: absolute;
+      inset-block: 0.35rem;
+      inset-inline-start: 0;
+      inline-size: 2px;
+      background: var(--nav-current-bar-color, var(--ink));
+    }
+  }
+}
+.c-nav__icon {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+.c-nav__label {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+/* ---- built-in palette (the dialog element at #palette) ---- */
+.palette {
+  margin: 12vh auto auto;
+  padding: 0;
+  inline-size: min(34rem, calc(100vw - 2 * var(--gutter)));
+  background: var(--surface-4);
+  color: var(--ink);
+  border: var(--hairline) solid var(--control-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-4);
+  z-index: var(--z-palette);
+
+  &::backdrop {
+    background: var(--backdrop);
+    backdrop-filter: blur(2px);
+  }
+}
+.app__palette {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+.app__palette-list {
+  display: grid;
+  gap: 2px;
+}
+.app__avatar .c-button {
+  gap: var(--space-2);
+}
+.app__delta {
+  font-size: var(--step--1);
+  color: var(--accent);
+  padding-inline: var(--space-1);
+}
+.app__tier {
+  display: inline-flex;
+}
+
+/* ---- offline banner and the signed-out notice ---- */
+.app__banner {
+  position: fixed;
+  inset-block-start: calc(var(--topbar-h) + var(--space-2));
+  inset-inline: 0;
+  margin-inline: auto;
+  inline-size: max-content;
+  max-inline-size: calc(100vw - 2 * var(--gutter));
+  z-index: var(--z-chrome);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+  background: var(--warning-bg);
+  color: var(--warning-fg);
+  border: var(--hairline) solid var(--warning-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-3);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+}
+.app__revoked {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: var(--space-3);
+  max-inline-size: 32rem;
+  margin: auto;
+  padding: var(--gutter);
+  outline: none;
+}
+
+@media (min-width: 64rem) {
+  .app__topbar .app__menu {
+    display: none;
+  }
+}
+
+/* The side nav carries the brand from the desktop row up; the top bar shows it only when the nav is a drawer. */
+@media (min-width: 64rem) {
+  .app__topbar .app__brand {
+    display: none;
+  }
+}
+.c-nav__brand {
+  padding-block-end: var(--space-2);
+  border-block-end: var(--hairline) solid var(--rule);
+}
+
+/* The badge sits beside the label, never on top of it. */
+.app__badged > .c-button {
+  padding-inline-end: var(--space-5);
+}
+
+/* Phone: the top bar keeps menu, search, balance, bell and avatar; labels and the live text drop out. */
+@media (max-width: 47.99rem) {
+  .app__topbar {
+    gap: var(--space-1);
+    padding-inline: var(--space-3);
+  }
+  .app__topbar .app__spacer {
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
+  .app__topbar .app__search {
+    inline-size: var(--control-h-md);
+    padding-inline: 0;
+    justify-content: center;
+  }
+  .app__topbar .app__search .c-button__icon {
+    flex: none;
+  }
+  .app__topbar .app__tier,
+  .app__topbar .app__avatar .c-button__label,
+  .app__badged > .c-button .c-button__label {
+    display: none;
+  }
+  .app__badged > .c-button {
+    padding-inline-end: 0;
+    inline-size: var(--control-h-md);
+  }
+  .app__topbar .c-chip-link {
+    padding-inline: var(--space-2);
+  }
+}

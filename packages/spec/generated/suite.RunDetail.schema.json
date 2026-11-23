@@ -1,0 +1,488 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "RunDetail": {
+      "type": "object",
+      "required": [
+        "run_id",
+        "automation",
+        "automation_title",
+        "automation_revision",
+        "status",
+        "trigger",
+        "member",
+        "started_at",
+        "finished_at",
+        "steps_total",
+        "steps_succeeded",
+        "error",
+        "context",
+        "steps",
+        "cause_depth"
+      ],
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/UUID"
+        },
+        "automation": {
+          "type": "string"
+        },
+        "automation_title": {
+          "type": "string"
+        },
+        "automation_revision": {
+          "$ref": "#/$defs/Int"
+        },
+        "status": {
+          "$ref": "#/$defs/RunStatus"
+        },
+        "trigger": {
+          "$ref": "#/$defs/RunTrigger"
+        },
+        "member": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PersonRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "steps_total": {
+          "$ref": "#/$defs/Int"
+        },
+        "steps_succeeded": {
+          "$ref": "#/$defs/Int"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StepError"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "context": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": {
+            "$id": "/schemas/unknown",
+            "title": "unknown"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RunStep"
+          }
+        },
+        "cause_depth": {
+          "$ref": "#/$defs/Int"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "RunStatus": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "succeeded",
+        "failed",
+        "skipped",
+        "cancelled"
+      ]
+    },
+    "RunTrigger": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "key",
+            "event_seq",
+            "event_type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "event"
+              ]
+            },
+            "key": {
+              "type": "string"
+            },
+            "event_seq": {
+              "$ref": "#/$defs/Int"
+            },
+            "event_type": {
+              "$ref": "#/$defs/TriggerableEventType"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "key",
+            "minute"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "schedule"
+              ]
+            },
+            "key": {
+              "type": "string"
+            },
+            "minute": {
+              "$ref": "#/$defs/Timestamp"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "key",
+            "value",
+            "window_start"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "metric"
+              ]
+            },
+            "key": {
+              "type": "string"
+            },
+            "value": {
+              "type": "number"
+            },
+            "window_start": {
+              "$ref": "#/$defs/Timestamp"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "key",
+            "by"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "manual"
+              ]
+            },
+            "key": {
+              "type": "string"
+            },
+            "by": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "key",
+            "of_run"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "retry"
+              ]
+            },
+            "key": {
+              "type": "string"
+            },
+            "of_run": {
+              "$ref": "#/$defs/UUID"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "TriggerableEventType": {
+      "type": "string",
+      "enum": [
+        "message.received",
+        "message.sent",
+        "points.posted",
+        "tier.changed",
+        "order.placed",
+        "order.status_changed",
+        "stock.changed",
+        "review.created",
+        "badge.awarded",
+        "promotion.state_changed",
+        "promotion.redeemed",
+        "promotion.budget_alert",
+        "automation.run_updated",
+        "content.state_changed",
+        "content.published",
+        "content.engaged",
+        "task.assigned",
+        "task.updated",
+        "approval.requested",
+        "approval.decided"
+      ]
+    },
+    "Timestamp": {
+      "type": "string",
+      "description": "RFC 3339 UTC, e.g. 2026-11-20T14:30:00Z",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+    },
+    "PersonRef": {
+      "type": "object",
+      "required": [
+        "subject",
+        "handle",
+        "display_name",
+        "kind",
+        "avatar"
+      ],
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/Subject"
+        },
+        "handle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Handle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "human",
+            "agent",
+            "service"
+          ]
+        },
+        "avatar": {
+          "$ref": "#/$defs/Avatar"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Subject": {
+      "type": "string",
+      "description": "A principal: user:<handle>, agent:<name>, service:<name>",
+      "pattern": "^(user|agent|service):[a-z0-9][a-z0-9._-]*$"
+    },
+    "Handle": {
+      "type": "string",
+      "description": "Member handle, e.g. maya-ortiz",
+      "pattern": "^[a-z][a-z0-9-]{1,39}$"
+    },
+    "Avatar": {
+      "type": "object",
+      "required": [
+        "initials",
+        "hue"
+      ],
+      "properties": {
+        "initials": {
+          "type": "string",
+          "description": "a string at most 2 character(s) long",
+          "title": "maxLength(2)",
+          "minLength": 1,
+          "maxLength": 2
+        },
+        "hue": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 359",
+          "title": "between(0, 359)",
+          "minimum": 0,
+          "maximum": 359
+        }
+      },
+      "additionalProperties": false
+    },
+    "StepError": {
+      "type": "object",
+      "required": [
+        "code",
+        "message",
+        "retryable"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string",
+          "description": "a string at most 280 character(s) long",
+          "title": "maxLength(280)",
+          "maxLength": 280
+        },
+        "retryable": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "RunStep": {
+      "type": "object",
+      "required": [
+        "index",
+        "id",
+        "type",
+        "status",
+        "attempts",
+        "started_at",
+        "finished_at",
+        "input",
+        "output",
+        "error"
+      ],
+      "properties": {
+        "index": {
+          "$ref": "#/$defs/Int"
+        },
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "award_points",
+            "notify",
+            "send_message",
+            "apply_promotion",
+            "create_task",
+            "webhook"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/StepStatus"
+        },
+        "attempts": {
+          "$ref": "#/$defs/Int"
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input": {
+          "$id": "/schemas/unknown",
+          "title": "unknown"
+        },
+        "output": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": {
+                "$id": "/schemas/unknown",
+                "title": "unknown"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StepError"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "StepStatus": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "running",
+        "succeeded",
+        "failed",
+        "skipped"
+      ]
+    }
+  },
+  "$ref": "#/$defs/RunDetail"
+}

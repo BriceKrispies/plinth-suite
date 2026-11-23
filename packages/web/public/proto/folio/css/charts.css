@@ -1,0 +1,59 @@
+@layer components {
+  .chart { position: absolute; inset: 0; touch-action: pan-y; }
+  .chart[data-brush] { cursor: crosshair; }
+  .chart svg { inline-size: 100%; block-size: 100%; overflow: visible; }
+  .chart text { font-family: var(--font-sans); font-size: 0.75rem; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+  .chart .grid line { stroke: var(--grid); stroke-width: 1; }
+  .chart .axis-line { stroke: var(--rule-strong); stroke-width: 1; }
+  .chart .tick-label { fill: var(--ink-2); }
+  .chart .axis-title { fill: var(--ink-3); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .chart .direct-label { font-family: var(--font-serif); font-size: 0.82rem; font-weight: 600; }
+  .chart .value-label { fill: var(--ink); font-weight: 600; font-size: 0.72rem; }
+
+  .chart .series-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .chart .series-area { stroke: none; fill-opacity: 0.16; }
+  .chart[data-stacked] .series-area { fill-opacity: 0.4; }
+  .chart .bar { stroke: none; }
+  .chart .bar-hatch { stroke: var(--signal); stroke-width: 1; }
+  .chart .hit { fill: transparent; stroke: none; }
+
+  .chart .threshold-line { stroke: var(--signal); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  .chart .threshold-label, .chart .breach-glyph { fill: var(--signal); font-weight: 700; font-size: 0.72rem; }
+  .chart .breach-marker { fill: var(--signal); stroke: var(--surface); stroke-width: 1.5; }
+  .chart .hatch-line { stroke: var(--signal); stroke-width: 1.4; }
+
+  .chart .heat-cell { stroke: var(--surface); stroke-width: 2; }
+  .chart .heat-cell[data-breach] { stroke: var(--signal); stroke-width: 2.5; }
+  .chart .heat-cell[data-empty] { fill: none; stroke: var(--rule-strong); stroke-dasharray: 3 3; }
+  .chart .heat-text { fill: var(--on-heat-lo); font-weight: 600; pointer-events: none; }
+  .chart .heat-text[data-dense] { fill: var(--on-heat-hi); }
+  .chart .heat-glyph { fill: var(--signal); font-weight: 800; }
+  .chart .heat-glyph[data-dense] { fill: oklch(0.88 0.14 50); }
+
+  .chart .brush-sel { fill: var(--accent); fill-opacity: 0.12; stroke: var(--accent); stroke-width: 1; }
+
+  .chart-readout {
+    position: absolute; inset-block-start: 0; inset-inline-start: 0; z-index: 2;
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-1) var(--space-3);
+    background: var(--surface); border: 1px solid var(--rule-strong); border-radius: var(--radius-pill);
+    font-size: var(--text-xs); color: var(--ink);
+  }
+  .chart-readout button { color: var(--accent); text-decoration: underline; text-underline-offset: 0.2em; }
+
+  .series-key {
+    position: absolute; inset-block-start: 0; inset-inline-end: 0; z-index: 1;
+    display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); justify-content: flex-end;
+    max-inline-size: 70%;
+    font-size: var(--text-xs); color: var(--ink-2);
+  }
+  .series-key li { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .series-key i { inline-size: 0.7rem; block-size: 0.7rem; border-radius: 1px; background: var(--c); }
+
+  @media (forced-colors: active) {
+    .chart .heat-cell { stroke: Canvas; }
+    .chart .heat-text, .chart .heat-text[data-dense] { fill: CanvasText; }
+    .chart .bar { fill: CanvasText; }
+  }
+}

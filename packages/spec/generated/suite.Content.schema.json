@@ -1,0 +1,770 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Content": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Content"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/ContentSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "ContentSpec": {
+      "type": "object",
+      "required": [
+        "type",
+        "status",
+        "summary",
+        "hero",
+        "blocks",
+        "tags",
+        "audience",
+        "author",
+        "reviewers",
+        "schedule",
+        "pinned",
+        "allow_reactions",
+        "published_revision",
+        "review_log"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "page",
+            "article",
+            "announcement"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/ContentStatus"
+        },
+        "summary": {
+          "type": "string",
+          "description": "User-authored text (untrusted), at most 280 chars",
+          "title": "maxLength(280)",
+          "maxLength": 280
+        },
+        "hero": {
+          "$ref": "#/$defs/Artwork"
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ContentBlock"
+          },
+          "description": "an array of at most 60 item(s)",
+          "title": "maxItems(60)",
+          "minItems": 1,
+          "maxItems": 60
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "a string matching the pattern ^[a-z][a-z0-9-]{0,31}$",
+            "pattern": "^[a-z][a-z0-9-]{0,31}$"
+          },
+          "description": "an array of at most 10 item(s)",
+          "title": "maxItems(10)",
+          "maxItems": 10
+        },
+        "audience": {
+          "type": "object",
+          "required": [
+            "everyone"
+          ],
+          "properties": {
+            "everyone": {
+              "type": "boolean"
+            },
+            "segments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Ref.segment"
+              },
+              "description": "an array of at most 8 item(s)",
+              "title": "maxItems(8)",
+              "maxItems": 8
+            },
+            "groups": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Ref.group"
+              },
+              "description": "an array of at most 8 item(s)",
+              "title": "maxItems(8)",
+              "maxItems": 8
+            }
+          },
+          "additionalProperties": false
+        },
+        "author": {
+          "$ref": "#/$defs/Subject"
+        },
+        "reviewers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "description": "an array of at most 5 item(s)",
+          "title": "maxItems(5)",
+          "maxItems": 5
+        },
+        "schedule": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "publish_at": {
+              "$ref": "#/$defs/Timestamp"
+            },
+            "unpublish_at": {
+              "$ref": "#/$defs/Timestamp"
+            }
+          },
+          "additionalProperties": false
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "allow_reactions": {
+          "type": "boolean"
+        },
+        "reactions_enabled": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Reaction"
+          }
+        },
+        "published_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Int",
+              "description": "a number greater than or equal to 1",
+              "title": "greaterThanOrEqualTo(1)",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "review_log": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "by",
+              "at",
+              "decision",
+              "revision"
+            ],
+            "properties": {
+              "by": {
+                "$ref": "#/$defs/Subject"
+              },
+              "at": {
+                "$ref": "#/$defs/Timestamp"
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "submitted",
+                  "approved",
+                  "changes_requested",
+                  "published",
+                  "archived",
+                  "revised"
+                ]
+              },
+              "note": {
+                "type": "string",
+                "description": "User-authored text (untrusted), at most 500 chars",
+                "title": "maxLength(500)",
+                "maxLength": 500
+              },
+              "revision": {
+                "$ref": "#/$defs/Int"
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "an array of at most 200 item(s)",
+          "title": "maxItems(200)",
+          "maxItems": 200
+        }
+      },
+      "additionalProperties": false
+    },
+    "ContentStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_review",
+        "approved",
+        "published",
+        "archived"
+      ]
+    },
+    "Artwork": {
+      "type": "object",
+      "required": [
+        "icon",
+        "hue",
+        "pattern"
+      ],
+      "properties": {
+        "icon": {
+          "$ref": "#/$defs/IconName"
+        },
+        "hue": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 359",
+          "title": "between(0, 359)",
+          "minimum": 0,
+          "maximum": 359
+        },
+        "pattern": {
+          "type": "string",
+          "enum": [
+            "solid",
+            "stripes",
+            "dots",
+            "rings",
+            "grid",
+            "waves"
+          ]
+        },
+        "glyph": {
+          "type": "string",
+          "description": "Up to 3 characters set over the icon",
+          "title": "maxLength(3)",
+          "maxLength": 3
+        }
+      },
+      "additionalProperties": false
+    },
+    "IconName": {
+      "type": "string",
+      "enum": [
+        "home",
+        "inbox",
+        "send",
+        "archive",
+        "star",
+        "bell",
+        "search",
+        "command",
+        "store",
+        "cart",
+        "bag",
+        "tag",
+        "gift",
+        "coins",
+        "wallet",
+        "transfer",
+        "trophy",
+        "medal",
+        "award",
+        "crown",
+        "flame",
+        "bolt",
+        "target",
+        "megaphone",
+        "percent",
+        "calendar",
+        "clock",
+        "workflow",
+        "play",
+        "pause",
+        "stop",
+        "branch",
+        "webhook",
+        "document",
+        "article",
+        "announcement",
+        "image",
+        "users",
+        "user",
+        "group",
+        "segment",
+        "shield",
+        "key",
+        "lock",
+        "chart",
+        "board",
+        "check",
+        "check-circle",
+        "x",
+        "alert",
+        "info",
+        "task",
+        "list",
+        "settings",
+        "sliders",
+        "history",
+        "audit",
+        "attachment",
+        "reply",
+        "mention",
+        "heart",
+        "sparkle",
+        "leaf",
+        "globe",
+        "truck",
+        "box",
+        "ticket",
+        "coffee",
+        "headphones",
+        "laptop",
+        "shirt",
+        "book",
+        "plant",
+        "mountain",
+        "sun",
+        "moon",
+        "plus",
+        "minus",
+        "edit",
+        "trash",
+        "copy",
+        "link",
+        "external",
+        "filter",
+        "sort",
+        "more",
+        "chevron-left",
+        "chevron-right",
+        "chevron-down",
+        "chevron-up",
+        "menu",
+        "eye",
+        "eye-off",
+        "logout"
+      ]
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "ContentBlock": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "level",
+            "text"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "heading"
+              ]
+            },
+            "level": {
+              "type": "number",
+              "enum": [
+                2,
+                3
+              ]
+            },
+            "text": {
+              "type": "string",
+              "description": "User-authored text (untrusted), at most 140 chars",
+              "title": "maxLength(140)",
+              "maxLength": 140
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "text"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "paragraph"
+              ]
+            },
+            "text": {
+              "type": "string",
+              "description": "User-authored text (untrusted), at most 4000 chars",
+              "title": "maxLength(4000)",
+              "maxLength": 4000
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "ordered",
+            "items"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "list"
+              ]
+            },
+            "ordered": {
+              "type": "boolean"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "User-authored text (untrusted), at most 500 chars",
+                "title": "maxLength(500)",
+                "maxLength": 500
+              },
+              "description": "an array of at most 30 item(s)",
+              "title": "maxItems(30)",
+              "minItems": 1,
+              "maxItems": 30
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "text"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "quote"
+              ]
+            },
+            "text": {
+              "type": "string",
+              "description": "User-authored text (untrusted), at most 1000 chars",
+              "title": "maxLength(1000)",
+              "maxLength": 1000
+            },
+            "cite": {
+              "type": "string",
+              "description": "User-authored text (untrusted), at most 140 chars",
+              "title": "maxLength(140)",
+              "maxLength": 140
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "tone",
+            "icon",
+            "text"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "callout"
+              ]
+            },
+            "tone": {
+              "$ref": "#/$defs/Tone"
+            },
+            "icon": {
+              "$ref": "#/$defs/IconName"
+            },
+            "text": {
+              "type": "string",
+              "description": "User-authored text (untrusted), at most 1000 chars",
+              "title": "maxLength(1000)",
+              "maxLength": 1000
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "artwork",
+            "alt"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "image"
+              ]
+            },
+            "artwork": {
+              "$ref": "#/$defs/Artwork"
+            },
+            "alt": {
+              "type": "string",
+              "description": "User-authored text (untrusted), at most 200 chars",
+              "title": "maxLength(200)",
+              "maxLength": 200
+            },
+            "caption": {
+              "type": "string",
+              "description": "User-authored text (untrusted), at most 280 chars",
+              "title": "maxLength(280)",
+              "maxLength": 280
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "divider"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "label",
+            "href"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "cta"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "description": "User-authored text (untrusted), at most 60 chars",
+              "title": "maxLength(60)",
+              "maxLength": 60
+            },
+            "href": {
+              "type": "string",
+              "description": "a string matching the pattern ^\\/[A-Za-z0-9/_.:?=&%-]*$",
+              "pattern": "^\\/[A-Za-z0-9/_.:?=&%-]*$"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "panel"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "panel"
+              ]
+            },
+            "panel": {
+              "$ref": "#/$defs/Ref.panel"
+            },
+            "dashboard": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "products"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "products"
+              ]
+            },
+            "products": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Ref.product"
+              },
+              "description": "an array of at most 8 item(s)",
+              "title": "maxItems(8)",
+              "minItems": 1,
+              "maxItems": 8
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "badge"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "badge"
+              ]
+            },
+            "badge": {
+              "$ref": "#/$defs/Ref.badge"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Tone": {
+      "type": "string",
+      "enum": [
+        "neutral",
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "signal"
+      ]
+    },
+    "Ref.panel": {
+      "type": "string",
+      "description": "panel:<slug>",
+      "pattern": "^panel:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "Ref.product": {
+      "type": "string",
+      "description": "product:<slug>",
+      "pattern": "^product:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "Ref.badge": {
+      "type": "string",
+      "description": "badge:<slug>",
+      "pattern": "^badge:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "Ref.segment": {
+      "type": "string",
+      "description": "segment:<slug>",
+      "pattern": "^segment:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "Ref.group": {
+      "type": "string",
+      "description": "group:<slug>",
+      "pattern": "^group:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "Subject": {
+      "type": "string",
+      "description": "A principal: user:<handle>, agent:<name>, service:<name>",
+      "pattern": "^(user|agent|service):[a-z0-9][a-z0-9._-]*$"
+    },
+    "Timestamp": {
+      "type": "string",
+      "description": "RFC 3339 UTC, e.g. 2026-11-20T14:30:00Z",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+    },
+    "Reaction": {
+      "type": "string",
+      "enum": [
+        "like",
+        "celebrate",
+        "insightful"
+      ]
+    }
+  },
+  "$ref": "#/$defs/Content"
+}

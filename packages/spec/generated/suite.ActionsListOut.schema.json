@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "ActionCatalogEntry": {
+      "type": "object",
+      "required": [
+        "name",
+        "module",
+        "method",
+        "path",
+        "permission",
+        "mutating",
+        "agent",
+        "summary",
+        "reasons",
+        "events"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "module": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "permission": {
+          "type": "string"
+        },
+        "mutating": {
+          "type": "boolean"
+        },
+        "agent": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "preview",
+            "approval",
+            "deny"
+          ]
+        },
+        "summary": {
+          "type": "string"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SuiteReason"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DomainEventType"
+          }
+        },
+        "input_schema": {
+          "$id": "/schemas/unknown",
+          "title": "unknown"
+        },
+        "output_schema": {
+          "$id": "/schemas/unknown",
+          "title": "unknown"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SuiteReason": {
+      "type": "string",
+      "enum": [
+        "INSUFFICIENT_POINTS",
+        "OUT_OF_STOCK",
+        "INVALID_TRANSITION",
+        "BUDGET_EXHAUSTED",
+        "PRICE_CHANGED",
+        "ALREADY_EXISTS",
+        "STALE_VERSION",
+        "NOT_ELIGIBLE",
+        "LIMIT_EXCEEDED",
+        "SELF_ACTION",
+        "NOT_PARTICIPANT",
+        "MEMBER_DISABLED",
+        "SESSION_REVOKED",
+        "CART_EMPTY"
+      ]
+    },
+    "DomainEventType": {
+      "type": "string",
+      "enum": [
+        "message.received",
+        "message.sent",
+        "message.state_changed",
+        "notification.created",
+        "notification.read",
+        "points.posted",
+        "points.expiring",
+        "tier.changed",
+        "order.placed",
+        "order.status_changed",
+        "stock.changed",
+        "cart.updated",
+        "wishlist.changed",
+        "review.created",
+        "badge.awarded",
+        "badge.revoked",
+        "badge.progress",
+        "promotion.state_changed",
+        "promotion.redeemed",
+        "promotion.budget_alert",
+        "automation.run_updated",
+        "content.state_changed",
+        "content.published",
+        "content.engaged",
+        "task.assigned",
+        "task.updated",
+        "task.commented",
+        "approval.requested",
+        "approval.decided",
+        "member.updated",
+        "session.revoked"
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "items"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ActionCatalogEntry"
+      }
+    }
+  },
+  "additionalProperties": false
+}

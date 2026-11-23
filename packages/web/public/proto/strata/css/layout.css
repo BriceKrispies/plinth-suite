@@ -1,0 +1,98 @@
+/* Page structure: shell, main, the 12-column board, and the responsive reflow. */
+body {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+}
+
+.masthead {
+  grid-row: 1;
+}
+
+.notices {
+  grid-row: 2;
+}
+
+.trace {
+  grid-row: 4;
+}
+
+.main {
+  grid-row: 3;
+  inline-size: 100%;
+  max-inline-size: 120rem;
+  margin-inline: auto;
+  padding: var(--sp-5) var(--gutter) var(--sp-6);
+  outline: none;
+}
+
+.board__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-3) var(--sp-5);
+  margin-block-end: var(--sp-5);
+}
+
+.board__title {
+  font-size: var(--fs-xl);
+}
+
+.board__meta {
+  margin-block-start: var(--sp-1);
+  color: var(--ink-3);
+  font-size: var(--fs-sm);
+}
+
+.board__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* The board: panels are placed by their `at` rectangle, exposed as custom properties on each panel. */
+.board {
+  --row: 5.25rem;
+  --gap: clamp(0.75rem, 1.2vw, 1.25rem);
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 12), minmax(0, 1fr));
+  grid-auto-rows: var(--row);
+  gap: var(--gap);
+
+  & > .panel {
+    grid-column: calc(var(--x) + 1) / span var(--w);
+    grid-row: calc(var(--y) + 1) / span var(--h);
+  }
+}
+
+/* Tablet and phone: panels stack in reading order; KPI tiles pair up. */
+@media (max-width: 52rem) {
+  .board {
+    --row: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    & > .panel {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      min-block-size: max(calc(var(--h) * 3rem), 15rem);
+      max-block-size: 34rem;
+    }
+
+    & > .panel[data-visual="kpi"] {
+      grid-column: span 1;
+      min-block-size: 8.5rem;
+      max-block-size: none;
+    }
+  }
+
+  .board__head {
+    align-items: flex-start;
+  }
+}
+
+.dash-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: var(--sp-4);
+}

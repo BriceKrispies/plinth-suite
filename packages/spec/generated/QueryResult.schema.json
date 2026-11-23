@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "QueryResult": {
+      "type": "object",
+      "required": [
+        "columns",
+        "rows",
+        "row_count",
+        "truncated",
+        "as_of",
+        "watermarks",
+        "plan_summary",
+        "result_hash",
+        "policy_hash",
+        "cache",
+        "next_cursor"
+      ],
+      "properties": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "type"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$id": "/schemas/unknown",
+              "title": "unknown"
+            }
+          }
+        },
+        "row_count": {
+          "$ref": "#/$defs/Int"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "as_of": {
+          "type": "string"
+        },
+        "watermarks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "source",
+              "watermark"
+            ],
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "watermark": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "plan_summary": {
+          "type": "object",
+          "required": [
+            "sources",
+            "partitions_read",
+            "partitions_pruned"
+          ],
+          "properties": {
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "partitions_read": {
+              "$ref": "#/$defs/Int"
+            },
+            "partitions_pruned": {
+              "$ref": "#/$defs/Int"
+            }
+          },
+          "additionalProperties": false
+        },
+        "result_hash": {
+          "type": "string"
+        },
+        "policy_hash": {
+          "type": "string"
+        },
+        "cache": {
+          "type": "string",
+          "enum": [
+            "hit",
+            "miss"
+          ]
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/QueryResult"
+}

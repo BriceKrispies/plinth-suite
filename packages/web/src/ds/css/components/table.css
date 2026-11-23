@@ -1,0 +1,191 @@
+.c-table {
+  overflow-x: auto;
+  background: var(--surface-1);
+  border: var(--hairline) solid var(--rule);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-1);
+}
+
+.c-table__table {
+  inline-size: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--step--1);
+}
+
+.c-table__caption {
+  text-align: start;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border-block-end: var(--hairline) solid var(--rule);
+}
+
+.c-table__table thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-raised);
+  background: color-mix(in oklch, var(--paper-2) 92%, var(--surface-1));
+  padding: var(--space-2) var(--space-4);
+  text-align: start;
+  font-size: var(--th-size, var(--step--2));
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--th-track, var(--track-caps));
+  text-transform: var(--th-transform, uppercase);
+  color: var(--ink-2);
+  border-block-end: var(--hairline) solid var(--rule);
+  white-space: nowrap;
+}
+
+.c-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+  &:hover {
+    color: var(--ink);
+  }
+}
+th[aria-sort="ascending"],
+th[aria-sort="descending"] {
+  color: var(--ink);
+}
+
+.c-table__table td {
+  position: relative;
+  min-block-size: var(--row-h);
+  padding: var(--space-cell-y) var(--space-4);
+  border-block-end: var(--hairline) solid var(--rule);
+  vertical-align: middle;
+}
+.c-table__table tbody tr:last-child td {
+  border-block-end: 0;
+}
+.c-table__table tbody tr {
+  transition: background-color var(--dur-1) var(--ease);
+  &:hover {
+    background: color-mix(in oklch, var(--paper-2) 70%, transparent);
+  }
+  /* Selected: a ticked row checkbox (no script toggles a class), or a widget's own is-selected marker. */
+  &.is-selected,
+  &:has(.c-table__select input:checked) {
+    background: var(--paper-2);
+    box-shadow: inset 2px 0 0 var(--ink);
+  }
+  &.is-clickable {
+    cursor: pointer;
+  }
+}
+
+.c-table__cell--num {
+  text-align: end;
+  white-space: nowrap;
+}
+.c-table__select {
+  inline-size: 2.5rem;
+  & input {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+    accent-color: var(--ink);
+  }
+}
+
+/* Stretched link: the whole row is the hit area; the anchor is the one focus target. */
+.c-table__link {
+  font-weight: var(--weight-semi);
+  text-decoration: none;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.c-table__table td:has(.c-table__link) ~ td > :is(a, button, input) {
+  position: relative;
+  z-index: 1;
+}
+
+.c-table__table--compact td {
+  min-block-size: 2.25rem;
+  padding-block: var(--space-2);
+}
+.c-table__empty {
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.c-pager {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding-block: var(--space-3);
+}
+
+/* Narrow screens: each row becomes a card with its column labels. */
+@media (max-width: 39.99rem) {
+  .c-table {
+    overflow-x: visible;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .c-table__table,
+  .c-table__table tbody {
+    display: block;
+  }
+  .c-table__table thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .c-table__table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-1) var(--space-3);
+    margin-block-end: var(--space-3);
+    padding: var(--space-3);
+    background: var(--surface-1);
+    border: var(--hairline) solid var(--rule);
+    border-radius: var(--radius-card);
+  }
+  .c-table__table td {
+    display: block;
+    padding: var(--space-1) 0;
+    border: 0;
+    min-block-size: 0;
+    text-align: start;
+    &::before {
+      content: attr(data-label);
+      display: block;
+      font-size: var(--step--2);
+      font-weight: var(--weight-semi);
+      letter-spacing: var(--track-caps);
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+  }
+  .c-table__table td.c-table__select {
+    grid-column: 1 / -1;
+    &::before {
+      content: none;
+    }
+  }
+  .c-table__table td[colspan] {
+    grid-column: 1 / -1;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@plinth/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "node scripts/check.mjs && tsc --noEmit -p .",
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "build": "vite build",
+    "dev:https": "vite --host 0.0.0.0 --port 5443 --mode https"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "2.3.0",
+    "vite": "^7.1.0"
+  }
+}

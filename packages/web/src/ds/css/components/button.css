@@ -1,0 +1,127 @@
+/* Buttons. Primary is an ink fill; danger never fills red; signal is for the one committing action. */
+.c-icon {
+  flex: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.c-button {
+  --_bg: transparent;
+  --_fg: var(--ink);
+  --_edge: var(--control-border);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-block-size: var(--control-h-md);
+  min-inline-size: var(--control-h-md);
+  padding-inline: var(--space-3);
+  background: var(--_bg);
+  color: var(--_fg);
+  border: var(--hairline) solid var(--_edge);
+  border-radius: var(--radius-control);
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease),
+    transform var(--dur-1) var(--ease),
+    box-shadow var(--dur-1) var(--ease);
+
+  &:hover {
+    --_bg: var(--paper-2);
+    text-decoration: none;
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &.c-button--sm {
+    min-block-size: var(--control-h-sm);
+    padding-inline: var(--space-2);
+  }
+  &.c-button--icon {
+    padding-inline: 0;
+    inline-size: var(--control-h-md);
+  }
+  &.c-button--icon.c-button--sm {
+    inline-size: var(--control-h-sm);
+  }
+
+  &.c-button--primary {
+    --_bg: var(--btn-primary-bg, var(--ink));
+    --_fg: var(--btn-primary-fg, var(--paper));
+    --_edge: var(--btn-primary-edge, var(--ink));
+    box-shadow: 0 1px 2px color-mix(in oklch, var(--ink) 25%, transparent);
+    &:hover {
+      --_bg: color-mix(in oklch, var(--btn-primary-bg, var(--ink)) 88%, var(--paper));
+      box-shadow: 0 4px 10px -4px color-mix(in oklch, var(--ink) 45%, transparent);
+    }
+  }
+  &.c-button--ghost {
+    --_edge: transparent;
+    --_fg: var(--ink-2);
+    &:hover {
+      --_fg: var(--ink);
+    }
+  }
+  &.c-button--danger {
+    --_fg: var(--danger-fg);
+    --_edge: var(--danger-border);
+    &:hover {
+      --_bg: var(--danger-bg);
+    }
+  }
+  &.c-button--signal {
+    --_bg: var(--accent);
+    --_fg: var(--accent-on);
+    --_edge: var(--accent);
+    &:hover {
+      --_bg: color-mix(in oklch, var(--accent) 90%, var(--ink));
+    }
+  }
+
+  &[aria-pressed="true"] {
+    --_bg: var(--paper-2);
+    box-shadow: inset 2px 0 0 var(--ink);
+  }
+  /* A pressed primary stays an ink fill: the pale pressed wash would leave paper-coloured text on paper. */
+  &.c-button--primary[aria-pressed="true"] {
+    --_bg: var(--ink);
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+  &[aria-busy="true"] {
+    cursor: progress;
+  }
+  &:disabled,
+  &[aria-disabled="true"]:not([aria-busy]) {
+    --_bg: transparent;
+    --_fg: var(--ink-3);
+    --_edge: var(--rule);
+    box-shadow: none;
+    cursor: default;
+  }
+}
+
+.c-button__icon {
+  display: inline-grid;
+  place-items: center;
+}
+
+@media (pointer: coarse) {
+  .c-button {
+    min-block-size: 2.75rem;
+    min-inline-size: 2.75rem;
+  }
+}
+
+@media (max-width: 39.99rem) {
+  :is(.c-modal__foot, .c-dialog__foot) .c-button--primary {
+    inline-size: 100%;
+  }
+}

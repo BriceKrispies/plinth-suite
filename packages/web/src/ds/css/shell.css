@@ -1,0 +1,77 @@
+/* Layer: layout. The app shell grid, the side nav and the top bar chrome (tier 2, restrained translucency). */
+.app {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: var(--topbar-h) minmax(0, 1fr);
+  grid-template-areas:
+    "topbar"
+    "main";
+  min-block-size: 100dvh;
+  background: var(
+    --app-bg,
+    radial-gradient(60rem 22rem at 70% -4rem, var(--page-wash), transparent 70%),
+    var(--surface-0)
+  );
+}
+
+.app__nav {
+  display: none;
+}
+
+.app__topbar {
+  grid-area: topbar;
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-chrome);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-inline: var(--gutter);
+  background: var(--topbar-bg, var(--glass));
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  box-shadow: var(--topbar-shadow, var(--shadow-2));
+}
+
+.app__main {
+  grid-area: main;
+  min-inline-size: 0;
+  inline-size: 100%;
+  max-inline-size: var(--content-max);
+  padding: var(--space-5) var(--gutter) var(--space-8);
+  outline: none;
+  isolation: isolate;
+}
+
+.app__drawers {
+  position: relative;
+  z-index: var(--z-modal);
+}
+
+@media (min-width: 64rem) {
+  .app {
+    grid-template-columns: var(--nav-w) minmax(0, 1fr);
+    grid-template-areas:
+      "nav topbar"
+      "nav main";
+  }
+  .app__nav {
+    display: block;
+    grid-area: nav;
+    position: sticky;
+    inset-block-start: var(--nav-inset, 0);
+    block-size: calc(100dvh - 2 * var(--nav-inset, 0px));
+    margin: var(--nav-inset, 0);
+    overflow-y: auto;
+    z-index: var(--z-chrome);
+    background: var(--nav-bg, var(--surface-2));
+    box-shadow: var(--nav-shadow, 1px 0 0 var(--rule));
+    border-radius: var(--nav-radius, 0);
+    backdrop-filter: var(--nav-blur, none);
+  }
+  .app__topbar {
+    padding-inline: var(--space-5);
+  }
+  .app__main {
+    padding-inline: var(--space-5);
+  }
+}

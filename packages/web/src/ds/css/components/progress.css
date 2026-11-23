@@ -1,0 +1,61 @@
+.c-progress {
+  --_fill: var(--info-fg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  & progress {
+    appearance: none;
+    flex: 1;
+    block-size: 0.5rem;
+    border: var(--hairline) solid var(--control-border);
+    border-radius: var(--radius-round);
+    background: var(--paper-2);
+    overflow: hidden;
+    &::-webkit-progress-bar {
+      background: var(--paper-2);
+    }
+    &::-webkit-progress-value {
+      background: var(--_fill);
+      transition: inline-size var(--dur-2) var(--ease);
+    }
+    &::-moz-progress-bar {
+      background: var(--_fill);
+    }
+  }
+  &.c-progress--success {
+    --_fill: var(--success-fg);
+  }
+  &.c-progress--warning {
+    --_fill: var(--warning-fg);
+  }
+  &.c-progress--danger {
+    --_fill: var(--danger-fg);
+  }
+  &.c-progress--neutral {
+    --_fill: var(--ink-2);
+  }
+}
+.c-progress__text {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  min-inline-size: 3ch;
+  text-align: end;
+}
+
+.c-ring {
+  display: inline-block;
+}
+.c-ring__track {
+  stroke: var(--paper-3);
+}
+.c-ring__arc {
+  stroke: var(--ink);
+  stroke-linecap: butt;
+}
+.c-ring__text {
+  fill: var(--ink);
+  font-size: 11px;
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}

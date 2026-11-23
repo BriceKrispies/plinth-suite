@@ -1,0 +1,4 @@
+/* The only layer allowed to use !important. */
+[hidden] {
+  display: none !important;
+}

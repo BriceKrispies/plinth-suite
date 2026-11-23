@@ -1,0 +1,23 @@
+{
+  "name": "@plinth/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "effect": "3.22.5",
+    "@effect/platform": "0.97.4",
+    "@effect/platform-node": "0.108.4",
+    "@effect/sql": "0.52.2",
+    "@plinth/spec": "workspace:*",
+    "@plinth/core": "workspace:*",
+    "@plinth/engine": "workspace:*",
+    "@plinth/gen": "workspace:*",
+    "@plinth/worker": "workspace:*"
+  }
+}

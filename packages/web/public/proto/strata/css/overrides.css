@@ -1,0 +1,68 @@
+/* The last layer: hidden state, reduced motion and forced colours. The only place !important appears. */
+[hidden]:not([hidden="until-found"]) {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .panel,
+  .beat,
+  .inspector,
+  .menu__list,
+  .dash__card,
+  .banner,
+  .masthead,
+  .trace {
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
+
+  .conn__dot,
+  .beat__pulse,
+  .avatar {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .conn[data-state="offline"] .conn__dot {
+    background: Mark;
+  }
+
+  .bar,
+  .dot,
+  .cell {
+    forced-color-adjust: none;
+  }
+
+  .line,
+  .spark__line {
+    stroke: CanvasText;
+  }
+
+  .threshold__line,
+  .threshold__label,
+  .cell__ring {
+    stroke: Mark;
+    fill: Mark;
+  }
+
+  .threshold__line {
+    fill: none;
+  }
+
+  :focus-visible {
+    outline-color: Highlight;
+  }
+}

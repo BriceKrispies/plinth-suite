@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "ChangeOp": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "op",
+            "kind",
+            "slug",
+            "body"
+          ],
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "create"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "Dashboard",
+                "Panel",
+                "Query",
+                "Source",
+                "Parameter",
+                "Rule",
+                "Action",
+                "Form",
+                "Workflow",
+                "Grant",
+                "Metric",
+                "Template",
+                "Export",
+                "Annotation",
+                "Comment",
+                "Product",
+                "Category",
+                "Badge",
+                "Promotion",
+                "Automation",
+                "Content",
+                "Segment",
+                "Group",
+                "Role",
+                "Preference",
+                "Program",
+                "Widget",
+                "Page"
+              ]
+            },
+            "slug": {
+              "type": "string"
+            },
+            "body": {
+              "$id": "/schemas/unknown",
+              "title": "unknown"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "op",
+            "path",
+            "value"
+          ],
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "set"
+              ]
+            },
+            "path": {
+              "$ref": "#/$defs/JsonPointer"
+            },
+            "value": {
+              "$id": "/schemas/unknown",
+              "title": "unknown"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "op",
+            "path"
+          ],
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "remove"
+              ]
+            },
+            "path": {
+              "$ref": "#/$defs/JsonPointer"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "op"
+          ],
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "delete"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "JsonPointer": {
+      "type": "string",
+      "description": "a string matching the pattern ^(\\/([^/~]|~[01])*)*$",
+      "pattern": "^(\\/([^/~]|~[01])*)*$"
+    }
+  },
+  "$ref": "#/$defs/ChangeOp"
+}

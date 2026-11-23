@@ -1,0 +1,54 @@
+/*
+  Scroll-driven animation: stats and cards rise in as they enter view, and the top bar gains a soft shadow once the
+  page has scrolled. Chart and reading-progress hooks live with their widgets (chart.css, reporting.css, content.css).
+  Everything here sits inside @supports (animation-timeline: view()) and no-preference reduced motion, and every
+  animation is fill-mode "backwards" (or ends at the resting value), so where the feature is missing content is simply
+  shown and nothing is ever left hidden. Opacity starts at 0.0001, never 0.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes scroll-rise {
+      from {
+        opacity: 0.0001;
+        translate: 0 0.875rem;
+      }
+    }
+    @keyframes scroll-rise-small {
+      from {
+        opacity: 0.0001;
+        translate: 0 0.4em;
+      }
+    }
+    @keyframes scroll-topbar-shade {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .c-stat {
+      animation: scroll-rise linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    .c-stat__value {
+      animation: scroll-rise-small linear backwards;
+      animation-timeline: view();
+      animation-range: entry 15% entry 90%;
+    }
+
+    /* A soft shadow under the sticky top bar, faded in over the first 3rem of root scroll. */
+    .app__topbar::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      inset-block-start: 100%;
+      block-size: 0.75rem;
+      background: linear-gradient(to bottom, oklch(0 0 0 / 0.16), transparent);
+      opacity: 0;
+      pointer-events: none;
+      animation: scroll-topbar-shade linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 3rem;
+    }
+  }
+}

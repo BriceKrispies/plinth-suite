@@ -1,0 +1,83 @@
+.c-stat {
+  position: relative;
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+  padding: var(--space-4) var(--space-5);
+  min-inline-size: 0;
+  background: var(--surface-1);
+  border: var(--hairline) solid var(--rule);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-1);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    box-shadow var(--dur-2) var(--ease),
+    translate var(--dur-2) var(--ease),
+    background-color var(--dur-1) var(--ease);
+
+  &.c-stat--linked:hover {
+    background: color-mix(in oklch, var(--paper-2) 60%, var(--surface-1));
+    box-shadow: var(--shadow-1-hover);
+    translate: 0 -2px;
+  }
+}
+.c-stat__label {
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.c-stat__value {
+  font-size: var(--stat-size, var(--step-2));
+  font-weight: var(--stat-weight, var(--weight-bold));
+  letter-spacing: var(--track-tight);
+  line-height: 1.05;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+.c-stat__unit {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  color: var(--ink-2);
+  letter-spacing: 0;
+}
+.c-stat__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--step--1);
+  font-weight: var(--weight-semi);
+  color: var(--neutral-fg);
+
+  &.c-stat__delta--success {
+    color: var(--success-fg);
+  }
+  &.c-stat__delta--danger {
+    color: var(--danger-fg);
+  }
+}
+.c-stat__hint {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+.c-stat__spark {
+  margin-block-start: var(--space-2);
+}
+
+/* Container style query: the --density token (tokens.css) tightens a stat inside any widget or page region. The
+   html[data-density="compact"] rules remain the fallback where style queries are unavailable. */
+@container style(--density: compact) {
+  .c-stat {
+    gap: 0;
+    padding: var(--space-3) var(--space-4);
+  }
+  .c-stat__value {
+    font-size: calc(var(--stat-size, var(--step-2)) * 0.85);
+  }
+  .c-stat__spark {
+    margin-block-start: var(--space-1);
+  }
+}

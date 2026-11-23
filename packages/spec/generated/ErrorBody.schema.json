@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "type": "object",
+  "required": [
+    "code",
+    "path",
+    "message",
+    "fix_hint",
+    "retryable"
+  ],
+  "properties": {
+    "code": {
+      "type": "string",
+      "enum": [
+        "VALIDATION_FAILED",
+        "UNKNOWN_FIELD",
+        "UNKNOWN_REFERENCE",
+        "TYPE_MISMATCH",
+        "PREVIEW_REQUIRED",
+        "PREVIEW_STALE",
+        "CONFLICT",
+        "IDEMPOTENCY_KEY_REUSED",
+        "FORBIDDEN",
+        "RULE_REFUSED",
+        "RATE_LIMITED",
+        "QUERY_TIMEOUT",
+        "SOURCE_STALE",
+        "LOOP_SUSPECTED",
+        "UNAUTHENTICATED"
+      ]
+    },
+    "path": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string",
+      "description": "a string at most 280 character(s) long",
+      "title": "maxLength(280)",
+      "maxLength": 280
+    },
+    "expected": {
+      "type": "string"
+    },
+    "allowed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "an array of at most 20 item(s)",
+      "title": "maxItems(20)",
+      "maxItems": 20
+    },
+    "did_you_mean": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "an array of at most 3 item(s)",
+      "title": "maxItems(3)",
+      "maxItems": 3
+    },
+    "suggestion": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "path",
+            "value"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "replace"
+              ]
+            },
+            "path": {
+              "type": "string"
+            },
+            "value": {
+              "$id": "/schemas/unknown",
+              "title": "unknown"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "tool",
+            "arguments"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "call"
+              ]
+            },
+            "tool": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "additionalProperties": {
+                "$id": "/schemas/unknown",
+                "title": "unknown"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "fix_hint": {
+      "type": "string",
+      "description": "a string at most 280 character(s) long",
+      "title": "maxLength(280)",
+      "maxLength": 280
+    },
+    "retryable": {
+      "type": "boolean"
+    },
+    "retry_after_s": {
+      "$ref": "#/$defs/Int",
+      "description": "a number greater than or equal to 1",
+      "title": "greaterThanOrEqualTo(1)",
+      "minimum": 1
+    },
+    "docs_uri": {
+      "type": "string"
+    },
+    "details": {
+      "type": "object",
+      "required": [],
+      "properties": {},
+      "additionalProperties": {
+        "$id": "/schemas/unknown",
+        "title": "unknown"
+      }
+    }
+  },
+  "additionalProperties": false
+}

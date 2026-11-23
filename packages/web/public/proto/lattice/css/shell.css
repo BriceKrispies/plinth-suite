@@ -1,0 +1,237 @@
+/* Application shell: top bar, breadcrumb, live state, identity, presence, banner. */
+.skip-link {
+  position: fixed;
+  inset-block-start: var(--space-2);
+  inset-inline-start: var(--space-2);
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent);
+  color: var(--on-accent);
+  border-radius: var(--radius-2);
+  font-weight: 600;
+  transform: translateY(-200%);
+
+  &:focus-visible {
+    transform: none;
+  }
+}
+
+.chrome {
+  background: var(--surface);
+  box-shadow: var(--elev-1);
+}
+
+.topbar {
+  container: topbar / inline-size;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-block-size: var(--topbar-h);
+  padding-inline: var(--gutter);
+  border-block-end: 1px solid var(--border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: var(--text-lg);
+  letter-spacing: -0.01em;
+  flex: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.brand__mark {
+  fill: var(--accent);
+}
+
+.crumbs {
+  min-inline-size: 0;
+  font-size: var(--text-sm);
+
+  & ol {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  & li + li::before {
+    content: "/";
+    margin-inline-end: var(--space-2);
+    color: var(--text-faint);
+  }
+
+  & li {
+    min-inline-size: 0;
+  }
+
+  & a {
+    color: var(--text-muted);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--text);
+      text-decoration: underline;
+    }
+  }
+
+  & [aria-current="page"] {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--text);
+  }
+}
+
+.topbar__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-inline-start: auto;
+  flex: none;
+}
+
+/* Live state: icon + word + colour, never colour alone */
+.live {
+  --c: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.125rem var(--space-2);
+  border: 1px solid color-mix(in oklch, var(--c) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--c) 10%, transparent);
+  color: var(--c);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  &[data-state="live"] {
+    --c: var(--ok);
+
+    & .icon path {
+      fill: currentColor;
+    }
+  }
+
+  &[data-state="connecting"] {
+    --c: var(--accent);
+  }
+
+  &[data-state="reconnecting"],
+  &[data-state="offline"] {
+    --c: var(--bad);
+  }
+}
+
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.identity__label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border-radius: 50%;
+  background: var(--accent-muted);
+  color: var(--accent-strong);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  flex: none;
+}
+
+.avatar--me {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px var(--accent);
+}
+
+.presence {
+  display: flex;
+  margin: 0;
+}
+
+@container topbar (inline-size < 58rem) {
+  .identity__label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .topbar .btn__label {
+    display: none;
+  }
+}
+
+@container topbar (inline-size < 44rem) {
+  .crumbs,
+  .presence,
+  .identity .avatar {
+    display: none;
+  }
+
+  .topbar {
+    gap: var(--space-2);
+  }
+
+  .identity .select {
+    max-inline-size: 9.5rem;
+  }
+}
+
+.banner {
+  padding: var(--space-2) var(--gutter);
+  background: var(--bad-subtle);
+  color: var(--bad-text);
+  border-block-end: 1px solid color-mix(in oklch, var(--bad) 40%, transparent);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.sitefoot__audit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+
+  &[data-state="ok"] {
+    color: var(--ok);
+  }
+
+  &[data-state="bad"] {
+    color: var(--bad-text);
+  }
+}
+
+.noscript {
+  padding: var(--space-6);
+}

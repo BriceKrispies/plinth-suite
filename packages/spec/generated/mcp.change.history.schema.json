@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "ChangeHistoryInput": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "uri": {
+          "$ref": "#/$defs/NodeRef"
+        },
+        "principal": {
+          "type": "string",
+          "description": "a string at most 128 character(s) long",
+          "title": "maxLength(128)",
+          "maxLength": 128
+        },
+        "since": {
+          "type": "string"
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "a string matching the pattern ^[A-Za-z0-9:._-]{8,128}$",
+          "pattern": "^[A-Za-z0-9:._-]{8,128}$"
+        },
+        "limit": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 1 and 200",
+          "title": "between(1, 200)",
+          "minimum": 1,
+          "maximum": 200
+        }
+      },
+      "additionalProperties": false
+    },
+    "NodeRef": {
+      "type": "string",
+      "description": "A node: plinth://<ws>/<Kind>/<uuid>, kind:slug (e.g. dashboard:ops-board), or a bare slug when unambiguous.",
+      "title": "maxLength(200)",
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/ChangeHistoryInput"
+}

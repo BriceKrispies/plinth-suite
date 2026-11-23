@@ -1,0 +1,9 @@
+{
+  "identities": [
+    {
+      "name": "plinth",
+      "credentials": [{ "accessKey": "plinth", "secretKey": "plinth-secret" }],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}

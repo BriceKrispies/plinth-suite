@@ -1,0 +1,68 @@
+/*
+  Layer: overrides. The only place !important is allowed.
+  1. [hidden] must beat any component display value, including on SVG groups.
+  2. forced-colors: hand colour back to the system, and keep every non-colour cue (hatch, glyphs, words).
+*/
+[hidden] {
+  display: none !important;
+}
+
+@media (forced-colors: active) {
+  .panel,
+  .board-card,
+  .conn,
+  .trace,
+  .inspector,
+  .table-scroll,
+  .param {
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
+
+  .tag,
+  .rule {
+    border-color: CanvasText;
+    color: CanvasText;
+    background: Canvas;
+  }
+
+  .cause {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .chart-svg .line,
+  .chart-svg .bar,
+  .chart-svg .point,
+  .chart-svg .area {
+    stroke: CanvasText;
+  }
+
+  .chart-svg .bar {
+    fill: Highlight;
+  }
+
+  .chart-svg .cell {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+
+  .chart-svg .cell-label,
+  .chart-svg .tick,
+  .chart-svg .limit-label {
+    fill: CanvasText !important;
+  }
+
+  .chart-svg .limit-line,
+  .chart-svg .hatch-line,
+  .chart-svg .breach-mark,
+  .chart-svg .cell-ring {
+    stroke: Mark;
+    fill: Mark;
+  }
+
+  .conn-dot {
+    background: CanvasText !important;
+  }
+}

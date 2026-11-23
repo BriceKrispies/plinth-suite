@@ -1,0 +1,122 @@
+/*
+  Layer: tokens. Every colour is OKLCH. Surfaces climb in small luminance steps instead of shadows;
+  status hues are spent only where something means something. Dark is the default; [data-theme="light"]
+  flips every token through light-dark().
+*/
+:root {
+  color-scheme: dark;
+
+  /* Hue of the neutral family: a cool blue-grey, kept near-achromatic. */
+  --hue: 252;
+
+  /* Surfaces, lowest to highest elevation */
+  --surface-0: light-dark(oklch(0.972 0.004 var(--hue)), oklch(0.165 0.008 var(--hue)));
+  --surface-1: light-dark(oklch(0.995 0.002 var(--hue)), oklch(0.205 0.009 var(--hue)));
+  --surface-2: light-dark(oklch(0.958 0.005 var(--hue)), oklch(0.245 0.010 var(--hue)));
+  --surface-3: light-dark(oklch(0.925 0.007 var(--hue)), oklch(0.292 0.011 var(--hue)));
+  --scrim: light-dark(oklch(0.2 0.01 var(--hue) / 0.45), oklch(0.08 0.005 var(--hue) / 0.7));
+
+  /* Lines */
+  --line: light-dark(oklch(0.885 0.006 var(--hue)), oklch(0.31 0.010 var(--hue)));
+  --line-strong: light-dark(oklch(0.80 0.009 var(--hue)), oklch(0.40 0.012 var(--hue)));
+
+  /* Text: every pair clears 4.5:1 on its surface */
+  --text: light-dark(oklch(0.24 0.012 var(--hue)), oklch(0.93 0.005 var(--hue)));
+  --text-dim: light-dark(oklch(0.42 0.012 var(--hue)), oklch(0.76 0.008 var(--hue)));
+  --text-faint: light-dark(oklch(0.50 0.012 var(--hue)), oklch(0.66 0.010 var(--hue)));
+
+  /* Accent: one cool, low-chroma signal colour for "live" and attribution */
+  --accent: light-dark(oklch(0.50 0.10 220), oklch(0.80 0.095 205));
+  --accent-ink: light-dark(oklch(0.99 0 0), oklch(0.18 0.02 220));
+  --accent-soft: color-mix(in oklch, var(--accent) 14%, var(--surface-1));
+  --focus: light-dark(oklch(0.52 0.15 250), oklch(0.82 0.11 225));
+
+  /* Status: good / warn / bad. Always paired with an icon, word or pattern. */
+  --good: light-dark(oklch(0.50 0.12 155), oklch(0.80 0.125 155));
+  --warn: light-dark(oklch(0.55 0.12 75), oklch(0.83 0.125 85));
+  --bad: light-dark(oklch(0.52 0.17 25), oklch(0.74 0.15 25));
+  --good-soft: color-mix(in oklch, var(--good) 14%, var(--surface-1));
+  --bad-soft: color-mix(in oklch, var(--bad) 14%, var(--surface-1));
+
+  /* Categorical series: six hues at matched lightness, plus a shape per series in scatter/legend */
+  --series-1: light-dark(oklch(0.52 0.10 225), oklch(0.78 0.09 215));
+  --series-2: light-dark(oklch(0.52 0.11 155), oklch(0.78 0.10 150));
+  --series-3: light-dark(oklch(0.56 0.11 80), oklch(0.80 0.10 85));
+  --series-4: light-dark(oklch(0.52 0.12 330), oklch(0.76 0.10 330));
+  --series-5: light-dark(oklch(0.50 0.12 275), oklch(0.76 0.09 275));
+  --series-6: light-dark(oklch(0.55 0.12 45), oklch(0.77 0.10 50));
+
+  /* Heatmap ramp, interpolated per cell in CSS from --t (0..1) */
+  --heat-lo: light-dark(oklch(0.95 0.015 235), oklch(0.27 0.025 235));
+  --heat-hi: light-dark(oklch(0.52 0.11 225), oklch(0.76 0.10 205));
+  --ink-on-lo: light-dark(oklch(0.28 0.012 var(--hue)), oklch(0.90 0.006 var(--hue)));
+  --ink-on-hi: light-dark(oklch(0.98 0.004 var(--hue)), oklch(0.17 0.012 var(--hue)));
+
+  /* Type */
+  --font-sans: ui-sans-serif, system-ui, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "SF Mono", "JetBrains Mono", Consolas, "Liberation Mono", monospace;
+  --text-2xs: clamp(0.68rem, 0.66rem + 0.08vw, 0.72rem);
+  --text-xs: clamp(0.74rem, 0.72rem + 0.1vw, 0.8rem);
+  --text-s: clamp(0.8rem, 0.78rem + 0.12vw, 0.875rem);
+  --text-m: clamp(0.9rem, 0.87rem + 0.15vw, 1rem);
+  --text-l: clamp(1.05rem, 0.98rem + 0.3vw, 1.25rem);
+  --text-xl: clamp(1.3rem, 1.1rem + 0.8vw, 1.75rem);
+  --track-caps: 0.08em;
+  --weight-regular: 400;
+  --weight-medium: 560;
+  --weight-strong: 660;
+
+  /* Space: a 4px-based scale in rem */
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-s: 0.75rem;
+  --space-m: 1rem;
+  --space-l: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --gutter: clamp(1rem, 0.4rem + 2vw, 2.5rem);
+
+  /* Radius */
+  --radius-s: 0.3rem;
+  --radius-m: 0.5rem;
+  --radius-l: 0.75rem;
+  --radius-pill: 999px;
+
+  /* Elevation: a hairline highlight plus a short, soft shadow; the luminance step does the real work */
+  --elev-1: inset 0 1px 0 light-dark(oklch(1 0 0 / 0.6), oklch(1 0 0 / 0.035)), 0 1px 2px light-dark(oklch(0.3 0.02 var(--hue) / 0.08), oklch(0 0 0 / 0.35));
+  --elev-2: 0 8px 24px light-dark(oklch(0.3 0.02 var(--hue) / 0.14), oklch(0 0 0 / 0.5)), 0 0 0 1px var(--line);
+  --elev-3: 0 24px 64px light-dark(oklch(0.3 0.02 var(--hue) / 0.22), oklch(0 0 0 / 0.65)), 0 0 0 1px var(--line-strong);
+
+  /* Motion. Durations collapse to zero under prefers-reduced-motion (see base layer). */
+  --dur-fast: 120ms;
+  --dur: 220ms;
+  --dur-cause: 6000ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Grid rhythm */
+  --row: 4.5rem;
+  --gap: clamp(0.625rem, 0.4rem + 0.7vw, 1rem);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Wall display: scale the whole rem-based system up so the trace reads from across the room. */
+@media (min-width: 1700px) {
+  :root {
+    font-size: 112.5%;
+    --row: 4.75rem;
+  }
+}
+
+@media (min-width: 2400px) {
+  :root {
+    font-size: 150%;
+  }
+}

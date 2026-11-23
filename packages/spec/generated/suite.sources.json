@@ -1,0 +1,1484 @@
+[
+  {
+    "view": "rpt_ledger",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.ledger",
+        "title": "Suite: ledger entries",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "occurred_at",
+        "primary_key": [
+          "entry_id"
+        ],
+        "enums": {
+          "txn_type": [
+            "award",
+            "purchase",
+            "refund",
+            "transfer",
+            "expiry",
+            "adjustment",
+            "promotion_bonus",
+            "badge_reward",
+            "reversal"
+          ],
+          "account_kind": [
+            "member",
+            "system"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ],
+          "tier": [
+            "bronze",
+            "silver",
+            "gold",
+            "platinum"
+          ],
+          "surface": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ],
+          "department": [
+            "operations",
+            "fulfilment",
+            "finance",
+            "marketing",
+            "technology",
+            "people"
+          ]
+        },
+        "fields": [
+          {
+            "name": "entry_id",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "txn_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "txn_no",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "occurred_at",
+            "type": "timestamp",
+            "nullable": false,
+            "description": "Virtual time of the transaction."
+          },
+          {
+            "name": "txn_type",
+            "type": "enum(txn_type)",
+            "nullable": false
+          },
+          {
+            "name": "account",
+            "type": "string",
+            "nullable": false,
+            "description": "member:<handle> or system:<name>."
+          },
+          {
+            "name": "account_kind",
+            "type": "enum(account_kind)",
+            "nullable": false
+          },
+          {
+            "name": "member",
+            "type": "string",
+            "nullable": true,
+            "description": "Handle for member accounts."
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": true
+          },
+          {
+            "name": "tier",
+            "type": "enum(tier)",
+            "nullable": true,
+            "description": "Tier after the transaction."
+          },
+          {
+            "name": "department",
+            "type": "enum(department)",
+            "nullable": true
+          },
+          {
+            "name": "amount",
+            "type": "int",
+            "nullable": false,
+            "description": "Signed: credit positive."
+          },
+          {
+            "name": "credit",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "debit",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "balance_after",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "ref_kind",
+            "type": "string",
+            "nullable": true
+          },
+          {
+            "name": "ref_id",
+            "type": "string",
+            "nullable": true
+          },
+          {
+            "name": "promotion",
+            "type": "string",
+            "nullable": true,
+            "description": "Promotion slug for promotion_bonus and purchase discounts."
+          },
+          {
+            "name": "actor",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "surface",
+            "type": "enum(surface)",
+            "nullable": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_store_orders",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.store_orders",
+        "title": "Suite: store orders",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "placed_at",
+        "primary_key": [
+          "order_id"
+        ],
+        "enums": {
+          "order_status": [
+            "placed",
+            "approved",
+            "fulfilled",
+            "shipped",
+            "delivered",
+            "cancelled",
+            "refunded"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ],
+          "tier": [
+            "bronze",
+            "silver",
+            "gold",
+            "platinum"
+          ],
+          "department": [
+            "operations",
+            "fulfilment",
+            "finance",
+            "marketing",
+            "technology",
+            "people"
+          ]
+        },
+        "fields": [
+          {
+            "name": "order_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "order_no",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "placed_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "member",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": false
+          },
+          {
+            "name": "tier",
+            "type": "enum(tier)",
+            "nullable": false,
+            "description": "Tier at placement."
+          },
+          {
+            "name": "department",
+            "type": "enum(department)",
+            "nullable": false
+          },
+          {
+            "name": "status",
+            "type": "enum(order_status)",
+            "nullable": false
+          },
+          {
+            "name": "requires_approval",
+            "type": "bool",
+            "nullable": false
+          },
+          {
+            "name": "item_count",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "subtotal_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "discount_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "total_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "bonus_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "cash_cents",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "promotions",
+            "type": "string",
+            "nullable": true,
+            "description": "Applied promotion slugs, comma-joined."
+          },
+          {
+            "name": "approved_at",
+            "type": "timestamp",
+            "nullable": true
+          },
+          {
+            "name": "delivered_at",
+            "type": "timestamp",
+            "nullable": true
+          },
+          {
+            "name": "cancelled_at",
+            "type": "timestamp",
+            "nullable": true
+          },
+          {
+            "name": "refunded_at",
+            "type": "timestamp",
+            "nullable": true
+          },
+          {
+            "name": "fulfil_ms",
+            "type": "int",
+            "nullable": true,
+            "description": "placed_at to delivered_at in milliseconds."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_order_items",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.order_items",
+        "title": "Suite: store order lines",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "placed_at",
+        "primary_key": [
+          "order_id",
+          "line"
+        ],
+        "enums": {
+          "order_status": [
+            "placed",
+            "approved",
+            "fulfilled",
+            "shipped",
+            "delivered",
+            "cancelled",
+            "refunded"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ],
+          "tier": [
+            "bronze",
+            "silver",
+            "gold",
+            "platinum"
+          ]
+        },
+        "fields": [
+          {
+            "name": "order_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "line",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "placed_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "member",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": false
+          },
+          {
+            "name": "tier",
+            "type": "enum(tier)",
+            "nullable": false
+          },
+          {
+            "name": "status",
+            "type": "enum(order_status)",
+            "nullable": false
+          },
+          {
+            "name": "product",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "product_title",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "category",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "qty",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "unit_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "discount_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "line_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "free_item",
+            "type": "bool",
+            "nullable": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_messages",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.messages",
+        "title": "Suite: messages (metadata only)",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "sent_at",
+        "primary_key": [
+          "message_id"
+        ],
+        "enums": {
+          "thread_kind": [
+            "direct",
+            "group",
+            "broadcast",
+            "system"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ],
+          "department": [
+            "operations",
+            "fulfilment",
+            "finance",
+            "marketing",
+            "technology",
+            "people"
+          ]
+        },
+        "fields": [
+          {
+            "name": "message_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "thread_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "sent_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "sender",
+            "type": "string",
+            "nullable": false,
+            "description": "Subject of the sender."
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": true,
+            "description": "Sender's region (null for agents and services)."
+          },
+          {
+            "name": "department",
+            "type": "enum(department)",
+            "nullable": true
+          },
+          {
+            "name": "thread_kind",
+            "type": "enum(thread_kind)",
+            "nullable": false
+          },
+          {
+            "name": "is_reply",
+            "type": "bool",
+            "nullable": false
+          },
+          {
+            "name": "recipient_count",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "mention_count",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "attachment_count",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "attachment_bytes",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "via_automation",
+            "type": "bool",
+            "nullable": false
+          },
+          {
+            "name": "read_count",
+            "type": "int",
+            "nullable": false,
+            "description": "Recipients who have read it."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_notifications",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.notifications",
+        "title": "Suite: notifications",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "created_at",
+        "primary_key": [
+          "notification_id"
+        ],
+        "enums": {
+          "notification_type": [
+            "mention",
+            "message",
+            "approval_request",
+            "approval_decision",
+            "points_awarded",
+            "points_expiring",
+            "badge_earned",
+            "tier_changed",
+            "order_status",
+            "automation_alert",
+            "content_review",
+            "content_published",
+            "task_assigned",
+            "promotion_started",
+            "system"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ]
+        },
+        "fields": [
+          {
+            "name": "notification_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "recipient",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": true
+          },
+          {
+            "name": "type",
+            "type": "enum(notification_type)",
+            "nullable": false
+          },
+          {
+            "name": "read",
+            "type": "bool",
+            "nullable": false
+          },
+          {
+            "name": "read_ms",
+            "type": "int",
+            "nullable": true,
+            "description": "created_at to read_at in milliseconds."
+          },
+          {
+            "name": "emailed",
+            "type": "bool",
+            "nullable": false
+          },
+          {
+            "name": "in_digest",
+            "type": "bool",
+            "nullable": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_badge_awards",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.badge_awards",
+        "title": "Suite: badge awards",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "awarded_at",
+        "primary_key": [
+          "award_id"
+        ],
+        "enums": {
+          "rarity": [
+            "common",
+            "uncommon",
+            "rare",
+            "epic",
+            "legendary"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ],
+          "tier": [
+            "bronze",
+            "silver",
+            "gold",
+            "platinum"
+          ]
+        },
+        "fields": [
+          {
+            "name": "award_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "awarded_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "badge",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "badge_title",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "rarity",
+            "type": "enum(rarity)",
+            "nullable": false
+          },
+          {
+            "name": "member",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": false
+          },
+          {
+            "name": "tier",
+            "type": "enum(tier)",
+            "nullable": false
+          },
+          {
+            "name": "awarded_by",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "manual",
+            "type": "bool",
+            "nullable": false
+          },
+          {
+            "name": "points_reward",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "revoked",
+            "type": "bool",
+            "nullable": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_promotion_redemptions",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.promotion_redemptions",
+        "title": "Suite: promotion redemptions",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "occurred_at",
+        "primary_key": [
+          "redemption_id"
+        ],
+        "enums": {
+          "promo_context": [
+            "purchase",
+            "earn"
+          ],
+          "effect_type": [
+            "points_multiplier",
+            "bonus_points",
+            "store_discount",
+            "free_item"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ],
+          "tier": [
+            "bronze",
+            "silver",
+            "gold",
+            "platinum"
+          ]
+        },
+        "fields": [
+          {
+            "name": "redemption_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "occurred_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "promotion",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "promotion_revision",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "member",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": false
+          },
+          {
+            "name": "tier",
+            "type": "enum(tier)",
+            "nullable": false
+          },
+          {
+            "name": "context",
+            "type": "enum(promo_context)",
+            "nullable": false
+          },
+          {
+            "name": "effect_type",
+            "type": "enum(effect_type)",
+            "nullable": false
+          },
+          {
+            "name": "cost_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "benefit_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "ref_kind",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "ref_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "reversed",
+            "type": "bool",
+            "nullable": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_automation_runs",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.automation_runs",
+        "title": "Suite: automation runs",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "created_at",
+        "primary_key": [
+          "run_id"
+        ],
+        "enums": {
+          "run_status": [
+            "queued",
+            "running",
+            "succeeded",
+            "failed",
+            "skipped",
+            "cancelled"
+          ],
+          "trigger_type": [
+            "event",
+            "schedule",
+            "metric",
+            "manual",
+            "retry"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ]
+        },
+        "fields": [
+          {
+            "name": "run_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "automation",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "automation_revision",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "trigger_type",
+            "type": "enum(trigger_type)",
+            "nullable": false
+          },
+          {
+            "name": "status",
+            "type": "enum(run_status)",
+            "nullable": false
+          },
+          {
+            "name": "member",
+            "type": "string",
+            "nullable": true
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": true
+          },
+          {
+            "name": "steps_total",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "steps_failed",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "attempts",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "duration_ms",
+            "type": "int",
+            "nullable": true
+          },
+          {
+            "name": "error_code",
+            "type": "string",
+            "nullable": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_content_engagement",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.content_engagement",
+        "title": "Suite: content engagement",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "first_viewed_at",
+        "primary_key": [
+          "content",
+          "member"
+        ],
+        "enums": {
+          "content_type": [
+            "page",
+            "article",
+            "announcement"
+          ],
+          "reaction": [
+            "like",
+            "celebrate",
+            "insightful"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ],
+          "tier": [
+            "bronze",
+            "silver",
+            "gold",
+            "platinum"
+          ]
+        },
+        "fields": [
+          {
+            "name": "content",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "content_type",
+            "type": "enum(content_type)",
+            "nullable": false
+          },
+          {
+            "name": "published_at",
+            "type": "timestamp",
+            "nullable": true
+          },
+          {
+            "name": "member",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": false
+          },
+          {
+            "name": "tier",
+            "type": "enum(tier)",
+            "nullable": false
+          },
+          {
+            "name": "first_viewed_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "last_viewed_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "views",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "reaction",
+            "type": "enum(reaction)",
+            "nullable": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_members",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.members",
+        "title": "Suite: members",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "joined_at",
+        "primary_key": [
+          "member"
+        ],
+        "enums": {
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ],
+          "tier": [
+            "bronze",
+            "silver",
+            "gold",
+            "platinum"
+          ],
+          "member_status": [
+            "active",
+            "disabled"
+          ],
+          "department": [
+            "operations",
+            "fulfilment",
+            "finance",
+            "marketing",
+            "technology",
+            "people"
+          ]
+        },
+        "fields": [
+          {
+            "name": "member",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "display_name",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "joined_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": false
+          },
+          {
+            "name": "tier",
+            "type": "enum(tier)",
+            "nullable": false
+          },
+          {
+            "name": "department",
+            "type": "enum(department)",
+            "nullable": false
+          },
+          {
+            "name": "status",
+            "type": "enum(member_status)",
+            "nullable": false
+          },
+          {
+            "name": "balance",
+            "type": "int",
+            "nullable": false,
+            "description": "Current balance (not as-of)."
+          },
+          {
+            "name": "lifetime_points",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "badges_count",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "orders_count",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "last_active_at",
+            "type": "timestamp",
+            "nullable": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_tasks",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.tasks",
+        "title": "Suite: tasks",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "created_at",
+        "primary_key": [
+          "task_id"
+        ],
+        "enums": {
+          "task_status": [
+            "open",
+            "in_progress",
+            "blocked",
+            "done",
+            "cancelled"
+          ],
+          "task_priority": [
+            "low",
+            "normal",
+            "high",
+            "urgent"
+          ],
+          "task_source": [
+            "manual",
+            "automation"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ]
+        },
+        "fields": [
+          {
+            "name": "task_id",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "task_no",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "status",
+            "type": "enum(task_status)",
+            "nullable": false
+          },
+          {
+            "name": "priority",
+            "type": "enum(task_priority)",
+            "nullable": false
+          },
+          {
+            "name": "source",
+            "type": "enum(task_source)",
+            "nullable": false
+          },
+          {
+            "name": "assignee",
+            "type": "string",
+            "nullable": true
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": true,
+            "description": "Assignee's region."
+          },
+          {
+            "name": "created_by",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "due_at",
+            "type": "timestamp",
+            "nullable": true
+          },
+          {
+            "name": "completed_at",
+            "type": "timestamp",
+            "nullable": true
+          },
+          {
+            "name": "overdue",
+            "type": "bool",
+            "nullable": false
+          },
+          {
+            "name": "cycle_ms",
+            "type": "int",
+            "nullable": true,
+            "description": "created_at to completed_at in milliseconds."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "view": "rpt_events",
+    "source": {
+      "apiVersion": "plinth/v1",
+      "kind": "Source",
+      "metadata": {
+        "slug": "suite.events",
+        "title": "Suite: domain events",
+        "labels": {
+          "plinth.suite": "true"
+        }
+      },
+      "spec": {
+        "kind": "metadata",
+        "domain": "suite",
+        "time_column": "occurred_at",
+        "primary_key": [
+          "seq"
+        ],
+        "enums": {
+          "event_type": [
+            "message.received",
+            "message.sent",
+            "message.state_changed",
+            "notification.created",
+            "notification.read",
+            "points.posted",
+            "points.expiring",
+            "tier.changed",
+            "order.placed",
+            "order.status_changed",
+            "stock.changed",
+            "cart.updated",
+            "wishlist.changed",
+            "review.created",
+            "badge.awarded",
+            "badge.revoked",
+            "badge.progress",
+            "promotion.state_changed",
+            "promotion.redeemed",
+            "promotion.budget_alert",
+            "automation.run_updated",
+            "content.state_changed",
+            "content.published",
+            "content.engaged",
+            "task.assigned",
+            "task.updated",
+            "task.commented",
+            "approval.requested",
+            "approval.decided",
+            "member.updated",
+            "session.revoked"
+          ],
+          "surface": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ],
+          "region": [
+            "NA",
+            "EMEA",
+            "APAC",
+            "LATAM",
+            "ANZ"
+          ]
+        },
+        "fields": [
+          {
+            "name": "seq",
+            "type": "int",
+            "nullable": false
+          },
+          {
+            "name": "occurred_at",
+            "type": "timestamp",
+            "nullable": false
+          },
+          {
+            "name": "type",
+            "type": "enum(event_type)",
+            "nullable": false
+          },
+          {
+            "name": "actor",
+            "type": "string",
+            "nullable": false
+          },
+          {
+            "name": "on_behalf_of",
+            "type": "string",
+            "nullable": true
+          },
+          {
+            "name": "surface",
+            "type": "enum(surface)",
+            "nullable": false
+          },
+          {
+            "name": "subject_kind",
+            "type": "string",
+            "nullable": true
+          },
+          {
+            "name": "subject_id",
+            "type": "string",
+            "nullable": true
+          },
+          {
+            "name": "member",
+            "type": "string",
+            "nullable": true,
+            "description": "The member the event is about, if any."
+          },
+          {
+            "name": "region",
+            "type": "enum(region)",
+            "nullable": true
+          },
+          {
+            "name": "caused_by_automation",
+            "type": "string",
+            "nullable": true
+          }
+        ]
+      }
+    }
+  }
+]

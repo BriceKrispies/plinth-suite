@@ -1,0 +1,50 @@
+/* Full-page states: empty board, unknown dashboard, load failure, no results. */
+.state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  max-inline-size: 38rem;
+  margin: var(--space-10) auto;
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  background: var(--surface);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-3);
+
+  &[data-tone="warn"] .state__icon {
+    background: var(--warn-subtle);
+    color: var(--warn);
+  }
+
+  &[data-tone="bad"] .state__icon {
+    background: var(--bad-subtle);
+    color: var(--bad-text);
+  }
+}
+
+.state__icon {
+  display: grid;
+  place-items: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  border-radius: 50%;
+  background: var(--accent-subtle);
+  color: var(--accent-strong);
+}
+
+.state__title {
+  font-size: var(--text-xl);
+}
+
+.state__detail {
+  max-inline-size: 30rem;
+  color: var(--text-muted);
+}
+
+.state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-block-start: var(--space-2);
+}

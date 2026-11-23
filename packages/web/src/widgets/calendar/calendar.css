@@ -1,0 +1,356 @@
+/* Calendar widgets. Shared kit classes (wk-*) live in promotions.css. */
+
+/* The entry drawer is mounted outside the widget frame, so its root carries data-widget-domain. */
+@scope ([data-widget^="calendar."], [data-widget-domain="calendar"]) {
+  .wc {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+
+  /* tone variables: one place maps a tone to the colours an entry uses */
+  .wc-tone--neutral {
+    --w-calendar-fg: var(--neutral-fg);
+    --w-calendar-bg: var(--neutral-bg);
+    --w-calendar-bd: var(--neutral-border);
+  }
+  .wc-tone--info {
+    --w-calendar-fg: var(--info-fg);
+    --w-calendar-bg: var(--info-bg);
+    --w-calendar-bd: var(--info-border);
+  }
+  .wc-tone--success {
+    --w-calendar-fg: var(--success-fg);
+    --w-calendar-bg: var(--success-bg);
+    --w-calendar-bd: var(--success-border);
+  }
+  .wc-tone--warning {
+    --w-calendar-fg: var(--warning-fg);
+    --w-calendar-bg: var(--warning-bg);
+    --w-calendar-bd: var(--warning-border);
+  }
+  .wc-tone--danger {
+    --w-calendar-fg: var(--danger-fg);
+    --w-calendar-bg: var(--danger-bg);
+    --w-calendar-bd: var(--danger-border);
+  }
+  .wc-tone--signal {
+    --w-calendar-fg: var(--accent);
+    --w-calendar-bg: var(--accent-wash);
+    --w-calendar-bd: var(--accent);
+  }
+
+  .wc-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .wc-head__nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .wc-label {
+    font-size: var(--step-1);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--track-tight);
+  }
+  .wc-types {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .wc-utc {
+    font-size: var(--step--2);
+    color: var(--ink-3);
+  }
+  .wc-body {
+    min-inline-size: 0;
+  }
+
+  /* month grid */
+  .wc-grid {
+    display: grid;
+    border-block-start: var(--hairline) solid var(--rule);
+    border-inline-start: var(--hairline) solid var(--rule);
+  }
+  .wc-week {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  .wc-colhead {
+    padding: var(--space-1) var(--space-2);
+    border-inline-end: var(--hairline) solid var(--rule);
+    border-block-end: var(--hairline) solid var(--rule);
+    font-size: var(--step--2);
+    font-weight: var(--weight-semi);
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .wc-day {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: var(--space-1);
+    min-block-size: 5.5rem;
+    min-inline-size: 0;
+    padding: var(--space-1);
+    border-inline-end: var(--hairline) solid var(--rule);
+    border-block-end: var(--hairline) solid var(--rule);
+    background: var(--surface-1);
+  }
+  .wc-day.is-outside {
+    background: var(--paper-2);
+    color: var(--ink-3);
+  }
+  .wc-day.is-selected {
+    background: color-mix(in oklch, var(--ink) 5%, var(--surface-1));
+    box-shadow: inset 0 0 0 var(--hairline) var(--ink-3);
+  }
+  .wc-day.is-today .wc-day__num {
+    background: var(--ink);
+    color: var(--surface-1);
+  }
+  .wc-day__num {
+    justify-self: start;
+    min-inline-size: 1.75rem;
+    min-block-size: 1.75rem;
+    padding: 0 var(--space-1);
+    border: 0;
+    border-radius: var(--radius-round);
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  .wc-day__chips {
+    display: grid;
+    gap: calc(2 * var(--hairline));
+    min-inline-size: 0;
+  }
+  .wc-chip {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-inline-size: 0;
+    padding: var(--hairline) var(--space-1);
+    border: 0;
+    border-radius: var(--radius-1);
+    background: color-mix(in oklch, var(--w-calendar-bg) 70%, transparent);
+    color: var(--w-calendar-fg);
+    font: inherit;
+    font-size: var(--step--2);
+    text-align: start;
+    cursor: pointer;
+  }
+  .wc-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wc-chip--middle {
+    border-radius: 0;
+    opacity: 0.85;
+  }
+  .wc-chip--start {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .wc-more {
+    justify-self: start;
+    padding: 0 var(--space-1);
+    border: 0;
+    background: none;
+    color: var(--ink-2);
+    font: inherit;
+    font-size: var(--step--2);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .wc-dots {
+    display: none;
+    gap: calc(var(--space-1) / 2);
+    flex-wrap: wrap;
+  }
+  .wc-dot {
+    inline-size: calc(var(--space-1) * 1.5);
+    block-size: calc(var(--space-1) * 1.5);
+    border-radius: var(--radius-round);
+    background: var(--w-calendar-fg);
+  }
+  /* narrow containers: chips collapse to dots, the day panel carries the detail */
+  @container widget (max-width: 40rem) {
+    .wc-day {
+      min-block-size: 3.25rem;
+    }
+    .wc-day__chips {
+      display: none;
+    }
+    .wc-dots {
+      display: flex;
+    }
+  }
+
+  /* week and day */
+  .wc-weekview {
+    display: grid;
+    gap: var(--space-3);
+  }
+  @container widget (min-width: 56rem) {
+    .wc-weekview {
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+  }
+  .wc-col {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2);
+    min-inline-size: 0;
+    padding-block-start: var(--space-2);
+    border-block-start: var(--hairline) solid var(--rule);
+  }
+  .wc-col.is-today {
+    border-block-start: calc(2 * var(--hairline)) solid var(--ink);
+  }
+  .wc-col__head,
+  .wc-agenda__daybtn {
+    justify-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    font-weight: var(--weight-semi);
+    cursor: pointer;
+    text-align: start;
+  }
+  .wc-col__list,
+  .wc-dayview,
+  .wc-agenda__list {
+    display: grid;
+    gap: var(--space-2);
+    min-inline-size: 0;
+  }
+  .wc-detail {
+    display: grid;
+    gap: var(--space-2);
+    padding-block-start: var(--space-3);
+    border-block-start: var(--hairline) solid var(--rule);
+  }
+
+  /* an entry row (week, day, detail, agenda) */
+  .wc-entry {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-1);
+    border: 0;
+    border-block-end: var(--hairline) solid var(--rule);
+    background: none;
+    color: var(--ink);
+    text-decoration: none;
+    position: relative;
+  }
+  .wc-entry:hover {
+    background: color-mix(in oklch, var(--ink) 4%, transparent);
+  }
+  .wc-entry__icon {
+    color: var(--w-calendar-fg);
+    display: inline-flex;
+  }
+  .wc-entry__text {
+    display: grid;
+    min-inline-size: 0;
+  }
+  .wc-entry__title {
+    font-weight: var(--weight-semi);
+    overflow-wrap: anywhere;
+  }
+  .wc-entry__meta {
+    font-size: var(--step--2);
+    color: var(--ink-3);
+  }
+  :scope.wc-drawer,
+  .wc-drawer {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .wc-drawer__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  /* agenda */
+  .wc-agenda__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .wc-agenda__head:empty {
+    display: none;
+  }
+  .wc-agenda__focus {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--step--1);
+  }
+  .wc-agenda__body {
+    display: grid;
+    gap: var(--space-4);
+    min-inline-size: 0;
+  }
+  .wc-agenda__day {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .wc-agenda__dayhead {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    font-size: var(--step--1);
+  }
+  .wc-agenda__compact {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-1);
+  }
+  .wc-mini {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    border-inline-start: var(--space-1) solid var(--w-calendar-bd);
+    color: var(--ink);
+    text-decoration: none;
+    font-size: var(--step--1);
+    position: relative;
+  }
+  .wc-mini:hover {
+    background: color-mix(in oklch, var(--ink) 4%, transparent);
+  }
+  .wc-mini__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wc-mini__when {
+    color: var(--ink-3);
+    font-size: var(--step--2);
+    white-space: nowrap;
+  }
+}

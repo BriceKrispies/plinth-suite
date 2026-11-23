@@ -1,0 +1,345 @@
+/* Charts: inline SVG styled entirely from tokens, so light, dark and forced-colors all follow the theme. */
+.chart {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.chart__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-1) var(--sp-4);
+  padding: 0 var(--sp-1) var(--sp-1);
+}
+
+.chart__hint {
+  margin-inline-start: auto;
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+}
+
+.chart__plot {
+  position: relative;
+  flex: 1;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.plot {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  font-family: inherit;
+
+  & text {
+    fill: var(--ink-3);
+    font-size: var(--fs-xs);
+  }
+}
+
+/* Series identity: six matched hues; the legend and every mark read the same custom property. */
+[data-s] {
+  --s: var(--c1);
+}
+
+[data-s="1"] {
+  --s: var(--c2);
+}
+
+[data-s="2"] {
+  --s: var(--c3);
+}
+
+[data-s="3"] {
+  --s: var(--c4);
+}
+
+[data-s="4"] {
+  --s: var(--c5);
+}
+
+[data-s="5"] {
+  --s: var(--c6);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
+}
+
+.legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.swatch {
+  display: inline-block;
+  flex: none;
+  inline-size: 0.65rem;
+  block-size: 0.65rem;
+  border-radius: 0.2rem;
+  background: var(--s);
+}
+
+.grid {
+  stroke: var(--edge);
+  stroke-width: 1;
+}
+
+.axis__base,
+.tick {
+  stroke: var(--edge-strong);
+  stroke-width: 1;
+}
+
+.line {
+  fill: none;
+  stroke: var(--s);
+  stroke-width: 2.25;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.area {
+  fill: color-mix(in oklch, var(--s) 20%, transparent);
+  stroke: none;
+}
+
+.dot {
+  fill: var(--sunken);
+  stroke: var(--s);
+  stroke-width: 2;
+}
+
+.dot--scatter {
+  fill: color-mix(in oklch, var(--s) 55%, transparent);
+  stroke-width: 1.5;
+}
+
+.bar {
+  fill: var(--s);
+}
+
+.plot .bar__value {
+  fill: var(--ink-2);
+  font-weight: 600;
+}
+
+.plot .bar__value--breach {
+  fill: var(--bad);
+  font-weight: 700;
+}
+
+/* Threshold: a dashed line, a triangle glyph and the word "Limit", so colour is never the only signal. */
+.threshold__line {
+  fill: none;
+  stroke: var(--bad);
+  stroke-width: 1.5;
+}
+
+.threshold__line--dashed {
+  stroke-dasharray: 6 4;
+}
+
+.plot .threshold__label {
+  fill: var(--bad);
+  font-weight: 700;
+}
+
+.mark--breach {
+  fill: var(--bad);
+  stroke: var(--sunken);
+  stroke-width: 1.5;
+}
+
+.hatch {
+  stroke: var(--hatch);
+  stroke-width: 2.2;
+  opacity: 0.5;
+}
+
+/* Heatmap */
+.cell {
+  fill: color-mix(in oklch, var(--seq-lo), var(--seq-hi) calc(var(--t, 0) * 100%));
+}
+
+.cell--empty {
+  fill: none;
+  stroke: var(--edge-strong);
+  stroke-dasharray: 3 3;
+}
+
+.cell__ring {
+  fill: none;
+  stroke: var(--bad);
+  stroke-width: 2.5;
+}
+
+.cell__flag {
+  fill: var(--bad);
+  stroke: var(--on-seq-hi);
+  stroke-width: 1;
+}
+
+.plot .cell__value {
+  fill: var(--ink-1);
+  font-weight: 650;
+}
+
+.plot .cell__value--on-hi {
+  fill: var(--on-seq-hi);
+}
+
+.scale__lo {
+  stop-color: var(--seq-lo);
+}
+
+.scale__hi {
+  stop-color: var(--seq-hi);
+}
+
+.scale__limit {
+  stroke: var(--bad);
+  stroke-width: 2;
+}
+
+.plot .scale__limit-label {
+  fill: var(--bad);
+  font-weight: 700;
+}
+
+/* Interaction layer */
+.window,
+.window--draft {
+  fill: color-mix(in oklch, var(--accent) 14%, transparent);
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+
+.plot .window__label {
+  fill: var(--accent);
+  font-weight: 600;
+}
+
+.hit {
+  fill: transparent;
+}
+
+.hit--brush {
+  cursor: crosshair;
+}
+
+.hover {
+  pointer-events: none;
+}
+
+.hover__guide {
+  stroke: var(--ink-3);
+  stroke-dasharray: 3 3;
+}
+
+.hover__ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.tip {
+  position: absolute;
+  z-index: 4;
+  min-inline-size: 8rem;
+  padding: var(--sp-2) 0.7rem;
+  border-radius: var(--r-md);
+  background: var(--layer-2);
+  box-shadow: var(--elev-3);
+  font-size: var(--fs-xs);
+  pointer-events: none;
+  translate: 0.75rem 0;
+
+  &[data-flip="left"] {
+    translate: calc(-100% - 0.75rem) 0;
+  }
+
+  & li {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+
+  & b {
+    margin-inline-start: auto;
+    padding-inline-start: var(--sp-3);
+  }
+}
+
+.tip__title {
+  margin-block-end: 0.2rem;
+  font-weight: 700;
+}
+
+.tip__key {
+  color: var(--ink-2);
+}
+
+/* Tables: real tables, used for the table visual and for "View as table". */
+.table-scroll {
+  block-size: 100%;
+  overflow: auto;
+  border-radius: var(--r-sm);
+}
+
+.data {
+  inline-size: 100%;
+  font-size: var(--fs-sm);
+
+  & th,
+  & td {
+    padding: 0.5rem 0.8rem;
+    text-align: start;
+    white-space: nowrap;
+  }
+
+  & th {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    background: var(--layer-2);
+    box-shadow: 0 1px 0 var(--edge-strong);
+    font-size: var(--fs-xs);
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  & tbody tr:nth-child(even) {
+    background: color-mix(in oklch, var(--ink-1) 3%, transparent);
+  }
+
+  & tbody tr:hover {
+    background: var(--accent-soft);
+  }
+
+  & .num {
+    text-align: end;
+  }
+
+  & .nil {
+    color: var(--ink-3);
+  }
+
+  & tr[data-breach] td {
+    color: var(--bad);
+    font-weight: 650;
+  }
+}

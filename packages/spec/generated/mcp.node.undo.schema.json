@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "NodeUndoInput": {
+      "type": "object",
+      "required": [
+        "preview_token",
+        "change_seq",
+        "base_revision",
+        "reason"
+      ],
+      "properties": {
+        "preview_token": {
+          "type": "string",
+          "description": "The preview_token returned by node.preview (single use, valid 300 s).",
+          "pattern": "^pvt_[A-Za-z0-9_-]{43}$"
+        },
+        "change_seq": {
+          "$ref": "#/$defs/ChangeSeq"
+        },
+        "base_revision": {
+          "$ref": "#/$defs/Revision"
+        },
+        "reason": {
+          "type": "string",
+          "description": "a string at most 280 character(s) long",
+          "title": "maxLength(280)",
+          "minLength": 1,
+          "maxLength": 280
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "a string matching the pattern ^[A-Za-z0-9:._-]{8,128}$",
+          "pattern": "^[A-Za-z0-9:._-]{8,128}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ChangeSeq": {
+      "type": "integer",
+      "description": "a number greater than or equal to 1",
+      "title": "greaterThanOrEqualTo(1)",
+      "minimum": 1
+    },
+    "Revision": {
+      "type": "integer",
+      "description": "a number greater than or equal to 1",
+      "title": "greaterThanOrEqualTo(1)",
+      "minimum": 1
+    }
+  },
+  "$ref": "#/$defs/NodeUndoInput"
+}

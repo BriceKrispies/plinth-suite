@@ -1,0 +1,147 @@
+/* The widget frame: a container, so widget CSS adapts with container queries. */
+.c-widget {
+  container: widget / inline-size;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-inline-size: 0;
+  min-block-size: 0;
+  background: var(--widget-bg, var(--surface-1));
+  border: var(--hairline) solid var(--widget-edge, var(--rule));
+  border-radius: var(--widget-radius, var(--radius-card));
+  box-shadow: var(--widget-shadow, var(--shadow-1));
+  overflow: hidden;
+  transition: box-shadow var(--dur-2) var(--ease);
+
+  &:hover {
+    box-shadow: var(--widget-shadow-hover, var(--shadow-1-hover));
+  }
+  &.u-arrive {
+    animation: arrive-wash var(--dur-3) var(--ease) both;
+  }
+  &.u-arrive::before {
+    inset-block: 0 auto;
+    inset-inline: 0;
+    inline-size: auto;
+    block-size: 2px;
+    transform-origin: left;
+    animation: arrive-rule-x var(--dur-2) var(--ease) both;
+  }
+}
+
+@keyframes arrive-rule-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.c-widget__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) var(--space-2) var(--space-4);
+  min-inline-size: 0;
+  border-block-end: var(--hairline) solid var(--widget-head-edge, transparent);
+  margin-block-end: var(--widget-head-gap, 0px);
+  background: var(--widget-head-bg, transparent);
+}
+.c-widget__title {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  font-size: var(--widget-title-size, var(--step--2));
+  font-weight: var(--widget-title-weight, var(--weight-semi));
+  letter-spacing: var(--widget-title-track, var(--track-caps));
+  text-transform: var(--widget-title-transform, uppercase);
+  color: var(--widget-title-color, var(--ink-2));
+  overflow-wrap: anywhere;
+}
+.c-widget__menu {
+  margin-inline-start: auto;
+  opacity: var(--widget-menu-rest, 1);
+  transition: opacity var(--dur-1) var(--ease);
+}
+/* Header actions can rest quiet (--widget-menu-rest) on a fine pointer; they return on hover, on focus within
+   and while their menu is open, and stay fully visible on touch (coarse pointers). */
+@media (hover: hover) and (pointer: fine) {
+  .c-widget:hover .c-widget__menu,
+  .c-widget:focus-within .c-widget__menu,
+  .c-widget__menu:has([aria-expanded="true"]) {
+    opacity: 1;
+  }
+}
+@media (hover: none), (pointer: coarse) {
+  .c-widget__menu {
+    opacity: 1;
+  }
+}
+/* A table or card inside a widget need not draw a second box: --nested-* lets a look flatten them. */
+.c-widget .c-table,
+.c-widget .c-card {
+  background: var(--nested-bg, var(--surface-1));
+  border-color: var(--nested-edge, var(--rule));
+  box-shadow: var(--nested-shadow, var(--shadow-1));
+}
+.c-widget__body {
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: auto;
+  padding: 0 var(--space-4) var(--space-4);
+}
+.c-widget__state {
+  padding: 0 var(--space-4) var(--space-4);
+  overflow: auto;
+}
+
+/* Rule chrome: full-width widgets on module pages hang from an ink rule, like a Meridian panel. */
+.c-widget--rule {
+  background: transparent;
+  border: 0;
+  border-block-start: var(--hairline) solid var(--ink);
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+
+  &:hover {
+    box-shadow: none;
+  }
+  & .c-widget__header {
+    padding-inline: 0;
+  }
+  & .c-widget__title {
+    font-size: var(--step-1);
+    letter-spacing: var(--track-tight);
+    text-transform: none;
+    color: var(--ink);
+    font-weight: var(--weight-bold);
+  }
+  & .c-widget__body,
+  & .c-widget__state {
+    padding-inline: 0;
+  }
+}
+
+/* A body that scrolls fades out at its foot, so a cut-off row reads as "more below", not as a clipped card. */
+.c-widget__body.is-clipped::after {
+  content: "";
+  position: sticky;
+  inset-block-end: calc(-1 * var(--space-4));
+  display: block;
+  block-size: var(--space-6);
+  margin-block-start: calc(-1 * var(--space-6));
+  background: linear-gradient(to bottom, transparent, var(--surface-1));
+  pointer-events: none;
+}
+.c-widget--rule .c-widget__body.is-clipped::after {
+  background: linear-gradient(to bottom, transparent, var(--surface-0));
+}
+
+/* Container style query: --density (tokens.css) tightens the widget's internals. The html[data-density] rules remain
+   the fallback where style queries are unavailable. */
+@container style(--density: compact) {
+  .c-widget__header {
+    padding: var(--space-2) var(--space-2) var(--space-1) var(--space-3);
+  }
+  .c-widget__body {
+    padding: 0 var(--space-3) var(--space-3);
+  }
+}

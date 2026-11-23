@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "SchemaDescribeInput": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Dashboard",
+            "Panel",
+            "Query",
+            "Source",
+            "Parameter",
+            "Rule",
+            "Action",
+            "Form",
+            "Workflow",
+            "Grant",
+            "Metric",
+            "Template",
+            "Export",
+            "Annotation",
+            "Comment",
+            "Product",
+            "Category",
+            "Badge",
+            "Promotion",
+            "Automation",
+            "Content",
+            "Segment",
+            "Group",
+            "Role",
+            "Preference",
+            "Program",
+            "Widget",
+            "Page"
+          ],
+          "description": "Omit to list every node kind."
+        },
+        "include_examples": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/SchemaDescribeInput"
+}

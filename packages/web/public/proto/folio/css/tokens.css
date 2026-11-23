@@ -1,0 +1,74 @@
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* Paper and ink (OKLCH). Light is the daylight edition, dark the evening edition. */
+    --paper:      light-dark(oklch(0.968 0.013 88),  oklch(0.205 0.012 255));
+    --surface:    light-dark(oklch(0.992 0.006 88),  oklch(0.250 0.014 255));
+    --sunken:     light-dark(oklch(0.940 0.015 86),  oklch(0.175 0.010 255));
+    --ink:        light-dark(oklch(0.240 0.020 255), oklch(0.940 0.010 88));
+    --ink-2:      light-dark(oklch(0.440 0.020 255), oklch(0.760 0.012 88));
+    --ink-3:      light-dark(oklch(0.520 0.018 255), oklch(0.660 0.012 88));
+    --rule:       light-dark(oklch(0.870 0.014 86),  oklch(0.340 0.014 255));
+    --rule-strong:light-dark(oklch(0.700 0.016 86),  oklch(0.500 0.014 255));
+    --band:       light-dark(oklch(0.240 0.022 255), oklch(0.160 0.010 255));
+    --on-band:    light-dark(oklch(0.960 0.010 88),  oklch(0.930 0.010 88));
+    --on-band-2:  light-dark(oklch(0.780 0.014 88),  oklch(0.760 0.012 88));
+
+    /* Accents */
+    --accent:     light-dark(oklch(0.420 0.110 258), oklch(0.790 0.100 250));
+    --accent-soft:color-mix(in oklch, var(--accent) 10%, var(--surface));
+    --signal:     light-dark(oklch(0.520 0.170 32),  oklch(0.760 0.150 36));
+    --signal-soft:color-mix(in oklch, var(--signal) 12%, var(--surface));
+    --ok:         light-dark(oklch(0.440 0.100 155), oklch(0.780 0.120 155));
+    --focus:      light-dark(oklch(0.500 0.170 258), oklch(0.800 0.130 250));
+
+    /* Data palette: restrained, labelled directly, differentiated by marker shape as well. */
+    --series-1: light-dark(oklch(0.440 0.110 258), oklch(0.780 0.100 250));
+    --series-2: light-dark(oklch(0.550 0.120 68),  oklch(0.800 0.120 80));
+    --series-3: light-dark(oklch(0.500 0.090 195), oklch(0.780 0.090 190));
+    --series-4: light-dark(oklch(0.460 0.130 335), oklch(0.780 0.110 335));
+    --series-5: light-dark(oklch(0.500 0.090 125), oklch(0.790 0.100 125));
+    --heat-lo:  light-dark(oklch(0.950 0.025 88),  oklch(0.300 0.030 255));
+    --heat-hi:  light-dark(oklch(0.380 0.105 258), oklch(0.780 0.100 250));
+    --on-heat-lo: var(--ink);
+    --on-heat-hi: light-dark(oklch(0.980 0.008 88), oklch(0.200 0.012 255));
+    --grid:     light-dark(oklch(0.900 0.012 86),  oklch(0.320 0.012 255));
+
+    /* Type */
+    --font-serif: "Iowan Old Style", "Charter", "Sitka Text", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    --font-sans:  "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --font-mono:  ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-md: 1rem;
+    --text-lg: clamp(1.125rem, 1.02rem + 0.4vw, 1.3rem);
+    --text-xl: clamp(1.3rem, 1.1rem + 0.8vw, 1.65rem);
+    --text-display: clamp(2.1rem, 1.3rem + 3.2vw, 3.75rem);
+
+    /* Space (4px at 16px root) */
+    --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+    --space-5: 1.5rem;  --space-6: 2rem;   --space-7: 3rem;    --space-8: 4.5rem;
+    --gutter: clamp(1rem, 0.5rem + 2.2vw, 2.5rem);
+    --row-h: 5.25rem;
+    --board-gap: clamp(0.75rem, 0.4rem + 0.9vw, 1.25rem);
+
+    /* Shape and depth */
+    --radius-1: 2px;
+    --radius-2: 6px;
+    --radius-pill: 999px;
+    --shadow-1: 0 1px 0 color-mix(in oklch, var(--ink) 6%, transparent);
+    --shadow-2: 0 1px 2px color-mix(in oklch, var(--ink) 10%, transparent), 0 8px 24px -8px color-mix(in oklch, var(--ink) 18%, transparent);
+
+    /* Motion: durations collapse under reduced motion */
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --dur-1: 140ms;
+    --dur-2: 420ms;
+    --dur-3: 900ms;
+    --cause-ms: 6000ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root { --dur-1: 0.01ms; --dur-2: 0.01ms; --dur-3: 0.01ms; }
+  }
+}

@@ -1,0 +1,13 @@
+node_modules/
+dist/
+dist-demo/
+dist-pages/
+.env
+*.log
+.tmp/
+.vite/
+shots/
+shots-*.log
+preview*.json
+cg.json
+pg.json

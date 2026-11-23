@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "CondTree": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Condition"
+        },
+        {
+          "type": "object",
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "any"
+          ],
+          "properties": {
+            "any": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "not"
+          ],
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/CondTree"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Condition": {
+      "type": "object",
+      "required": [
+        "field",
+        "op"
+      ],
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/FactPath"
+        },
+        "op": {
+          "$ref": "#/$defs/CondOp"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": "an array of at most 100 item(s)",
+              "title": "maxItems(100)",
+              "maxItems": 100
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "FactPath": {
+      "type": "string",
+      "description": "A fact name, e.g. tier, member.region, event.points",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*){0,3}$"
+    },
+    "CondOp": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "in",
+        "not_in",
+        "contains",
+        "not_contains",
+        "exists",
+        "not_exists",
+        "between"
+      ]
+    }
+  },
+  "$ref": "#/$defs/CondTree"
+}

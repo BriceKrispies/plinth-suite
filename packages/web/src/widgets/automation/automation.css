@@ -1,0 +1,224 @@
+/* Automation widgets. Shared kit classes (wk-*) live in promotions.css. */
+
+/* The "Add a step" drawer is mounted outside the widget frame, so its root carries data-widget-domain. */
+@scope ([data-widget^="automation."], [data-widget-domain="automation"]) {
+  .wa {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+  .wa-results,
+  .wa-panel-host {
+    min-inline-size: 0;
+  }
+  .wa-list .c-table tr.is-selected td {
+    background: var(--paper-2);
+  }
+  .wa-fail,
+  .wa-error {
+    color: var(--danger-fg);
+  }
+  .wa-error code {
+    font-family: var(--font-mono);
+  }
+
+  /* runs */
+  .wa-runs__filters {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .wa-runs__scope {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  .wa-runs__scope[hidden] {
+    display: none;
+  }
+  .wa-runs__compact {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .wa-runrow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    inline-size: 100%;
+    padding: var(--space-2);
+    border: 0;
+    border-block-end: var(--hairline) solid var(--rule);
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+    position: relative;
+
+    &:hover {
+      background: color-mix(in oklch, var(--ink) 4%, transparent);
+    }
+  }
+  .wa-runrow__title {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+  .wa-runrow__when {
+    font-size: var(--step--1);
+    white-space: nowrap;
+  }
+  .wa-runs__run {
+    display: grid;
+    gap: var(--space-4);
+    min-inline-size: 0;
+    align-content: start;
+  }
+  .wa-runs__run[hidden] {
+    display: none;
+  }
+  .wa-run__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .wa-run__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .wa-run__title h3 {
+    font-size: var(--step-0);
+    font-weight: var(--weight-bold);
+  }
+
+  /* steps (runs and dry run): hairline-separated, only an exceptional status takes a stripe */
+  .wa-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .wa-step {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-3) 0;
+    border-block-end: var(--hairline) solid var(--rule);
+    border-inline-start: var(--space-1) solid transparent;
+    padding-inline-start: var(--space-3);
+  }
+  .wa-step--failed {
+    border-inline-start-color: var(--danger-border);
+  }
+  .wa-step--running {
+    border-inline-start-color: var(--info-border);
+  }
+  .wa-step__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .wa-step__icon {
+    display: inline-flex;
+    color: var(--ink-3);
+  }
+  .wa-step__when {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  .wa-step__error {
+    color: var(--danger-fg);
+    font-size: var(--step--1);
+  }
+  .wa-fires {
+    margin: var(--space-1) 0 0;
+    padding-inline-start: var(--space-4);
+    font-size: var(--step--1);
+  }
+
+  /* builder */
+  .wa-builder__bar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-raised);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    background: var(--surface-1);
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+  .wa-builder__lastrun {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--ink-3);
+  }
+  .wa-builder__panel,
+  .wa-builder__dry {
+    display: grid;
+    gap: var(--space-4);
+    min-inline-size: 0;
+    align-content: start;
+    padding-block-start: var(--space-3);
+  }
+  .wa-builder__problems-box {
+    color: var(--danger-fg);
+    font-size: var(--step--1);
+  }
+  .wa-builder__problems-box ul {
+    margin: var(--space-1) 0 0;
+    padding-inline-start: var(--space-4);
+  }
+  .wa-builder__rule {
+    min-inline-size: 0;
+  }
+  .wa-step-form {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+  .wa-step-form__type {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+    font-weight: var(--weight-semi);
+  }
+  .wa-addstep {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .wa-addstep__btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    inline-size: 100%;
+    padding: var(--space-3) var(--space-1);
+    border: 0;
+    border-block-end: var(--hairline) solid var(--rule);
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+
+    &:hover {
+      background: color-mix(in oklch, var(--ink) 4%, transparent);
+    }
+  }
+  .wa-addstep__icon {
+    display: inline-flex;
+    color: var(--ink-3);
+  }
+  .wa-vars {
+    padding-block-start: var(--space-2);
+  }
+}

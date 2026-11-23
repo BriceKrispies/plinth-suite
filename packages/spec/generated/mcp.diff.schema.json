@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "DiffInput": {
+      "type": "object",
+      "required": [
+        "a",
+        "b"
+      ],
+      "properties": {
+        "a": {
+          "type": "string",
+          "description": "<node>@<revision>, where <node> is a URI, kind:slug or slug.",
+          "pattern": "^.+@[0-9]+$"
+        },
+        "b": {
+          "type": "string",
+          "description": "a string matching the pattern ^.+@[0-9]+$",
+          "pattern": "^.+@[0-9]+$"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/DiffInput"
+}

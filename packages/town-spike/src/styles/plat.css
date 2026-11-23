@@ -1,0 +1,1799 @@
+/* The Plat: the semantic DOM over the canvas, designed for a portrait phone first (spec 00).
+ *
+ * Phone (compact, < 50 rem) is the design. The document scrolls; the top bar is sticky; the bottom bar, a room's
+ * dock and the status layer are fixed at the bottom with the safe-area insets; the canvas is fixed at 100lvh so a
+ * toolbar collapse never resizes it. Medium (50 to 64 rem) turns the bottom bar into a rail on the leading edge and
+ * shows the lobby and a room side by side (and from 52.5 rem the landing beside a street). Expanded (>= 64 rem) is
+ * the plinth vista and the side-by-side interior, with panes that scroll inside themselves. Landscape phones use the
+ * short layout (height < 30 rem).
+ *
+ * Shell breakpoints are rem media queries on the viewport (the app container is the viewport here; see SPIKE.md for
+ * why not container queries); widget presentation follows each pane's own width (its ResizeObserver).
+ *
+ * html[data-text="hybrid"]  Base tier (every phone): all text is the browser's own; surfaces are their CSS twins.
+ * html[data-text="gpu"]     Enhanced (expanded, fine pointer): elements marked data-paint are painted by the GPU,
+ *                           their DOM text transparent and their CSS surface hidden; anything handed back by the
+ *                           parity guard (.dom-text, or html[data-k1="dom"]) is visible DOM text again.
+ * html[data-render="plain"] Plain mode: no canvas; the same CSS twins, on paper.
+ */
+
+:root {
+  --ink: #1f1c17;
+  --ink-2: #585248;
+  --ink-3: #6f685d;
+  --accent: #2f5d50;
+  --credit: #2c6a3b;
+  --debit: #9b3a2c;
+  --paper: #d6cfc2;
+  --paper-2: #ece6da;
+  --pane: #fbf9f4;
+  --line: #ddd5c6;
+  --zebra: #f2eee5;
+  --chip: #efe9dd;
+  --focus: #2f5d50;
+  --selection: rgba(47, 93, 80, 0.3);
+  --ui:
+    "Inter Variable", system-ui, "Segoe UI", "Noto Sans", "Hiragino Sans", "PingFang SC", "Microsoft YaHei",
+    sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --top-h: calc(3.5rem + env(safe-area-inset-top));
+  --bar-h: calc(3.5rem + env(safe-area-inset-bottom));
+  --dock-h: 3.5rem;
+  --dock-space: 0px;
+  --status-h: 0px;
+  --kb: 0px;
+  --gutter: 1rem;
+  --rail-w: 4.5rem;
+  font-family: var(--ui);
+  font-size: 100%;
+  line-height: 1.4;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+  background: var(--paper);
+}
+
+/* iOS: Dynamic Type sets the base size (spec 00 section 0.2.3). */
+@supports (font: -apple-system-body) {
+  :root {
+    font: -apple-system-body;
+    font-family: var(--ui);
+  }
+}
+
+html[data-view="street"] {
+  --dock-space: 3rem;
+}
+html[data-room="statement"],
+html[data-room="transfer"] {
+  --dock-space: var(--dock-h);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+button:active,
+a:active {
+  filter: brightness(0.94);
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--paper);
+}
+
+canvas#scene {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100lvh;
+  display: block;
+  z-index: 0;
+}
+html[data-render="gpu"] body {
+  background: transparent;
+}
+
+#plat {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.t {
+  display: block;
+  margin: 0;
+}
+span.t {
+  display: inline-block;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  left: 0.5rem;
+  top: -3rem;
+  z-index: 20;
+  background: var(--pane);
+  color: var(--ink);
+  padding: 0.5rem 0.75rem;
+}
+.skip:focus {
+  top: 0.5rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+a {
+  color: var(--accent);
+}
+
+/* ---------------------------------------------------------------- top bar (read zone) */
+
+#topbar {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  height: var(--top-h);
+  box-sizing: border-box;
+  padding: env(safe-area-inset-top) max(0.5rem, env(safe-area-inset-right)) 0
+    max(0.5rem, env(safe-area-inset-left));
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(243, 239, 230, 0.96);
+  border-bottom: 1px solid #d8cfbe;
+}
+#topbar .up,
+#topbar .motion {
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: var(--ink);
+  border-radius: 0.5rem;
+  flex: none;
+}
+#topbar .motion {
+  font-size: 1.25rem;
+}
+.top-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding-inline-start: 0.25rem;
+}
+.top-title {
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.top-crumb {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--ink-2);
+}
+.balance-chip {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  background: var(--chip);
+  border: 1px solid #d2c8b6;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- status layer ("Updates") */
+
+#updates {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--bar-h) + var(--dock-space));
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+}
+#updates:empty {
+  display: none;
+}
+.status-item {
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem 0 1rem;
+  background: #2f2a22;
+  color: #fbf8f1;
+  font-size: 0.875rem;
+}
+.status-item > span {
+  flex: 1;
+}
+.status-btn,
+.status-item.more {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0 0.75rem;
+  font-weight: 600;
+  color: #fbf8f1;
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------- bottom bar (thumb zone, every altitude) */
+
+#bottombar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
+  height: var(--bar-h);
+  box-sizing: border-box;
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  display: flex;
+  background: rgba(243, 239, 230, 0.98);
+  border-top: 1px solid #d8cfbe;
+}
+#bottombar .slot {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 3.75rem;
+  min-height: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+}
+#bottombar .glyph {
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+}
+#bottombar .slot-label {
+  font-size: 0.6875rem;
+  line-height: 0.875rem;
+  font-weight: 600;
+}
+#bottombar .count {
+  position: absolute;
+  top: 0.25rem;
+  inset-inline-start: calc(50% + 0.5rem);
+  min-width: 1.125rem;
+  padding: 0 0.25rem;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: var(--debit);
+  color: #fff;
+  font-size: 0.6875rem;
+  line-height: 1.125rem;
+  font-weight: 700;
+}
+
+#main {
+  padding-bottom: calc(var(--bar-h) + var(--dock-space) + var(--status-h) + 1rem);
+}
+/* The landing is exactly one screen: nothing below it but the bottom bar. */
+html[data-view="landing"] #main {
+  padding-bottom: var(--bar-h);
+}
+
+/* ---------------------------------------------------------------- views */
+
+.view {
+  box-sizing: border-box;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.view-head {
+  padding: 0.75rem 0 0.5rem;
+}
+.view-title {
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+}
+.view-sub {
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  margin-top: 0.125rem;
+}
+.small {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  color: var(--ink-2);
+}
+.caps {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+.prose {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+.mono {
+  font-family: var(--mono);
+}
+.chip {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: var(--chip);
+  border: 1px solid #d2c8b6;
+  white-space: nowrap;
+}
+.grow {
+  flex: 1;
+}
+
+/* ---------------------------------------------------------------- the landing (one screen, no scroll) */
+
+#landing {
+  /* 1 px of slack: the svh and the layout viewport round differently at fractional DPRs. */
+  height: calc(100svh - var(--top-h) - var(--bar-h) - var(--status-h) - 1px);
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.375rem;
+  padding-bottom: 0;
+}
+#landing[data-away] {
+  position: fixed;
+  top: var(--top-h);
+  left: 0;
+  right: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+#landing .view-title {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+.plinth {
+  flex: 1;
+  min-height: 0;
+  max-height: 32.5rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: 112fr 112fr 96fr 112fr 64fr;
+  grid-template-areas:
+    "insight admin"
+    "engage rewards"
+    "square square"
+    "personal operate"
+    "newtown newtown";
+  gap: 6px;
+}
+.tile[data-borough="insight"] {
+  grid-area: insight;
+}
+.tile[data-borough="admin"] {
+  grid-area: admin;
+}
+.tile[data-borough="engage"] {
+  grid-area: engage;
+}
+.tile[data-borough="rewards"] {
+  grid-area: rewards;
+}
+.tile[data-borough="square"] {
+  grid-area: square;
+}
+.tile[data-borough="personal"] {
+  grid-area: personal;
+}
+.tile[data-borough="operate"] {
+  grid-area: operate;
+}
+.tile[data-borough="newtown"] {
+  grid-area: newtown;
+}
+.tile {
+  position: relative;
+  min-height: 2.75rem;
+  min-width: 0;
+}
+.tile-link {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 0.375rem 0.5rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+.tile-name,
+.tile-signals {
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+html:not([data-text="gpu"]) :is(.tile-name, .tile-signals) {
+  background: rgba(251, 249, 244, 0.88);
+}
+.tile-name {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  font-weight: 700;
+}
+.tile-signals {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--ink-2);
+}
+.live-caption {
+  flex: none;
+  height: 2rem;
+  line-height: 2rem;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink-2);
+}
+.camera-tools {
+  display: none;
+}
+/* Plain mode has no vignettes: tiles are drawn by CSS alone. */
+html[data-render="plain"] .tile-link {
+  background: var(--pane);
+  border: 1px solid var(--line);
+}
+html[data-render="plain"] .tile[data-borough="square"] .tile-link {
+  background: #e8e0cf;
+}
+
+/* ---------------------------------------------------------------- borough streets (baked bands, native scroll) */
+
+.street .bands {
+  scroll-snap-type: y proximity;
+}
+.band {
+  scroll-snap-align: start;
+  scroll-margin-top: var(--top-h);
+  padding-bottom: 0.75rem;
+}
+.band-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  padding: 0.5rem 0 0.375rem;
+}
+.band-title {
+  font-size: 1rem;
+  line-height: 1.375rem;
+  font-weight: 700;
+  margin: 0;
+}
+.band-sum {
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+}
+.band-stage {
+  position: relative;
+  height: 11.25rem;
+  border-radius: 0.625rem;
+  overflow: hidden;
+  background: #e4dccb;
+  overscroll-behavior: contain;
+}
+.band-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.lots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+a.lot {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+.lot-label {
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 2px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  line-height: 0.9375rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: rgba(247, 241, 227, 0.94);
+  border: 1px solid #b39c6e;
+  color: #2a241b;
+}
+a.lot.hero .lot-label {
+  background: rgba(47, 42, 34, 0.94);
+  border-color: #c9a45a;
+  color: #fbf8f1;
+  font-size: 0.75rem;
+}
+.lot-scenery {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+}
+/* Plain mode, and any band not yet placed over its image (before the GPU chunk has loaded): the buildings are a
+ * list of links. */
+.band:not([data-placed]) .band-stage,
+html[data-render="plain"] .band-stage {
+  height: auto !important;
+  padding: 0.5rem;
+  background: var(--pane);
+  border: 1px solid var(--line);
+}
+.band:not([data-placed]) .band-image,
+html[data-render="plain"] .band-image {
+  display: none;
+}
+.band:not([data-placed]) .lots,
+html[data-render="plain"] .lots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.band:not([data-placed]) a.lot,
+.band:not([data-placed]) .lot-scenery,
+html[data-render="plain"] a.lot,
+html[data-render="plain"] .lot-scenery {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 2.75rem;
+  padding: 0 0.25rem;
+  align-items: center;
+}
+
+/* Docks: the street dock (48 px) and a room's dock (56 px), directly above the bottom bar. */
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--bar-h);
+  z-index: 5;
+  height: var(--dock-h);
+  box-sizing: border-box;
+  padding: 0.375rem max(0.5rem, env(safe-area-inset-right)) 0.375rem max(1.5rem, env(safe-area-inset-left));
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: rgba(243, 239, 230, 0.98);
+  border-top: 1px solid #d8cfbe;
+}
+.street-dock {
+  height: 3rem;
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+  justify-content: space-between;
+}
+html[data-hand="left"] .dock {
+  flex-direction: row-reverse;
+  padding-left: max(0.5rem, env(safe-area-inset-left));
+  padding-right: max(1.5rem, env(safe-area-inset-right));
+}
+.dock-btn {
+  min-height: 2.75rem;
+  min-width: 3rem;
+  padding: 0 0.625rem;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--ink);
+  background: #f4efe5;
+  border: 1px solid #bdb3a2;
+}
+.dock-btn.primary {
+  background: var(--accent);
+  border-color: #264c41;
+  color: #fbf8f1;
+}
+.dock-btn[disabled] {
+  opacity: 0.55;
+}
+.dock-btn[aria-pressed="true"] {
+  background: #dfeae4;
+  border-color: var(--accent);
+}
+.segmented {
+  display: inline-flex;
+}
+.segmented .seg {
+  border-radius: 0;
+  min-width: 3.25rem;
+}
+.segmented .seg:first-child {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+.segmented .seg:last-child {
+  border-radius: 0 0.5rem 0.5rem 0;
+  border-left: 0;
+}
+.segmented .seg[aria-checked="true"] {
+  background: #dfeae4;
+  border-color: var(--accent);
+}
+.form-dock .grow {
+  flex: 1;
+}
+
+/* ---------------------------------------------------------------- the Bank: lobby and rooms */
+
+.bank[data-room="none"] .room {
+  display: none;
+}
+.bank:not([data-room="none"]) .lobby {
+  display: none;
+}
+.bank[data-room="statement"] .room[data-room="transfer"],
+.bank[data-room="transfer"] .room[data-room="statement"] {
+  display: none;
+}
+.card {
+  margin: 0 0 0.75rem;
+  border-radius: 0.75rem;
+  background: var(--pane);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 6px rgba(60, 50, 30, 0.08);
+  padding: 0.75rem 1rem;
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  margin: -0.75rem -1rem 0;
+  padding: 0 1rem;
+  text-decoration: none;
+  color: var(--ink);
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+.card-head.plain {
+  min-height: 2.25rem;
+}
+.card-title {
+  flex: 1;
+  font-size: 1rem;
+  line-height: 1.375rem;
+  font-weight: 600;
+  margin: 0;
+}
+.card-open {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--accent);
+}
+.kpi {
+  font-family: var(--mono);
+  font-size: 1.625rem;
+  line-height: 2.125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.preview {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+}
+.preview-item {
+  padding: 0.375rem 0;
+  border-top: 1px solid var(--line);
+}
+/* Line boxes of one height in each row, aligned at the top, so every text box starts on the same whole pixel as
+ * the painter's layout (baseline alignment of mixed sizes put a run 1.2 px off). */
+.l1,
+.l2 {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+}
+.l1 .primary {
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+}
+.l2 .secondary,
+.l2 .trail-sub {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--ink-2);
+}
+.primary,
+.secondary {
+  min-width: 0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.trail {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.trail.credit,
+td.credit {
+  color: var(--credit);
+}
+.trail.debit,
+td.debit {
+  color: var(--debit);
+}
+
+.room {
+  padding: 0 0.75rem 0.5rem;
+  margin: 0 -0.5rem;
+  border-radius: 0.75rem;
+  background: rgba(251, 249, 244, 0.96);
+}
+.room-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0 0.25rem;
+  min-height: 2.75rem;
+}
+.room-title {
+  font-size: 1.25rem;
+  line-height: 1.625rem;
+  font-weight: 700;
+  margin: 0;
+}
+.sibling {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+.hint {
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+  margin-bottom: 0.25rem;
+}
+
+/* The flow-ribbon band: opens collapsed; open it is at most 35 % of the visual viewport. */
+.ribbon-band {
+  margin: 0.25rem 0 0.5rem;
+  max-height: calc(var(--vvh, 1svh) * 35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow: hidden;
+}
+.ribbon-well {
+  position: relative;
+  height: 4.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #f1ece2;
+  border: 1px solid var(--line);
+}
+.ribbon-band[data-open="true"] .ribbon-well {
+  height: calc(var(--vvh, 1svh) * 35 - 5.25rem);
+  min-height: 6rem;
+}
+.ribbon-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ribbon-tools {
+  display: none;
+  gap: 0.375rem;
+}
+.ribbon-band[data-open="true"] .ribbon-tools {
+  display: flex;
+}
+.ribbon-band figcaption {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mini-btn {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border-radius: 0.5rem;
+  background: #f4efe5;
+  border: 1px solid #bdb3a2;
+  font-size: 1.125rem;
+}
+
+/* The list presentation (pane-compact, the design). */
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.item {
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: 64px;
+  border-bottom: 1px solid var(--line);
+}
+.item.open {
+  height: auto;
+}
+html:not([data-text="gpu"]) .item.picked {
+  background: #dfeae4;
+}
+.item .pick {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin: 0 0.75rem 0 0.25rem;
+  align-self: center;
+  accent-color: var(--accent);
+}
+.item-btn {
+  flex: 1;
+  min-width: 0;
+  height: 63px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  text-align: start;
+  padding: 0 0.25rem;
+}
+.item.open {
+  flex-wrap: wrap;
+}
+.item.open .detail {
+  flex-basis: 100%;
+}
+.detail {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.75rem;
+  margin: 0 0 0.75rem;
+  padding: 0 0.25rem;
+  font-size: 0.875rem;
+}
+.detail dt {
+  color: var(--ink-3);
+}
+.detail dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.spacer {
+  list-style: none;
+}
+
+/* The table presentation (wider panes). */
+.scroller {
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: 0.375rem;
+  max-height: 70vh;
+}
+table.ledger {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.8125rem;
+}
+table.ledger thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 30px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.6875rem;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+}
+html:not([data-text="gpu"]) table.ledger thead th {
+  background: #efe9dd;
+}
+table.ledger tbody tr {
+  height: 32px;
+}
+table.ledger tbody tr[data-surface="zebra"] {
+  background: var(--zebra);
+}
+table.ledger td {
+  height: 32px;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  line-height: 18px;
+}
+table.ledger td.num,
+table.ledger th.num {
+  text-align: right;
+}
+table.ledger td.mono {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+}
+table.ledger tr.spacer td {
+  padding: 0;
+  height: auto;
+}
+
+/* The search sheet: a peek sheet whose field sits at the bottom, above the dock. */
+.search-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--bar-h) + var(--dock-h));
+  z-index: 5;
+  padding: 0.5rem 0.75rem;
+  background: rgba(243, 239, 230, 0.98);
+  border-top: 1px solid #d8cfbe;
+  box-shadow: 0 -4px 12px rgba(60, 50, 30, 0.12);
+  overscroll-behavior: contain;
+}
+.search-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.search-row .kit-input {
+  flex: 1;
+}
+.room[data-searching] .items {
+  padding-bottom: 6rem;
+}
+
+/* Forms */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 0.25rem 0 1rem;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.kit-input {
+  font: inherit;
+  font-size: 1rem; /* 16 px and up: iOS does not zoom into the field */
+  line-height: 1.5rem;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #a99f8e;
+  background: #fff;
+  color: var(--ink);
+  caret-color: var(--accent);
+  min-width: 0;
+}
+.kit-input::placeholder {
+  color: var(--ink-3);
+}
+.error {
+  font-size: 0.8125rem;
+  color: var(--debit);
+}
+.kv {
+  display: flex;
+  gap: 0.5rem;
+}
+.kv .k {
+  width: 7rem;
+  flex: none;
+  font-size: 0.875rem;
+  color: var(--ink-2);
+}
+.kv .v {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9375rem;
+  overflow-wrap: anywhere;
+}
+
+/* Stub interiors */
+.stub-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.btn-link {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #bdb3a2;
+  background: #f4efe5;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+.btn-link.primary {
+  background: var(--accent);
+  color: #fbf8f1;
+  border-color: #264c41;
+}
+.stub .stub-body {
+  background: var(--pane);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+/* ---------------------------------------------------------------- sheets */
+
+dialog.sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  max-height: 85svh;
+  box-sizing: border-box;
+  padding: 0 0 max(0.75rem, env(safe-area-inset-bottom));
+  border: 0;
+  border-radius: 1rem 1rem 0 0;
+  background: #f7f3ea;
+  color: var(--ink);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+dialog.sheet[data-full] {
+  max-height: calc(100svh - env(safe-area-inset-top));
+  height: calc(100svh - env(safe-area-inset-top));
+}
+dialog.sheet::backdrop {
+  background: rgba(30, 25, 18, 0.35);
+}
+.sheet-head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: #f7f3ea;
+}
+.sheet-handle {
+  width: 2.75rem;
+  height: 2.75rem;
+  position: relative;
+}
+.sheet-handle::before {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  top: 50%;
+  height: 4px;
+  border-radius: 2px;
+  background: #b5aa97;
+}
+.sheet-title {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+.sheet-close {
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.125rem;
+}
+.sheet-body {
+  padding: 0 1rem 0.5rem;
+}
+.sheet-text,
+.sheet-note {
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  margin: 0.25rem 0;
+}
+.sheet-link {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.sheet-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sheet-list a[aria-current="page"] {
+  color: var(--ink);
+}
+.sheet-list a[aria-current="page"]::after {
+  content: " · here";
+  color: var(--ink-3);
+  font-weight: 400;
+}
+.choice {
+  border: 0;
+  margin: 0.5rem 0;
+  padding: 0;
+}
+.choice legend {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 0;
+}
+.choice-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  font-size: 0.9375rem;
+}
+.choice-row input {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  accent-color: var(--accent);
+}
+.you-name {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+.you-balance {
+  font-family: var(--mono);
+  margin-top: 0.25rem;
+}
+/* The command sheet: field at the bottom, results above it, the best match nearest the field. */
+.cmd {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+}
+.cmd-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  max-height: 55svh;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.cmd-opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.cmd-opt[aria-selected="true"] {
+  background: #dfeae4;
+}
+.cmd-section {
+  font-size: 0.75rem;
+  color: var(--ink-3);
+}
+.cmd-empty {
+  padding: 0.75rem 0.5rem;
+  color: var(--ink-2);
+}
+
+/* ---------------------------------------------------------------- the on-screen keyboard (spec 00 section 0.4.5) */
+
+html[data-kb="open"] #topbar,
+html[data-kb="open"] #updates,
+html[data-kb="open"] #bottombar {
+  display: none;
+}
+html[data-kb="open"] .dock {
+  bottom: var(--kb);
+}
+html[data-kb="open"] .search-sheet {
+  bottom: calc(var(--kb) + var(--dock-h));
+}
+html[data-kb="open"] #main {
+  padding-bottom: calc(var(--dock-space) + 1rem);
+}
+
+/* ---------------------------------------------------------------- short layout: landscape phones */
+
+@media (max-height: 30rem) and (max-width: 63.99rem) {
+  :root {
+    --top-h: 2.75rem; /* the spec's 40 px title row, grown to 44 px so up and Motion keep the touch target */
+    --bar-h: 0px;
+    --dock-h: 2.75rem;
+  }
+  html[data-view="street"] {
+    --dock-space: 2.75rem;
+  }
+  #topbar {
+    padding-top: 0;
+    margin-inline-end: 4rem;
+  }
+  .top-crumb {
+    display: none;
+  }
+  /* The bottom bar becomes a rail of the same destinations on the thumb side. */
+  #bottombar {
+    top: 0;
+    bottom: 0;
+    left: auto;
+    right: 0;
+    width: calc(4rem + env(safe-area-inset-right));
+    height: auto;
+    flex-direction: column;
+    padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) 0;
+    border-top: 0;
+    border-left: 1px solid #d8cfbe;
+  }
+  #bottombar .slot {
+    min-width: 0;
+    min-height: 2.75rem;
+  }
+  #bottombar .slot-label {
+    display: none;
+  }
+  html[data-hand="left"] #bottombar {
+    right: auto;
+    left: 0;
+    border-left: 0;
+    border-right: 1px solid #d8cfbe;
+  }
+  html[data-hand="left"] #topbar {
+    margin-inline-end: 0;
+    margin-inline-start: 4rem;
+  }
+  #main {
+    margin-inline-end: 4rem;
+  }
+  html[data-hand="left"] #main {
+    margin-inline-end: 0;
+    margin-inline-start: 4rem;
+  }
+  .dock,
+  #updates,
+  .search-sheet {
+    right: 4rem;
+  }
+  html[data-hand="left"] .dock,
+  html[data-hand="left"] #updates,
+  html[data-hand="left"] .search-sheet {
+    right: 0;
+    left: 4rem;
+  }
+  #landing {
+    height: calc(100svh - var(--top-h) - env(safe-area-inset-bottom) - 1px);
+    max-width: none;
+  }
+  #landing .view-title,
+  .live-caption {
+    display: none;
+  }
+  .plinth {
+    max-height: none;
+    margin-bottom: 0.375rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.75fr) minmax(0, 1fr);
+    grid-template-rows: repeat(6, minmax(0, 1fr));
+    grid-template-areas:
+      "insight admin square personal"
+      "insight admin square personal"
+      "insight admin square operate"
+      "engage rewards square operate"
+      "engage rewards square newtown"
+      "engage rewards square newtown";
+  }
+  .view {
+    max-width: none;
+  }
+}
+
+/* ---------------------------------------------------------------- medium: the rail, two columns */
+
+@media (min-width: 50rem) and (min-height: 30rem), (min-width: 64rem) {
+  #bottombar {
+    top: 0;
+    bottom: 0;
+    right: auto;
+    width: var(--rail-w);
+    height: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: calc(env(safe-area-inset-top) + 0.5rem) 0 0 env(safe-area-inset-left);
+    border-top: 0;
+    border-right: 1px solid #d8cfbe;
+  }
+  #bottombar .slot {
+    flex: none;
+    min-height: 3.75rem;
+  }
+  #topbar,
+  #main {
+    margin-inline-start: var(--rail-w);
+  }
+  :root {
+    --bar-h: 0px;
+  }
+  .dock,
+  #updates,
+  .search-sheet {
+    left: var(--rail-w);
+  }
+  dialog.sheet {
+    inset: 0;
+    margin: auto;
+    width: min(32rem, 92vw);
+    max-height: 80vh;
+    height: fit-content;
+    border-radius: 0.75rem;
+  }
+  #landing {
+    height: calc(100svh - var(--top-h) - var(--status-h));
+  }
+  #landing[data-away] {
+    left: var(--rail-w);
+  }
+  /* The lobby and the open room side by side; Statement shows beside the lobby when no room is chosen. */
+  .bank {
+    max-width: 72rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 1rem;
+    align-items: start;
+  }
+  .bank .lobby {
+    display: block !important;
+    position: sticky;
+    top: var(--top-h);
+  }
+  .bank .room {
+    display: none;
+  }
+  .bank .room[data-active] {
+    display: block;
+  }
+  .room .dock {
+    position: sticky;
+    bottom: 0;
+    left: auto;
+    right: auto;
+    margin-top: 0.5rem;
+    border: 1px solid #d8cfbe;
+    border-radius: 0.5rem;
+  }
+  .search-sheet {
+    position: sticky;
+    bottom: var(--dock-h);
+  }
+  html[data-room] {
+    --dock-space: 0px;
+  }
+  html[data-view="street"] {
+    --dock-space: 3rem;
+  }
+}
+
+/* From 52.5 rem the landing and the street side by side (spec 01 section 1.4.4). */
+@media (min-width: 52.5rem) and (max-width: 63.99rem) and (min-height: 30rem) {
+  html[data-side][data-view="street"] #main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 1rem;
+    padding-inline: 1rem;
+  }
+  html[data-side][data-view="street"] #landing {
+    position: sticky !important;
+    top: var(--top-h);
+    visibility: visible !important;
+    pointer-events: auto !important;
+    grid-column: 1;
+    grid-row: 1;
+  }
+  html[data-side][data-view="street"] .view.street {
+    grid-column: 2;
+    grid-row: 1;
+    max-width: none;
+  }
+}
+
+/* ---------------------------------------------------------------- expanded: the vista and the panes */
+
+@media (min-width: 64rem) {
+  :root {
+    --top-h: 3.5rem;
+  }
+  #plat {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
+  #topbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+  #main {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--top-h);
+    bottom: 0;
+    padding: 0;
+  }
+  #updates {
+    left: auto;
+    right: 1rem;
+    bottom: 1rem;
+    width: 24rem;
+  }
+  .view {
+    max-width: none;
+    margin: 0;
+  }
+  /* The vista: the same tiles, now plaques standing over their projected blocks. */
+  #landing,
+  #landing[data-away] {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    left: 0;
+    padding: 0;
+  }
+  #landing .view-title {
+    position: absolute;
+    left: 1.25rem;
+    top: 0.75rem;
+    font-size: 1.375rem;
+  }
+  .plinth {
+    position: absolute;
+    inset: 0;
+    display: block;
+    max-height: none;
+    margin: 0;
+  }
+  .tile {
+    position: absolute;
+    left: var(--px, -999px);
+    top: calc(var(--py, -999px) - var(--top-h));
+    transform: translate(-50%, -100%);
+  }
+  .tile[data-offscreen] {
+    visibility: hidden;
+  }
+  .tile-link {
+    position: static;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.25rem;
+    background: rgba(247, 241, 227, 0.96);
+    border: 1px solid #b39c6e;
+    white-space: nowrap;
+  }
+  .tile-name,
+  .tile-signals {
+    background: transparent;
+    padding: 0;
+  }
+  .live-caption {
+    position: absolute;
+    left: 1.25rem;
+    bottom: 0.5rem;
+  }
+  .camera-tools {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    display: flex;
+    gap: 0.375rem;
+  }
+  .cam-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.5rem;
+    background: #f4efe5;
+    border: 1px solid #bdb3a2;
+    font-size: 1.125rem;
+  }
+  /* A street: the vista framed on the borough, with its bands in a column on the leading side. */
+  .view.street {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 27rem;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 0 1rem 1rem;
+    background: rgba(247, 243, 234, 0.95);
+    border-right: 1px solid var(--line);
+  }
+  .street .dock {
+    position: sticky;
+    top: 0;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin: 0 -1rem;
+    z-index: 2;
+    order: -1;
+  }
+  .street {
+    display: flex;
+    flex-direction: column;
+  }
+  /* The Bank: the lobby column and the room pane side by side, each scrolling inside itself. */
+  .bank {
+    position: absolute;
+    inset: 0;
+    max-width: none;
+    grid-template-columns: 22rem minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: 1rem;
+    padding: 1rem;
+    align-items: stretch;
+  }
+  .bank .lobby {
+    position: static;
+    overflow: auto;
+    min-height: 0;
+  }
+  .bank .room[data-active] {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0.75rem 1rem 1rem;
+    border-radius: 0.75rem;
+    background: var(--pane);
+    border: 1px solid var(--line);
+    box-shadow: 0 2px 6px rgba(60, 50, 30, 0.08);
+  }
+  .room .room-strip {
+    order: -3;
+  }
+  .room .dock {
+    order: -2;
+    position: static;
+    margin: 0 0 0.5rem;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    height: auto;
+  }
+  .room .search-sheet {
+    order: -1;
+    position: static;
+    box-shadow: none;
+    border: 0;
+    background: transparent;
+    padding: 0 0 0.5rem;
+  }
+  .room[data-room="statement"] .scroller {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+  }
+  .room[data-room="statement"][data-presentation="list"] .items {
+    overflow: auto;
+    flex: 1;
+    min-height: 0;
+  }
+  .room[data-room="transfer"] .form-host {
+    overflow: auto;
+    max-width: 32rem;
+  }
+  .ribbon-band {
+    max-height: 35%;
+    flex: none;
+  }
+  .ribbon-band[data-open="true"] .ribbon-well {
+    height: 14rem;
+  }
+  .stub {
+    position: absolute;
+    inset: 0;
+    padding: 1rem 2rem;
+    max-width: 40rem;
+  }
+}
+
+/* ---------------------------------------------------------------- Enhanced: GPU-painted text and surfaces */
+
+/* The one-copy invariant: a painted element's DOM text is transparent and its CSS surface hidden. Only the roots
+ * the GPU paints (the bars and the current view) are affected; sheets and the status layer stay DOM. During a
+ * transition the view in #main is DOM-drawn (its CSS twin), and only the bars are painted. */
+@media not (forced-colors: active) {
+  html[data-render="gpu"][data-text="gpu"]:not([data-k1="dom"]):not([data-debug="overlay"])
+    :is(#topbar, #bottombar)
+    [data-paint~="text"]:not(.dom-text),
+  html[data-render="gpu"][data-text="gpu"]:not([data-k1="dom"]):not([data-debug="overlay"]):not(
+      [data-transit]
+    )
+    #main
+    [data-paint~="text"]:not(.dom-text) {
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+  html[data-render="gpu"][data-text="gpu"] :is(#topbar, #bottombar),
+  html[data-render="gpu"][data-text="gpu"] :is(#topbar, #bottombar) [data-paint~="surface"],
+  html[data-render="gpu"][data-text="gpu"]:not([data-transit]) #main [data-paint~="surface"],
+  html[data-render="gpu"][data-text="gpu"]:not([data-transit]) #main [data-paint~="field"] {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+  html[data-render="gpu"][data-text="gpu"] #plat ::selection {
+    background: var(--selection);
+  }
+}
+html[data-render="gpu"] #plat [data-tone="ink"] {
+  --dom-tone: var(--ink);
+}
+html[data-render="gpu"] #plat [data-tone="ink-2"] {
+  --dom-tone: var(--ink-2);
+}
+html[data-render="gpu"] #plat [data-tone="ink-3"] {
+  --dom-tone: var(--ink-3);
+}
+html[data-render="gpu"] #plat [data-tone="accent"] {
+  --dom-tone: var(--accent);
+}
+html[data-render="gpu"] #plat [data-tone="credit"] {
+  --dom-tone: var(--credit);
+}
+html[data-render="gpu"] #plat [data-tone="debit"] {
+  --dom-tone: var(--debit);
+}
+html[data-render="gpu"] #plat [data-tone="on-accent"] {
+  --dom-tone: #fbf8f1;
+}
+html[data-render="gpu"] #plat [data-tone="plaque"] {
+  --dom-tone: #2a241b;
+}
+html[data-render="gpu"][data-text="gpu"] #plat .dom-text {
+  color: var(--dom-tone, var(--ink)) !important;
+  -webkit-text-fill-color: var(--dom-tone, var(--ink)) !important;
+}
+html[data-debug="overlay"][data-render="gpu"][data-text="gpu"] #plat [data-paint~="text"] {
+  color: rgba(255, 0, 0, 0.5) !important;
+  -webkit-text-fill-color: rgba(255, 0, 0, 0.5) !important;
+}
+
+/* ---------------------------------------------------------------- motion and forced colours */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Forced colours: system colours win and the GPU layer is not shown (Plain mode is chosen at boot). */
+@media (forced-colors: active) {
+  canvas#scene,
+  .band-image,
+  .ribbon-image {
+    display: none;
+  }
+  #plat,
+  #plat * {
+    forced-color-adjust: auto;
+  }
+  .card,
+  .dock-btn,
+  .tile-link,
+  a.lot,
+  .chip,
+  .kit-input {
+    border: 1px solid CanvasText;
+  }
+  :focus-visible {
+    outline: 2px solid Highlight;
+  }
+}
+
+.load-error {
+  margin: 2rem 1rem;
+  color: var(--debit);
+}

@@ -1,0 +1,29 @@
+.c-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Look hooks: --count-bg, --count-fg, --count-edge, --count-radius, --count-size, --count-warn-*. */
+  min-inline-size: var(--count-size, 1.25rem);
+  block-size: var(--count-size, 1.25rem);
+  padding-inline: var(--space-1);
+  background: var(--count-bg, var(--paper-2));
+  color: var(--count-fg, var(--ink));
+  border-radius: var(--count-radius, var(--radius-1));
+  box-shadow: inset 0 0 0 var(--hairline) var(--count-edge, var(--rule));
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  line-height: 1;
+
+  &.c-count--warning {
+    background: var(--count-warn-bg, var(--warning-bg));
+    color: var(--count-warn-fg, var(--warning-fg));
+    box-shadow: inset 0 0 0 var(--hairline) var(--count-warn-edge, var(--warning-border));
+  }
+}
+
+p-count {
+  display: inline-flex;
+}
+p-count[hidden] {
+  display: none;
+}

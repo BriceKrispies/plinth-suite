@@ -1,0 +1,221 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Source": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Source"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/SourceSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "SourceSpec": {
+      "type": "object",
+      "required": [
+        "kind",
+        "time_column",
+        "primary_key",
+        "fields"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "landed",
+            "metadata"
+          ]
+        },
+        "domain": {
+          "type": "string",
+          "description": "a string at most 32 character(s) long",
+          "title": "maxLength(32)",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "time_column": {
+          "$ref": "#/$defs/Field"
+        },
+        "primary_key": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "an array of at least 1 item(s)",
+          "title": "minItems(1)",
+          "minItems": 1
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "type",
+              "nullable"
+            ],
+            "properties": {
+              "name": {
+                "$ref": "#/$defs/Field"
+              },
+              "type": {
+                "$ref": "#/$defs/FieldType"
+              },
+              "nullable": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string",
+                "description": "a string at most 500 character(s) long",
+                "title": "maxLength(500)",
+                "maxLength": 500
+              },
+              "masked": {
+                "type": "boolean"
+              },
+              "x-untrusted": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "an array of at least 1 item(s)",
+          "title": "minItems(1)",
+          "minItems": 1
+        },
+        "partition": {
+          "type": "object",
+          "required": [
+            "by",
+            "granularity"
+          ],
+          "properties": {
+            "by": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Field"
+              }
+            },
+            "granularity": {
+              "type": "string",
+              "enum": [
+                "hour",
+                "day"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "enums": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "shards": {
+          "$ref": "#/$defs/Int",
+          "description": "a number greater than or equal to 1",
+          "title": "greaterThanOrEqualTo(1)",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "Field": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$"
+    },
+    "FieldType": {
+      "type": "string",
+      "description": "a string matching the pattern ^(bool|int|float|string|timestamp|duration|enum\\([a-z_]+\\))$",
+      "pattern": "^(bool|int|float|string|timestamp|duration|enum\\([a-z_]+\\))$"
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/Source"
+}

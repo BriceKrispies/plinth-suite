@@ -1,0 +1,222 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "CommitRequest": {
+      "type": "object",
+      "required": [
+        "changes"
+      ],
+      "properties": {
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NodeChange"
+          },
+          "description": "an array of at most 16 item(s)",
+          "title": "maxItems(16)",
+          "minItems": 1,
+          "maxItems": 16
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "a string matching the pattern ^[A-Za-z0-9:._-]{8,128}$",
+          "pattern": "^[A-Za-z0-9:._-]{8,128}$"
+        },
+        "reason": {
+          "type": "string",
+          "description": "a string at most 280 character(s) long",
+          "title": "maxLength(280)",
+          "maxLength": 280
+        },
+        "preview_token": {
+          "type": "string",
+          "description": "a string matching the pattern ^pvt_[A-Za-z0-9_-]{43}$",
+          "pattern": "^pvt_[A-Za-z0-9_-]{43}$"
+        },
+        "surface": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "mcp",
+            "driver",
+            "system",
+            "cli"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "NodeChange": {
+      "type": "object",
+      "required": [
+        "target",
+        "base_revision",
+        "ops"
+      ],
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/Uri"
+        },
+        "base_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ops": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ChangeOp"
+          },
+          "description": "an array of at most 64 item(s)",
+          "title": "maxItems(64)",
+          "minItems": 1,
+          "maxItems": 64
+        }
+      },
+      "additionalProperties": false
+    },
+    "Uri": {
+      "type": "string",
+      "description": "a string matching the pattern ^plinth:\\/\\/[a-z0-9-]+\\/(Dashboard|Panel|Query|Source|Parameter|Rule|Action|Form|Workflow|Grant|Metric|Template|Export|Annotation|Comment|Product|Category|Badge|Promotion|Automation|Content|Segment|Group|Role|Preference|Program|Widget|Page)\\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "pattern": "^plinth:\\/\\/[a-z0-9-]+\\/(Dashboard|Panel|Query|Source|Parameter|Rule|Action|Form|Workflow|Grant|Metric|Template|Export|Annotation|Comment|Product|Category|Badge|Promotion|Automation|Content|Segment|Group|Role|Preference|Program|Widget|Page)\\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "Revision": {
+      "type": "integer",
+      "description": "a number greater than or equal to 1",
+      "title": "greaterThanOrEqualTo(1)",
+      "minimum": 1
+    },
+    "ChangeOp": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "op",
+            "kind",
+            "slug",
+            "body"
+          ],
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "create"
+              ]
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "Dashboard",
+                "Panel",
+                "Query",
+                "Source",
+                "Parameter",
+                "Rule",
+                "Action",
+                "Form",
+                "Workflow",
+                "Grant",
+                "Metric",
+                "Template",
+                "Export",
+                "Annotation",
+                "Comment",
+                "Product",
+                "Category",
+                "Badge",
+                "Promotion",
+                "Automation",
+                "Content",
+                "Segment",
+                "Group",
+                "Role",
+                "Preference",
+                "Program",
+                "Widget",
+                "Page"
+              ]
+            },
+            "slug": {
+              "type": "string"
+            },
+            "body": {
+              "$id": "/schemas/unknown",
+              "title": "unknown"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "op",
+            "path",
+            "value"
+          ],
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "set"
+              ]
+            },
+            "path": {
+              "$ref": "#/$defs/JsonPointer"
+            },
+            "value": {
+              "$id": "/schemas/unknown",
+              "title": "unknown"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "op",
+            "path"
+          ],
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "remove"
+              ]
+            },
+            "path": {
+              "$ref": "#/$defs/JsonPointer"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "op"
+          ],
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "delete"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "JsonPointer": {
+      "type": "string",
+      "description": "a string matching the pattern ^(\\/([^/~]|~[01])*)*$",
+      "pattern": "^(\\/([^/~]|~[01])*)*$"
+    }
+  },
+  "$ref": "#/$defs/CommitRequest"
+}

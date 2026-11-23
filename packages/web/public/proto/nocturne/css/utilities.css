@@ -1,0 +1,12 @@
+/* Layer: utilities. Deliberately tiny: one helper, used where text must exist only for assistive tech. */
+.vh {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

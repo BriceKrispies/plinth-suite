@@ -1,0 +1,111 @@
+/*
+  Layer: looks. The shared simplification base. Every look except "meridian" (the original, boxed look) inherits
+  these component hooks, which turn the busy defaults into quiet ones:
+    - pills: neutral, info and success states recede to plain text; only warning, danger and signal get a tint;
+    - count badges: muted and rounded; only "needs attention" counts take a tone;
+    - widget frame: lighter chrome, sentence-case titles, header actions that appear on hover and focus;
+    - page header: compact title, one muted description line, no heavy rule;
+    - nav: sentence-case section headings;
+    - tables and cards inside a widget do not draw a second box.
+  Colours reference tokens only, so each look's palette flows through. A look file overrides any hook below.
+*/
+:root:not([data-look="meridian"]),
+.sg-look:not([data-look="meridian"]) {
+  /* pills */
+  --pill-h: 1.25rem;
+  --pill-px: 0.5rem;
+  --pill-radius: var(--radius-round);
+  --pill-bw: 0px;
+  --pill-fs: 0.75rem;
+  --pill-weight: 500;
+  --pill-icon: 0.875rem;
+  --pill-info-icon: none;
+  --pill-neutral-fg: var(--ink-3);
+  --pill-neutral-bg: transparent;
+  --pill-neutral-edge: transparent;
+  --pill-neutral-px: 0;
+  --pill-info-fg: var(--info-fg);
+  --pill-info-bg: transparent;
+  --pill-info-edge: transparent;
+  --pill-info-px: 0;
+  --pill-success-fg: var(--success-fg);
+  --pill-success-bg: transparent;
+  --pill-success-edge: transparent;
+  --pill-success-px: 0;
+  --pill-warning-fg: var(--warning-fg);
+  --pill-warning-px: var(--pill-px);
+  --pill-warning-bg: var(--warning-bg);
+  --pill-warning-edge: transparent;
+  --pill-danger-fg: var(--danger-fg);
+  --pill-danger-px: var(--pill-px);
+  --pill-danger-bg: var(--danger-bg);
+  --pill-danger-edge: transparent;
+  --pill-signal-fg: var(--signal-fg);
+  --pill-signal-px: var(--pill-px);
+  --pill-signal-bg: var(--accent-wash);
+  --pill-signal-edge: transparent;
+
+  /* count badges */
+  --count-size: 1.125rem;
+  --count-radius: var(--radius-round);
+  --count-bg: color-mix(in oklch, var(--ink) 8%, transparent);
+  --count-fg: var(--ink-2);
+  --count-edge: transparent;
+  --count-warn-bg: var(--warning-bg);
+  --count-warn-fg: var(--warning-fg);
+  --count-warn-edge: transparent;
+  --badge-bg: var(--accent);
+  --badge-fg: var(--accent-on);
+
+  /* widget frame */
+  --widget-edge: color-mix(in oklch, var(--rule) 70%, transparent);
+  --widget-shadow: none;
+  --widget-shadow-hover: 0 1px 4px color-mix(in oklch, var(--ink) 8%, transparent);
+  --widget-title-size: var(--step--1);
+  --widget-title-weight: 600;
+  --widget-title-track: 0;
+  --widget-title-transform: none;
+  --widget-title-color: var(--ink);
+  --widget-menu-rest: 0;
+  --nested-bg: transparent;
+  --nested-edge: transparent;
+  --nested-shadow: none;
+
+  /* page header */
+  --header-rule: 0px;
+  --header-rule-color: var(--ink);
+  --person-weight: 500;
+  --header-pad: 0;
+  --header-mb: var(--space-4);
+  --header-wash: none;
+  --header-title-size: var(--step-1);
+  --header-title-weight: 600;
+  --header-meta-wrap: nowrap;
+  --header-meta-ws: nowrap;
+  --header-meta-color: var(--ink-3);
+  --header-eyebrow-track: 0;
+  --header-eyebrow-transform: none;
+
+  /* navigation, brand, table heads */
+  --nav-heading-size: var(--step--1);
+  --nav-heading-track: 0;
+  --nav-heading-transform: none;
+  --nav-section-gap: var(--space-2);
+  --nav-current-bar: none;
+  --nav-current-bg: color-mix(in oklch, var(--accent) 10%, transparent);
+  --nav-current-weight: 600;
+  --brand-track: 0;
+  --brand-transform: none;
+  --th-size: var(--step--1);
+  --th-track: 0;
+  --th-transform: none;
+}
+
+/* A phone has no room for a one-line description: it wraps. */
+@media (max-width: 39.99rem) {
+  :root:not([data-look="meridian"]),
+  .sg-look:not([data-look="meridian"]) {
+    --header-meta-wrap: wrap;
+    --header-meta-ws: normal;
+  }
+}

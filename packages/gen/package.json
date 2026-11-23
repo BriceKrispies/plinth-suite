@@ -1,0 +1,20 @@
+{
+  "name": "@plinth/gen",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "effect": "3.22.5",
+    "@effect/platform-node": "0.108.4",
+    "@plinth/spec": "workspace:*",
+    "@plinth/core": "workspace:*",
+    "@plinth/engine": "workspace:*",
+    "@plinth/ingest": "workspace:*"
+  }
+}

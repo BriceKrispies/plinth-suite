@@ -1,0 +1,92 @@
+/* Layer: overrides. The only place `!important` appears: user preferences and the hidden attribute. */
+[hidden] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Windows High Contrast and similar: let the system palette win, keep every non-colour cue. */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline-color: Highlight;
+  }
+
+  .panel,
+  .board__meta,
+  .params,
+  .inspector,
+  .menu__list {
+    border-color: CanvasText;
+  }
+
+  .panel::before {
+    background: Highlight;
+  }
+
+  .panel__cause,
+  .trace[data-tag="live"] .trace__tag,
+  .avatar,
+  .button {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .ribbon {
+    border-color: CanvasText;
+  }
+
+  .chart__line,
+  .chart__legend,
+  .legend__line {
+    stroke: CanvasText;
+  }
+
+  .chart__fill,
+  .chart__area,
+  .chart__mark,
+  .legend__dot,
+  .legend__hatch {
+    fill: CanvasText;
+  }
+
+  .chart__pt {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+
+  .chart__threshold,
+  .chart__breach-frame,
+  .hatch__line {
+    stroke: Highlight;
+  }
+
+  .chart__breach {
+    fill: Highlight;
+  }
+
+  .chart__cell-fill {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+
+  .chart__svg text,
+  .chart__svg .chart__cell-value,
+  .chart__svg .chart__cell-value.is-dark {
+    fill: CanvasText;
+  }
+
+  .status__mark {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+}

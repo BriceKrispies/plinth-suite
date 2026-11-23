@@ -1,0 +1,599 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Badge": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Badge"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/BadgeSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "BadgeSpec": {
+      "type": "object",
+      "required": [
+        "description",
+        "artwork",
+        "criteria",
+        "points_reward",
+        "rarity",
+        "hidden",
+        "sort",
+        "status"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "User-authored text (untrusted), at most 500 chars",
+          "title": "maxLength(500)",
+          "maxLength": 500
+        },
+        "artwork": {
+          "$ref": "#/$defs/BadgeArtwork"
+        },
+        "criteria": {
+          "$ref": "#/$defs/BadgeCriteria"
+        },
+        "points_reward": {
+          "$ref": "#/$defs/Points"
+        },
+        "rarity": {
+          "type": "string",
+          "enum": [
+            "common",
+            "uncommon",
+            "rare",
+            "epic",
+            "legendary"
+          ]
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "sort": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 1000",
+          "title": "between(0, 1000)",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "active",
+            "retired"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "BadgeArtwork": {
+      "type": "object",
+      "required": [
+        "shape",
+        "icon",
+        "hue"
+      ],
+      "properties": {
+        "shape": {
+          "type": "string",
+          "enum": [
+            "circle",
+            "shield",
+            "hexagon",
+            "star",
+            "ribbon"
+          ]
+        },
+        "icon": {
+          "$ref": "#/$defs/IconName"
+        },
+        "hue": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 359",
+          "title": "between(0, 359)",
+          "minimum": 0,
+          "maximum": 359
+        },
+        "ring": {
+          "$ref": "#/$defs/Tier"
+        }
+      },
+      "additionalProperties": false
+    },
+    "IconName": {
+      "type": "string",
+      "enum": [
+        "home",
+        "inbox",
+        "send",
+        "archive",
+        "star",
+        "bell",
+        "search",
+        "command",
+        "store",
+        "cart",
+        "bag",
+        "tag",
+        "gift",
+        "coins",
+        "wallet",
+        "transfer",
+        "trophy",
+        "medal",
+        "award",
+        "crown",
+        "flame",
+        "bolt",
+        "target",
+        "megaphone",
+        "percent",
+        "calendar",
+        "clock",
+        "workflow",
+        "play",
+        "pause",
+        "stop",
+        "branch",
+        "webhook",
+        "document",
+        "article",
+        "announcement",
+        "image",
+        "users",
+        "user",
+        "group",
+        "segment",
+        "shield",
+        "key",
+        "lock",
+        "chart",
+        "board",
+        "check",
+        "check-circle",
+        "x",
+        "alert",
+        "info",
+        "task",
+        "list",
+        "settings",
+        "sliders",
+        "history",
+        "audit",
+        "attachment",
+        "reply",
+        "mention",
+        "heart",
+        "sparkle",
+        "leaf",
+        "globe",
+        "truck",
+        "box",
+        "ticket",
+        "coffee",
+        "headphones",
+        "laptop",
+        "shirt",
+        "book",
+        "plant",
+        "mountain",
+        "sun",
+        "moon",
+        "plus",
+        "minus",
+        "edit",
+        "trash",
+        "copy",
+        "link",
+        "external",
+        "filter",
+        "sort",
+        "more",
+        "chevron-left",
+        "chevron-right",
+        "chevron-down",
+        "chevron-up",
+        "menu",
+        "eye",
+        "eye-off",
+        "logout"
+      ]
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "Tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ]
+    },
+    "BadgeCriteria": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "lifetime_points"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "points_threshold"
+              ]
+            },
+            "lifetime_points": {
+              "$ref": "#/$defs/PositivePoints"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "event",
+            "count"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "action_count"
+              ]
+            },
+            "event": {
+              "$ref": "#/$defs/TriggerableEventType"
+            },
+            "count": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 10000",
+              "title": "between(1, 10000)",
+              "minimum": 1,
+              "maximum": 10000
+            },
+            "window_days": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 365",
+              "title": "between(1, 365)",
+              "minimum": 1,
+              "maximum": 365
+            },
+            "filter": {
+              "$ref": "#/$defs/CondTree"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "event",
+            "days"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "streak"
+              ]
+            },
+            "event": {
+              "$ref": "#/$defs/TriggerableEventType"
+            },
+            "days": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 2 and 365",
+              "title": "between(2, 365)",
+              "minimum": 2,
+              "maximum": 365
+            },
+            "filter": {
+              "$ref": "#/$defs/CondTree"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "event"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "event"
+              ]
+            },
+            "event": {
+              "$ref": "#/$defs/TriggerableEventType"
+            },
+            "filter": {
+              "$ref": "#/$defs/CondTree"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "manual"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "PositivePoints": {
+      "type": "integer",
+      "description": "a number between 1 and 10000000",
+      "title": "between(1, 10000000)",
+      "minimum": 1,
+      "maximum": 10000000
+    },
+    "TriggerableEventType": {
+      "type": "string",
+      "enum": [
+        "message.received",
+        "message.sent",
+        "points.posted",
+        "tier.changed",
+        "order.placed",
+        "order.status_changed",
+        "stock.changed",
+        "review.created",
+        "badge.awarded",
+        "promotion.state_changed",
+        "promotion.redeemed",
+        "promotion.budget_alert",
+        "automation.run_updated",
+        "content.state_changed",
+        "content.published",
+        "content.engaged",
+        "task.assigned",
+        "task.updated",
+        "approval.requested",
+        "approval.decided"
+      ]
+    },
+    "CondTree": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Condition"
+        },
+        {
+          "type": "object",
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "any"
+          ],
+          "properties": {
+            "any": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "not"
+          ],
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/CondTree"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Condition": {
+      "type": "object",
+      "required": [
+        "field",
+        "op"
+      ],
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/FactPath"
+        },
+        "op": {
+          "$ref": "#/$defs/CondOp"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": "an array of at most 100 item(s)",
+              "title": "maxItems(100)",
+              "maxItems": 100
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "FactPath": {
+      "type": "string",
+      "description": "A fact name, e.g. tier, member.region, event.points",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*){0,3}$"
+    },
+    "CondOp": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "in",
+        "not_in",
+        "contains",
+        "not_contains",
+        "exists",
+        "not_exists",
+        "between"
+      ]
+    },
+    "Points": {
+      "type": "integer",
+      "description": "a non-negative number",
+      "title": "greaterThanOrEqualTo(0)",
+      "minimum": 0
+    }
+  },
+  "$ref": "#/$defs/Badge"
+}

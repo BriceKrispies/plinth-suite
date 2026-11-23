@@ -1,0 +1,25 @@
+.c-kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--ink-2);
+
+  & kbd {
+    display: inline-grid;
+    place-items: center;
+    min-inline-size: 1.25rem;
+    block-size: 1.25rem;
+    padding-inline: 0.3rem;
+    background: var(--paper-2);
+    border: var(--hairline) solid var(--rule);
+    border-block-end-width: 2px;
+    border-radius: var(--radius-1);
+    font-family: var(--font-sans);
+    font-size: var(--step--2);
+    font-weight: var(--weight-semi);
+    line-height: 1;
+  }
+}
+.c-kbd__plus {
+  font-size: var(--step--2);
+}

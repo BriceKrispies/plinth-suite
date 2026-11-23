@@ -1,0 +1,77 @@
+/* The page grid: 12 columns, rows of --row. Items set --x --y --w --h (1-based start); the host also sets the
+   6-column variants --x6 --w6. Below 48rem it is one column in (y, x) order. */
+.c-page-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: var(--row);
+  gap: var(--grid-gap);
+  min-inline-size: 0;
+}
+.c-page-grid__item {
+  grid-column: var(--x) / span var(--w);
+  grid-row: var(--y) / span var(--h);
+  min-inline-size: 0;
+  min-block-size: 0;
+  display: grid;
+}
+/* plinth-widget is display: contents, so the frame inside it is the real grid child */
+.c-page-grid__item > *,
+.c-page-grid__item > plinth-widget > * {
+  min-block-size: 0;
+}
+
+@media (max-width: 63.99rem) {
+  .c-page-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .c-page-grid__item {
+    grid-column: var(--x6) / span var(--w6);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .c-page-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+  }
+  .c-page-grid__item {
+    grid-column: 1;
+    grid-row: auto;
+    min-block-size: 8rem;
+  }
+}
+
+/* Page chrome: loading skeleton region, personalised-page marker, editor placeholders. */
+.c-page-host {
+  display: grid;
+  gap: var(--space-4);
+}
+.c-page-host[aria-busy="true"] {
+  opacity: 0.7;
+  transition: opacity var(--dur-2) var(--ease);
+}
+.c-placeholder {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  text-align: center;
+  border: 1px dashed var(--control-border);
+  border-radius: var(--radius-card);
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font-size: var(--step--1);
+}
+.c-placeholder__id {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  color: var(--ink-3);
+}
+
+.c-page-host__note {
+  margin: 0;
+  font-size: var(--step--1);
+  color: var(--ink-2);
+  text-align: center;
+}

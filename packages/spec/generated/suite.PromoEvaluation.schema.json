@@ -1,0 +1,280 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "PromoEvaluation": {
+      "type": "object",
+      "required": [
+        "applied",
+        "rejected",
+        "advisories",
+        "totals",
+        "cost_points",
+        "delta_points"
+      ],
+      "properties": {
+        "applied": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AppliedPromotion"
+          }
+        },
+        "rejected": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "slug",
+              "reason",
+              "detail"
+            ],
+            "properties": {
+              "slug": {
+                "type": "string"
+              },
+              "reason": {
+                "$ref": "#/$defs/PromoRejection"
+              },
+              "detail": {
+                "type": "string",
+                "description": "a string at most 200 character(s) long",
+                "title": "maxLength(200)",
+                "maxLength": 200
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "advisories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "slug",
+              "reason",
+              "detail"
+            ],
+            "properties": {
+              "slug": {
+                "type": "string"
+              },
+              "reason": {
+                "$ref": "#/$defs/PromoRejection"
+              },
+              "detail": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "totals": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "kind",
+                "subtotal_points",
+                "discount_points",
+                "total_points",
+                "bonus_points",
+                "free_items"
+              ],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "purchase"
+                  ]
+                },
+                "subtotal_points": {
+                  "$ref": "#/$defs/Points"
+                },
+                "discount_points": {
+                  "$ref": "#/$defs/Points"
+                },
+                "total_points": {
+                  "$ref": "#/$defs/Points"
+                },
+                "bonus_points": {
+                  "$ref": "#/$defs/Points"
+                },
+                "free_items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "product",
+                      "unit_points"
+                    ],
+                    "properties": {
+                      "product": {
+                        "type": "string"
+                      },
+                      "unit_points": {
+                        "$ref": "#/$defs/Points"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "kind",
+                "base_points",
+                "bonus_points",
+                "final_points"
+              ],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "earn"
+                  ]
+                },
+                "base_points": {
+                  "$ref": "#/$defs/Points"
+                },
+                "bonus_points": {
+                  "$ref": "#/$defs/Points"
+                },
+                "final_points": {
+                  "$ref": "#/$defs/Points"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "cost_points": {
+          "$ref": "#/$defs/Points"
+        },
+        "delta_points": {
+          "$ref": "#/$defs/SignedPoints"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AppliedPromotion": {
+      "type": "object",
+      "required": [
+        "slug",
+        "revision",
+        "title",
+        "effects",
+        "cost_points"
+      ],
+      "properties": {
+        "slug": {
+          "type": "string"
+        },
+        "revision": {
+          "$ref": "#/$defs/Int"
+        },
+        "title": {
+          "type": "string"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AppliedEffect"
+          }
+        },
+        "cost_points": {
+          "$ref": "#/$defs/Points"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "AppliedEffect": {
+      "type": "object",
+      "required": [
+        "type",
+        "benefit_points",
+        "cost_points"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "points_multiplier",
+            "bonus_points",
+            "store_discount",
+            "free_item"
+          ]
+        },
+        "benefit_points": {
+          "$ref": "#/$defs/Points"
+        },
+        "cost_points": {
+          "$ref": "#/$defs/Points"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "line",
+              "points",
+              "product"
+            ],
+            "properties": {
+              "line": {
+                "$ref": "#/$defs/Int"
+              },
+              "points": {
+                "$ref": "#/$defs/Points"
+              },
+              "product": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Points": {
+      "type": "integer",
+      "description": "a non-negative number",
+      "title": "greaterThanOrEqualTo(0)",
+      "minimum": 0
+    },
+    "PromoRejection": {
+      "type": "string",
+      "enum": [
+        "status",
+        "window",
+        "channel",
+        "context",
+        "tier",
+        "region",
+        "segment",
+        "group",
+        "new_member",
+        "filter",
+        "entitlement",
+        "min_cart",
+        "scope",
+        "per_member",
+        "budget",
+        "stacking"
+      ]
+    },
+    "SignedPoints": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    }
+  },
+  "$ref": "#/$defs/PromoEvaluation"
+}

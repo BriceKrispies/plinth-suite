@@ -1,0 +1,185 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Grant": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Grant"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/GrantSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "GrantSpec": {
+      "type": "object",
+      "required": [
+        "principal",
+        "actions",
+        "resource"
+      ],
+      "properties": {
+        "principal": {
+          "type": "string",
+          "description": "A principal, or role:<slug> for every member of that Role node",
+          "pattern": "^((user|agent|service):[a-z0-9][a-z0-9._-]*|role:[a-z][a-z0-9-]*)$"
+        },
+        "effect": {
+          "type": "string",
+          "enum": [
+            "allow",
+            "deny"
+          ]
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Permission"
+          },
+          "description": "an array of at most 16 item(s)",
+          "title": "maxItems(16)",
+          "minItems": 1,
+          "maxItems": 16
+        },
+        "resource": {
+          "type": "string",
+          "description": "a string at most 300 character(s) long",
+          "title": "maxLength(300)",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "row_predicate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "a string at most 512 character(s) long",
+              "title": "maxLength(512)",
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "column_mask": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "an array of at most 64 item(s)",
+          "title": "maxItems(64)",
+          "maxItems": 64
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "pending_approval",
+            "rejected",
+            "revoked",
+            "expired"
+          ]
+        },
+        "owner_only": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Permission": {
+      "type": "string",
+      "description": "node:read node:write node:delete query:run action:<name> workflow:read workflow:acknowledge approval:decide grant:propose grant:write grant:inspect ui:present",
+      "pattern": "^(node:(read|write|delete)|query:run|source:write|action:[a-z][a-z0-9_-]*|workflow:(read|acknowledge)|approval:decide|grant:(propose|write|inspect)|ui:present|principal:admin|delegation:admin|driver:execute|suite:use|messages:use|messages:broadcast|notifications:use|notifications:send|points:use|points:transfer|points:award|points:adjust|points:view-all|points:ledger|store:shop|store:orders|store:approve|store:refund|store:inventory|store:moderate|badges:award|badges:revoke|promotions:simulate|promotions:manage|promotions:approve|automation:manage|content:author|content:review|content:publish|people:view-private|segments:preview|tasks:use|tasks:manage|audit:view|admin:members|admin:roles|admin:settings)$"
+    },
+    "Field": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$"
+    }
+  },
+  "$ref": "#/$defs/Grant"
+}

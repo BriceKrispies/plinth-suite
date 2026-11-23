@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "ActionInvokeInput": {
+      "type": "object",
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "Registry name from action.list, e.g. points.transfer",
+          "pattern": "^[a-z][a-z_]*(\\.[a-z_]+)+$"
+        },
+        "input": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": {
+            "$id": "/schemas/unknown",
+            "title": "unknown"
+          },
+          "description": "The action's input object (its input_schema). Omit when committing with a preview_token."
+        },
+        "dry_run": {
+          "type": "boolean",
+          "description": "Mutating actions: true returns a preview with preview_token and decision; nothing is written."
+        },
+        "preview_token": {
+          "type": "string",
+          "description": "Commit exactly what the dry run previewed (single use, valid 300 s).",
+          "pattern": "^pvt_[A-Za-z0-9_-]{43}$"
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/IdempotencyKey"
+        },
+        "reason": {
+          "type": "string",
+          "description": "a string at most 280 character(s) long",
+          "title": "maxLength(280)",
+          "maxLength": 280
+        }
+      },
+      "additionalProperties": false,
+      "description": "Reads: {action, input}. Writes: {action, input, dry_run: true} then {action, preview_token, idempotency_key}."
+    },
+    "IdempotencyKey": {
+      "type": "string",
+      "description": "a string matching the pattern ^[A-Za-z0-9:._-]{8,128}$",
+      "pattern": "^[A-Za-z0-9:._-]{8,128}$"
+    }
+  },
+  "$ref": "#/$defs/ActionInvokeInput"
+}

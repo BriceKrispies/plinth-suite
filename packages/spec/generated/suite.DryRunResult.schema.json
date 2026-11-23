@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "DryRunResult": {
+      "type": "object",
+      "required": [
+        "trigger_matched",
+        "conditions_passed",
+        "limits_ok",
+        "context",
+        "steps",
+        "next_fires"
+      ],
+      "properties": {
+        "trigger_matched": {
+          "type": "boolean"
+        },
+        "conditions_passed": {
+          "type": "boolean"
+        },
+        "limits_ok": {
+          "type": "boolean"
+        },
+        "context": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": {
+            "$id": "/schemas/unknown",
+            "title": "unknown"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DryRunStep"
+          }
+        },
+        "next_fires": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Timestamp"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "DryRunStep": {
+      "type": "object",
+      "required": [
+        "index",
+        "id",
+        "type",
+        "would_run",
+        "skipped_reason",
+        "input",
+        "effect",
+        "error"
+      ],
+      "properties": {
+        "index": {
+          "$ref": "#/$defs/Int"
+        },
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "would_run": {
+          "type": "boolean"
+        },
+        "skipped_reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "when_false",
+                "after_stop",
+                "forbidden",
+                "invalid"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input": {
+          "$id": "/schemas/unknown",
+          "title": "unknown"
+        },
+        "effect": {
+          "type": "string",
+          "description": "a string at most 280 character(s) long",
+          "title": "maxLength(280)",
+          "maxLength": 280
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StepError"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "StepError": {
+      "type": "object",
+      "required": [
+        "code",
+        "message",
+        "retryable"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string",
+          "description": "a string at most 280 character(s) long",
+          "title": "maxLength(280)",
+          "maxLength": 280
+        },
+        "retryable": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Timestamp": {
+      "type": "string",
+      "description": "RFC 3339 UTC, e.g. 2026-11-20T14:30:00Z",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+    }
+  },
+  "$ref": "#/$defs/DryRunResult"
+}

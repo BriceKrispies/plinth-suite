@@ -1,0 +1,165 @@
+/* Tier 1: raised. A hairline, a whisper of shadow, and a lift on hover when the card is a link. */
+.c-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  background: var(--surface-1);
+  border: var(--hairline) solid var(--rule);
+  border-block-start: 2px solid var(--_tone, var(--rule));
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-1);
+  transition:
+    box-shadow var(--dur-2) var(--ease),
+    translate var(--dur-2) var(--ease),
+    background-color var(--dur-1) var(--ease);
+
+  &.c-card--info {
+    --_tone: var(--info-border);
+  }
+  &.c-card--success {
+    --_tone: var(--success-border);
+  }
+  &.c-card--warning {
+    --_tone: var(--warning-border);
+  }
+  &.c-card--danger {
+    --_tone: var(--danger-border);
+  }
+  &.c-card--signal {
+    --_tone: var(--signal-border);
+  }
+  &.c-card--neutral {
+    --_tone: var(--neutral-border);
+  }
+  &.c-card--linked:hover {
+    background: color-mix(in oklch, var(--paper-2) 60%, var(--surface-1));
+    box-shadow: var(--shadow-1-hover);
+    translate: 0 -2px;
+  }
+}
+
+.c-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5) 0;
+}
+.c-card__eyebrow {
+  font-size: var(--step--2);
+  font-weight: var(--weight-semi);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.c-card__title {
+  font-size: var(--step-0);
+  font-weight: var(--weight-bold);
+  text-wrap: balance;
+}
+.c-card__link {
+  text-decoration: none;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.c-card__actions,
+.c-card__foot {
+  position: relative;
+}
+.c-card__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+.c-card__body {
+  flex: 1;
+  text-wrap: pretty;
+  padding: var(--space-4) var(--space-5);
+  min-inline-size: 0;
+}
+.c-card__foot {
+  padding: var(--space-3) var(--space-5);
+  border-block-start: var(--hairline) solid var(--rule);
+  background: var(--paper-2);
+  border-end-start-radius: var(--radius-card);
+  border-end-end-radius: var(--radius-card);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+
+/* A card with media as a direct child: the media bleeds to the card edge and the card clips its corners. */
+.c-card:has(> :is(img, picture, video)) {
+  overflow: clip;
+  & > :is(img, picture, video) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: var(--_card-media-ratio, 16 / 9);
+    object-fit: cover;
+  }
+}
+
+/* Card grid with aligned rows. A .c-card-grid lays cards out in auto-fill columns. A .c-card--sub card spans
+   --_card-rows grid rows (default 3: head, body, foot) and takes them as a subgrid, so the title, body and foot of
+   every card in a grid row line up whatever their content. Head, body and foot take rows 1, 2 and 3; for other
+   parts add .c-card__row-1 ... .c-card__row-5 and raise the count with .c-card-grid--rows-4 or --rows-5.
+   Without subgrid support the cards keep the flex column above. */
+.c-card-grid {
+  --_card-rows: 3;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--_card-min, 16rem)), 1fr));
+  gap: var(--space-4);
+  align-items: stretch;
+  &.c-card-grid--rows-4 {
+    --_card-rows: 4;
+  }
+  &.c-card-grid--rows-5 {
+    --_card-rows: 5;
+  }
+}
+@supports (grid-template-rows: subgrid) {
+  .c-card-grid > .c-card--sub {
+    display: grid;
+    grid-row: span var(--_card-rows);
+    grid-template-rows: subgrid;
+    row-gap: 0;
+    & > .c-card__head {
+      grid-row: 1;
+    }
+    & > .c-card__body {
+      grid-row: 2;
+    }
+    & > .c-card__foot {
+      grid-row: 3;
+    }
+    & > .c-card__row-1 {
+      grid-row: 1;
+    }
+    & > .c-card__row-2 {
+      grid-row: 2;
+    }
+    & > .c-card__row-3 {
+      grid-row: 3;
+    }
+    & > .c-card__row-4 {
+      grid-row: 4;
+    }
+    & > .c-card__row-5 {
+      grid-row: 5;
+    }
+  }
+}
+
+@media (max-width: 39.99rem) {
+  .c-card__head,
+  .c-card__body,
+  .c-card__foot {
+    padding-inline: var(--space-4);
+  }
+}

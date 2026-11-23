@@ -1,0 +1,98 @@
+/* Layer: base. Element defaults and typography. */
+html {
+  font-size: 100%;
+  scroll-padding-block: calc(var(--topbar-h) + var(--space-4));
+}
+
+body {
+  background: var(--surface-0);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  font-variant-numeric: lining-nums;
+  font-optical-sizing: auto;
+  font-weight: var(--weight-regular);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display, inherit);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--step-2);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--track-tight);
+}
+
+h2 {
+  font-size: var(--step-1);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--track-tight);
+}
+
+h3 {
+  font-size: var(--step-0);
+  font-weight: var(--weight-bold);
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: var(--focus-offset);
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+time {
+  font-variant-numeric: tabular-nums;
+}
+
+.skip-link {
+  position: fixed;
+  inset-block-start: var(--space-2);
+  inset-inline-start: var(--space-2);
+  z-index: var(--z-toast);
+  padding: var(--space-2) var(--space-3);
+  background: var(--paper);
+  color: var(--ink);
+  border: var(--hairline) solid var(--ink);
+  transform: translateY(-300%);
+
+  &:focus {
+    transform: none;
+  }
+}
+
+/* Native scrollbars take the theme and stay slim. */
+:root {
+  scrollbar-color: var(--control-border) transparent;
+  scrollbar-width: thin;
+}

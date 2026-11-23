@@ -1,0 +1,146 @@
+/* Layer: modules (tasks). Shared parts live in ds/css/components/widget-parts.css. */
+
+@scope ([data-widget^="tasks."]) {
+  .rp-prewrap {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .rp-quick {
+    max-inline-size: none;
+  }
+  .rp-due {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  .rp-inline-select {
+    min-inline-size: 9rem;
+    block-size: var(--control-h-sm);
+    font-size: var(--step--1);
+  }
+  .rp-task {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .rp-fields {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .rp-fields__due {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--space-2);
+  }
+  .rp-comment {
+    display: grid;
+    gap: var(--space-1);
+    padding-block-end: var(--space-3);
+    border-block-end: var(--hairline) solid var(--rule);
+
+    p {
+      margin: 0;
+    }
+  }
+  .rp-comment__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    font-size: var(--step--1);
+  }
+  /* kanban */
+  .rp-kanban {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(15rem, 1fr);
+    gap: 0;
+    overflow-x: auto;
+    padding-block-end: var(--space-2);
+  }
+  /* Columns are separated by a hairline, not boxed; cards are rows divided by hairlines. */
+  .rp-col {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2);
+    min-inline-size: 0;
+    padding-inline: var(--space-3);
+
+    &:not(:first-child) {
+      border-inline-start: var(--hairline) solid var(--rule);
+    }
+
+    &.is-over {
+      outline: calc(2 * var(--hairline)) dashed var(--ink-2);
+      outline-offset: calc(-2 * var(--hairline));
+    }
+  }
+  .rp-col__title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 0;
+    font-size: var(--step--2);
+    font-weight: var(--weight-semi);
+    letter-spacing: var(--track-caps);
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding-block-end: var(--space-2);
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+  .rp-col__count {
+    font-variant-numeric: tabular-nums;
+  }
+  .rp-col__list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .rp-col__empty {
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  .rp-card {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-2);
+    border-block-end: var(--hairline) solid var(--rule);
+    cursor: grab;
+
+    &.is-dragging {
+      opacity: 0.55;
+    }
+  }
+  .rp-card__head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--space-1);
+  }
+  .rp-card__title {
+    padding: 0;
+    background: none;
+    border: 0;
+    font: inherit;
+    font-weight: var(--weight-semi);
+    text-align: start;
+    color: var(--ink);
+    cursor: pointer;
+    overflow-wrap: anywhere;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .rp-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+}

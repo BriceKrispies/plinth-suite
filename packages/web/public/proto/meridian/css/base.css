@@ -1,0 +1,95 @@
+/* Layer: base. Element defaults: type, links, form controls, focus. */
+html {
+  /* 16 px on a phone and laptop, scaling to about 21 px on a wall display */
+  font-size: clamp(1rem, 0.4rem + 0.75vw, 1.7rem);
+  scroll-padding-block-end: 9rem;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  font-variant-numeric: lining-nums;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+dl,
+dd {
+  margin: 0;
+}
+
+dt {
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+button {
+  background: none;
+  border: var(--hairline) solid currentColor;
+  border-radius: var(--radius);
+  padding: var(--space-1) var(--space-3);
+  line-height: 1.2;
+
+  &:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+}
+
+input,
+select {
+  background: var(--paper);
+  border: var(--hairline) solid var(--ink-3);
+  border-radius: var(--radius);
+  padding: var(--space-1) var(--space-2);
+  min-block-size: 2rem;
+}
+
+label {
+  font-size: var(--step--2);
+  font-weight: 600;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+time {
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,1097 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Automation": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Automation"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/AutomationSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "AutomationSpec": {
+      "type": "object",
+      "required": [
+        "enabled",
+        "description",
+        "trigger",
+        "steps",
+        "limits",
+        "owner"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string",
+          "description": "User-authored text (untrusted), at most 500 chars",
+          "title": "maxLength(500)",
+          "maxLength": 500
+        },
+        "trigger": {
+          "$ref": "#/$defs/AutomationTrigger"
+        },
+        "conditions": {
+          "$ref": "#/$defs/CondTree"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AutomationStep"
+          },
+          "description": "an array of at most 10 item(s)",
+          "title": "maxItems(10)",
+          "minItems": 1,
+          "maxItems": 10
+        },
+        "limits": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "max_runs_per_member_per_day": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 100",
+              "title": "between(1, 100)",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "cooldown_minutes": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 10080",
+              "title": "between(1, 10080)",
+              "minimum": 1,
+              "maximum": 10080
+            }
+          },
+          "additionalProperties": false
+        },
+        "owner": {
+          "$ref": "#/$defs/Subject"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AutomationTrigger": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "event"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "event"
+              ]
+            },
+            "event": {
+              "$ref": "#/$defs/TriggerableEventType"
+            },
+            "filter": {
+              "$ref": "#/$defs/CondTree"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "cron"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "schedule"
+              ]
+            },
+            "cron": {
+              "$ref": "#/$defs/Cron"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "query",
+            "value_column",
+            "op",
+            "threshold",
+            "for_minutes",
+            "every_minutes"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "metric"
+              ]
+            },
+            "query": {
+              "$ref": "#/$defs/QueryAst"
+            },
+            "value_column": {
+              "$ref": "#/$defs/Field"
+            },
+            "op": {
+              "type": "string",
+              "enum": [
+                "gt",
+                "gte",
+                "lt",
+                "lte"
+              ]
+            },
+            "threshold": {
+              "type": "number"
+            },
+            "for_minutes": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 0 and 1440",
+              "title": "between(0, 1440)",
+              "minimum": 0,
+              "maximum": 1440
+            },
+            "every_minutes": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 1440",
+              "title": "between(1, 1440)",
+              "minimum": 1,
+              "maximum": 1440
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "TriggerableEventType": {
+      "type": "string",
+      "enum": [
+        "message.received",
+        "message.sent",
+        "points.posted",
+        "tier.changed",
+        "order.placed",
+        "order.status_changed",
+        "stock.changed",
+        "review.created",
+        "badge.awarded",
+        "promotion.state_changed",
+        "promotion.redeemed",
+        "promotion.budget_alert",
+        "automation.run_updated",
+        "content.state_changed",
+        "content.published",
+        "content.engaged",
+        "task.assigned",
+        "task.updated",
+        "approval.requested",
+        "approval.decided"
+      ]
+    },
+    "CondTree": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Condition"
+        },
+        {
+          "type": "object",
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "any"
+          ],
+          "properties": {
+            "any": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/CondTree"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "not"
+          ],
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/CondTree"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Condition": {
+      "type": "object",
+      "required": [
+        "field",
+        "op"
+      ],
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/FactPath"
+        },
+        "op": {
+          "$ref": "#/$defs/CondOp"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": "an array of at most 100 item(s)",
+              "title": "maxItems(100)",
+              "maxItems": 100
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "FactPath": {
+      "type": "string",
+      "description": "A fact name, e.g. tier, member.region, event.points",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*){0,3}$"
+    },
+    "CondOp": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "in",
+        "not_in",
+        "contains",
+        "not_contains",
+        "exists",
+        "not_exists",
+        "between"
+      ]
+    },
+    "Cron": {
+      "type": "string",
+      "description": "m h dom mon dow, UTC virtual time, e.g. '0 9 * * 1'",
+      "pattern": "^(\\S+\\s+){4}\\S+$"
+    },
+    "QueryAst": {
+      "type": "object",
+      "required": [
+        "from"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "source:<slug>, for example source:orders",
+          "pattern": "^(source|query):[a-z][a-z0-9_.]*$"
+        },
+        "where": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Predicate"
+          },
+          "description": "Conjunction of predicates {field, op, value}. op: eq ne lt lte gt gte in not_in is_null not_null. value is a JSON literal typed by the field: strings raw (EMEA, never 'EMEA'), numbers, booleans, ISO-8601 timestamps as plain strings. Relative time: {\"expr\":\"now() - 1h\"} (the bare string \"now() - 1h\" is also accepted). Landed sources need a gt/gte lower bound on their time column.",
+          "title": "maxItems(32)",
+          "maxItems": 32
+        },
+        "derive": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "patternProperties": {
+            "": {
+              "type": "string",
+              "description": "a string at most 200 character(s) long",
+              "title": "maxLength(200)",
+              "maxLength": 200
+            }
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "Map of new field name to expression over fields. Operators + - * / = != < <= > >= and or not. Functions: now(), abs(x), ms(duration) -> int ms, round(x, n), coalesce(a, b), date_trunc(1h, ts), bucket(ts, '1 minute') (units second/minute/hour/day). timestamp - timestamp yields a duration in MILLISECONDS. Duration literals: 90s 15m 1h 3d. Example: {\"latency_ms\":\"ms(fulfilled_at - placed_at)\",\"minute\":\"bucket(placed_at, '1 minute')\"}. Group by a derived name to bucket time."
+        },
+        "group": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "an array of at most 8 item(s)",
+          "title": "maxItems(8)",
+          "maxItems": 8
+        },
+        "aggregate": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "patternProperties": {
+            "": {
+              "$ref": "#/$defs/Agg"
+            }
+          },
+          "propertyNames": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "Map of output name to aggregate. Object form (canonical): {\"fn\":\"percentile\",\"of\":\"latency_ms\",\"p\":0.95}, {\"fn\":\"count\"}, {\"fn\":\"avg\",\"of\":\"latency_ms\"}; fn is count count_distinct sum avg min max percentile. String alias: \"percentile(latency_ms, 0.95)\", \"count()\", \"sum(order_value_cents)\"."
+        },
+        "select": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Field"
+          },
+          "description": "an array of at most 64 item(s)",
+          "title": "maxItems(64)",
+          "maxItems": 64
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "field",
+              "dir"
+            ],
+            "properties": {
+              "field": {
+                "$ref": "#/$defs/Field"
+              },
+              "dir": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "an array of at most 8 item(s)",
+          "title": "maxItems(8)",
+          "maxItems": 8
+        },
+        "limit": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 1 and 1000",
+          "title": "between(1, 1000)",
+          "minimum": 1,
+          "maximum": 1000
+        }
+      },
+      "additionalProperties": false
+    },
+    "Predicate": {
+      "type": "object",
+      "required": [
+        "field",
+        "op"
+      ],
+      "properties": {
+        "field": {
+          "$ref": "#/$defs/Field"
+        },
+        "op": {
+          "type": "string",
+          "enum": [
+            "eq",
+            "ne",
+            "lt",
+            "lte",
+            "gt",
+            "gte",
+            "in",
+            "not_in",
+            "is_null",
+            "not_null"
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": "an array of at most 100 item(s)",
+              "title": "maxItems(100)",
+              "maxItems": 100
+            },
+            {
+              "$ref": "#/$defs/ExprValue"
+            }
+          ],
+          "description": "A JSON literal typed by the field: strings raw (EMEA, not 'EMEA'), numbers, booleans, timestamps as ISO-8601 strings (2026-11-20T14:00:00Z). Relative time: {\"expr\":\"now() - 1h\"}. \"in\"/\"not_in\" take an array."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Field": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$",
+      "title": "maxLength(64)",
+      "maxLength": 64,
+      "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z_][a-z0-9_]*)?$"
+    },
+    "ExprValue": {
+      "type": "object",
+      "required": [
+        "expr"
+      ],
+      "properties": {
+        "expr": {
+          "type": "string",
+          "description": "a string at most 200 character(s) long",
+          "title": "maxLength(200)",
+          "maxLength": 200
+        }
+      },
+      "additionalProperties": false
+    },
+    "Agg": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AggObject"
+        },
+        {
+          "type": "string",
+          "description": "a string at most 200 character(s) long",
+          "title": "maxLength(200)",
+          "maxLength": 200
+        }
+      ]
+    },
+    "AggObject": {
+      "type": "object",
+      "required": [
+        "fn"
+      ],
+      "properties": {
+        "fn": {
+          "type": "string",
+          "enum": [
+            "count",
+            "count_distinct",
+            "sum",
+            "avg",
+            "min",
+            "max",
+            "percentile"
+          ]
+        },
+        "of": {
+          "type": "string",
+          "description": "a string at most 200 character(s) long",
+          "title": "maxLength(200)",
+          "maxLength": 200
+        },
+        "p": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "AutomationStep": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "on_error",
+            "type",
+            "to",
+            "points",
+            "memo"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "a string matching the pattern ^[a-z][a-z0-9-]{0,31}$",
+              "pattern": "^[a-z][a-z0-9-]{0,31}$"
+            },
+            "when": {
+              "$ref": "#/$defs/CondTree"
+            },
+            "on_error": {
+              "type": "string",
+              "enum": [
+                "stop",
+                "continue"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "award_points"
+              ]
+            },
+            "to": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "$member",
+                    "$actor"
+                  ]
+                },
+                {
+                  "$ref": "#/$defs/Subject"
+                }
+              ]
+            },
+            "points": {
+              "$ref": "#/$defs/PositivePoints"
+            },
+            "memo": {
+              "type": "string",
+              "description": "a string at most 200 character(s) long",
+              "title": "maxLength(200)",
+              "maxLength": 200
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "on_error",
+            "type",
+            "to",
+            "notification_type",
+            "title",
+            "body"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "a string matching the pattern ^[a-z][a-z0-9-]{0,31}$",
+              "pattern": "^[a-z][a-z0-9-]{0,31}$"
+            },
+            "when": {
+              "$ref": "#/$defs/CondTree"
+            },
+            "on_error": {
+              "type": "string",
+              "enum": [
+                "stop",
+                "continue"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "notify"
+              ]
+            },
+            "to": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/AutomationTarget"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            },
+            "notification_type": {
+              "$ref": "#/$defs/NotificationType"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 140 character(s) long",
+              "title": "maxLength(140)",
+              "maxLength": 140
+            },
+            "body": {
+              "type": "string",
+              "description": "a string at most 500 character(s) long",
+              "title": "maxLength(500)",
+              "maxLength": 500
+            },
+            "link": {
+              "type": "string",
+              "description": "a string matching the pattern ^\\/[A-Za-z0-9/_.:?=&%{}-]*$",
+              "pattern": "^\\/[A-Za-z0-9/_.:?=&%{}-]*$"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "on_error",
+            "type",
+            "to",
+            "subject",
+            "body"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "a string matching the pattern ^[a-z][a-z0-9-]{0,31}$",
+              "pattern": "^[a-z][a-z0-9-]{0,31}$"
+            },
+            "when": {
+              "$ref": "#/$defs/CondTree"
+            },
+            "on_error": {
+              "type": "string",
+              "enum": [
+                "stop",
+                "continue"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "send_message"
+              ]
+            },
+            "to": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/AutomationTarget"
+              },
+              "description": "an array of at most 20 item(s)",
+              "title": "maxItems(20)",
+              "minItems": 1,
+              "maxItems": 20
+            },
+            "subject": {
+              "type": "string",
+              "description": "a string at most 140 character(s) long",
+              "title": "maxLength(140)",
+              "maxLength": 140
+            },
+            "body": {
+              "type": "string",
+              "description": "a string at most 4000 character(s) long",
+              "title": "maxLength(4000)",
+              "maxLength": 4000
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "on_error",
+            "type",
+            "promotion",
+            "to",
+            "expires_in_days"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "a string matching the pattern ^[a-z][a-z0-9-]{0,31}$",
+              "pattern": "^[a-z][a-z0-9-]{0,31}$"
+            },
+            "when": {
+              "$ref": "#/$defs/CondTree"
+            },
+            "on_error": {
+              "type": "string",
+              "enum": [
+                "stop",
+                "continue"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "apply_promotion"
+              ]
+            },
+            "promotion": {
+              "$ref": "#/$defs/Ref.promotion"
+            },
+            "to": {
+              "type": "string",
+              "enum": [
+                "$member",
+                "$actor"
+              ]
+            },
+            "expires_in_days": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 1 and 365",
+              "title": "between(1, 365)",
+              "minimum": 1,
+              "maximum": 365
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "on_error",
+            "type",
+            "title",
+            "assignee",
+            "priority"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "a string matching the pattern ^[a-z][a-z0-9-]{0,31}$",
+              "pattern": "^[a-z][a-z0-9-]{0,31}$"
+            },
+            "when": {
+              "$ref": "#/$defs/CondTree"
+            },
+            "on_error": {
+              "type": "string",
+              "enum": [
+                "stop",
+                "continue"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "create_task"
+              ]
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 140 character(s) long",
+              "title": "maxLength(140)",
+              "maxLength": 140
+            },
+            "description": {
+              "type": "string",
+              "description": "a string at most 2000 character(s) long",
+              "title": "maxLength(2000)",
+              "maxLength": 2000
+            },
+            "assignee": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Subject"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "$owner",
+                    "$member"
+                  ]
+                }
+              ]
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "low",
+                "normal",
+                "high",
+                "urgent"
+              ]
+            },
+            "due_in_days": {
+              "$ref": "#/$defs/Int",
+              "description": "a number between 0 and 90",
+              "title": "between(0, 90)",
+              "minimum": 0,
+              "maximum": 90
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "on_error",
+            "type",
+            "target_label",
+            "payload"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "a string matching the pattern ^[a-z][a-z0-9-]{0,31}$",
+              "pattern": "^[a-z][a-z0-9-]{0,31}$"
+            },
+            "when": {
+              "$ref": "#/$defs/CondTree"
+            },
+            "on_error": {
+              "type": "string",
+              "enum": [
+                "stop",
+                "continue"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "webhook"
+              ]
+            },
+            "target_label": {
+              "type": "string",
+              "description": "a string matching the pattern ^[a-z][a-z0-9-]{1,40}$",
+              "pattern": "^[a-z][a-z0-9-]{1,40}$"
+            },
+            "payload": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 500 character(s) long",
+                  "title": "maxLength(500)",
+                  "maxLength": 500
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string at most 64 character(s) long",
+                "title": "maxLength(64)",
+                "maxLength": 64
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Subject": {
+      "type": "string",
+      "description": "A principal: user:<handle>, agent:<name>, service:<name>",
+      "pattern": "^(user|agent|service):[a-z0-9][a-z0-9._-]*$"
+    },
+    "PositivePoints": {
+      "type": "integer",
+      "description": "a number between 1 and 10000000",
+      "title": "between(1, 10000000)",
+      "minimum": 1,
+      "maximum": 10000000
+    },
+    "AutomationTarget": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Recipient"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "$member",
+            "$actor",
+            "$owner"
+          ]
+        }
+      ]
+    },
+    "Recipient": {
+      "type": "string",
+      "description": "user:<handle> or group:<slug>",
+      "pattern": "^((user|agent|service):[a-z0-9][a-z0-9._-]*|group:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*)$"
+    },
+    "NotificationType": {
+      "type": "string",
+      "enum": [
+        "mention",
+        "message",
+        "approval_request",
+        "approval_decision",
+        "points_awarded",
+        "points_expiring",
+        "badge_earned",
+        "tier_changed",
+        "order_status",
+        "automation_alert",
+        "content_review",
+        "content_published",
+        "task_assigned",
+        "promotion_started",
+        "system"
+      ]
+    },
+    "Ref.promotion": {
+      "type": "string",
+      "description": "promotion:<slug>",
+      "pattern": "^promotion:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    }
+  },
+  "$ref": "#/$defs/Automation"
+}

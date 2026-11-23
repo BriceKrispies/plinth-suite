@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "ActionInvokeOut": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "action",
+            "data",
+            "replayed"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "result"
+              ]
+            },
+            "action": {
+              "type": "string"
+            },
+            "data": {
+              "$id": "/schemas/unknown",
+              "title": "unknown"
+            },
+            "replayed": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "preview"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "preview"
+              ]
+            },
+            "preview": {
+              "$ref": "#/$defs/ActionPreview"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "action",
+            "approval_id",
+            "approver_permission"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "pending_approval"
+              ]
+            },
+            "action": {
+              "type": "string"
+            },
+            "approval_id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "approver_permission": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ActionPreview": {
+      "type": "object",
+      "required": [
+        "action",
+        "decision",
+        "effect",
+        "facts",
+        "input_hash",
+        "preview_token",
+        "expires_in_s"
+      ],
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "approval"
+          ]
+        },
+        "effect": {
+          "type": "string"
+        },
+        "facts": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": {
+            "$id": "/schemas/unknown",
+            "title": "unknown"
+          }
+        },
+        "input_hash": {
+          "type": "string"
+        },
+        "preview_token": {
+          "type": "string"
+        },
+        "expires_in_s": {
+          "$ref": "#/$defs/Int"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    }
+  },
+  "$ref": "#/$defs/ActionInvokeOut"
+}

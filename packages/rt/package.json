@@ -1,0 +1,21 @@
+{
+  "name": "@plinth/rt",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "effect": "3.22.5",
+    "@effect/platform-node": "0.108.4",
+    "@effect/sql": "0.52.2",
+    "ws": "^8.18.3",
+    "@types/ws": "^8.18.1",
+    "@plinth/spec": "workspace:*",
+    "@plinth/engine": "workspace:*"
+  }
+}

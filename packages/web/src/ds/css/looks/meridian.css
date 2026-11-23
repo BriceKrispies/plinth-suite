@@ -1,0 +1,20 @@
+/*
+  Look: meridian. The original Suite look, preserved: Helvetica, warm paper, a red signal accent, square-ish
+  boxes, a heavy ink rule over the page header, uppercase tracked headings, boxed pills and counts.
+  tokens.css already holds these values, and _quiet.css skips this look, so nothing is overridden here: this
+  file exists to name the look and to pin the Meridian values if tokens.css is ever re-tuned.
+*/
+:root[data-look="meridian"],
+.sg-look[data-look="meridian"] {
+  --look: meridian;
+}
+
+/* Wide gamut: a deeper, more saturated signal red on P3 screens; lightness is unchanged so contrast holds. */
+@media (color-gamut: p3) {
+  :root[data-look="meridian"],
+  .sg-look[data-look="meridian"] {
+    --accent: light-dark(oklch(0.55 0.24 29), oklch(0.72 0.21 32));
+    --series-1: light-dark(oklch(0.5 0.15 255), oklch(0.74 0.12 250));
+    --series-3: light-dark(oklch(0.42 0.09 200), oklch(0.78 0.1 195));
+  }
+}

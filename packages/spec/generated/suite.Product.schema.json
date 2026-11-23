@@ -1,0 +1,368 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "Product": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "enum": [
+            "plinth/v1"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Product"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "slug",
+            "title"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "slug": {
+              "$ref": "#/$defs/Slug"
+            },
+            "title": {
+              "type": "string",
+              "description": "a string at most 120 character(s) long",
+              "title": "maxLength(120)",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "labels": {
+              "type": "object",
+              "required": [],
+              "properties": {},
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "description": "a string at most 253 character(s) long",
+                  "title": "maxLength(253)",
+                  "maxLength": 253
+                }
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "a string matching the pattern ^[a-z][a-z0-9_.-]{0,62}$",
+                "pattern": "^[a-z][a-z0-9_.-]{0,62}$"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "spec": {
+          "$ref": "#/$defs/ProductSpec"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UUID": {
+      "type": "string",
+      "description": "a Universally Unique Identifier",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Slug": {
+      "type": "string",
+      "description": "a string matching the pattern ^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$",
+      "title": "maxLength(63)",
+      "minLength": 2,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]*(?:[-.][a-z0-9_]+)*$"
+    },
+    "ProductSpec": {
+      "type": "object",
+      "required": [
+        "category",
+        "summary",
+        "description",
+        "price_points",
+        "artwork",
+        "tags",
+        "status",
+        "featured",
+        "fulfilment",
+        "low_stock_threshold"
+      ],
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/Ref.category"
+        },
+        "summary": {
+          "type": "string",
+          "description": "User-authored text (untrusted), at most 280 chars",
+          "title": "maxLength(280)",
+          "maxLength": 280
+        },
+        "description": {
+          "type": "string",
+          "description": "User-authored text (untrusted), at most 4000 chars",
+          "title": "maxLength(4000)",
+          "maxLength": 4000
+        },
+        "price_points": {
+          "$ref": "#/$defs/PositivePoints"
+        },
+        "cash_price_cents": {
+          "$ref": "#/$defs/Cents"
+        },
+        "artwork": {
+          "$ref": "#/$defs/Artwork"
+        },
+        "attributes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "patternProperties": {
+            "": {
+              "type": "string",
+              "description": "a string at most 80 character(s) long",
+              "title": "maxLength(80)",
+              "maxLength": 80
+            }
+          },
+          "propertyNames": {
+            "type": "string",
+            "description": "a string matching the pattern ^[a-z][a-z0-9_]{0,31}$",
+            "pattern": "^[a-z][a-z0-9_]{0,31}$"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "a string matching the pattern ^[a-z][a-z0-9-]{0,31}$",
+            "pattern": "^[a-z][a-z0-9-]{0,31}$"
+          },
+          "description": "an array of at most 12 item(s)",
+          "title": "maxItems(12)",
+          "maxItems": 12
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "active",
+            "retired"
+          ]
+        },
+        "featured": {
+          "type": "boolean"
+        },
+        "fulfilment": {
+          "$ref": "#/$defs/FulfilmentMethod"
+        },
+        "min_tier": {
+          "$ref": "#/$defs/Tier"
+        },
+        "limit_per_member": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 1 and 100",
+          "title": "between(1, 100)",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "low_stock_threshold": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 10000",
+          "title": "between(0, 10000)",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "additionalProperties": false
+    },
+    "Ref.category": {
+      "type": "string",
+      "description": "category:<slug>",
+      "pattern": "^category:[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$"
+    },
+    "PositivePoints": {
+      "type": "integer",
+      "description": "a number between 1 and 10000000",
+      "title": "between(1, 10000000)",
+      "minimum": 1,
+      "maximum": 10000000
+    },
+    "Cents": {
+      "type": "integer",
+      "description": "a non-negative number",
+      "title": "greaterThanOrEqualTo(0)",
+      "minimum": 0
+    },
+    "Artwork": {
+      "type": "object",
+      "required": [
+        "icon",
+        "hue",
+        "pattern"
+      ],
+      "properties": {
+        "icon": {
+          "$ref": "#/$defs/IconName"
+        },
+        "hue": {
+          "$ref": "#/$defs/Int",
+          "description": "a number between 0 and 359",
+          "title": "between(0, 359)",
+          "minimum": 0,
+          "maximum": 359
+        },
+        "pattern": {
+          "type": "string",
+          "enum": [
+            "solid",
+            "stripes",
+            "dots",
+            "rings",
+            "grid",
+            "waves"
+          ]
+        },
+        "glyph": {
+          "type": "string",
+          "description": "Up to 3 characters set over the icon",
+          "title": "maxLength(3)",
+          "maxLength": 3
+        }
+      },
+      "additionalProperties": false
+    },
+    "IconName": {
+      "type": "string",
+      "enum": [
+        "home",
+        "inbox",
+        "send",
+        "archive",
+        "star",
+        "bell",
+        "search",
+        "command",
+        "store",
+        "cart",
+        "bag",
+        "tag",
+        "gift",
+        "coins",
+        "wallet",
+        "transfer",
+        "trophy",
+        "medal",
+        "award",
+        "crown",
+        "flame",
+        "bolt",
+        "target",
+        "megaphone",
+        "percent",
+        "calendar",
+        "clock",
+        "workflow",
+        "play",
+        "pause",
+        "stop",
+        "branch",
+        "webhook",
+        "document",
+        "article",
+        "announcement",
+        "image",
+        "users",
+        "user",
+        "group",
+        "segment",
+        "shield",
+        "key",
+        "lock",
+        "chart",
+        "board",
+        "check",
+        "check-circle",
+        "x",
+        "alert",
+        "info",
+        "task",
+        "list",
+        "settings",
+        "sliders",
+        "history",
+        "audit",
+        "attachment",
+        "reply",
+        "mention",
+        "heart",
+        "sparkle",
+        "leaf",
+        "globe",
+        "truck",
+        "box",
+        "ticket",
+        "coffee",
+        "headphones",
+        "laptop",
+        "shirt",
+        "book",
+        "plant",
+        "mountain",
+        "sun",
+        "moon",
+        "plus",
+        "minus",
+        "edit",
+        "trash",
+        "copy",
+        "link",
+        "external",
+        "filter",
+        "sort",
+        "more",
+        "chevron-left",
+        "chevron-right",
+        "chevron-down",
+        "chevron-up",
+        "menu",
+        "eye",
+        "eye-off",
+        "logout"
+      ]
+    },
+    "Int": {
+      "type": "integer",
+      "description": "an integer",
+      "title": "int"
+    },
+    "FulfilmentMethod": {
+      "type": "string",
+      "enum": [
+        "ship",
+        "pickup",
+        "digital",
+        "donation"
+      ]
+    },
+    "Tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ]
+    }
+  },
+  "$ref": "#/$defs/Product"
+}

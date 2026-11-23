@@ -1,0 +1,20 @@
+{
+  "name": "@plinth/ingest",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "effect": "3.22.5",
+    "@effect/sql": "0.52.2",
+    "@duckdb/node-api": "1.5.6-r.2",
+    "@plinth/spec": "workspace:*",
+    "@plinth/core": "workspace:*",
+    "@plinth/engine": "workspace:*"
+  }
+}
